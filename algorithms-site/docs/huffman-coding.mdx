@@ -1,0 +1,491 @@
+---
+id: huffman-coding
+title: קידוד הופמן
+sidebar_label: קידוד הופמן (Huffman)
+---
+
+<div className="greedyDoc container">
+  <p className="greedyDoc__badge">Greedy Strategy</p>
+  <h1>קידוד הופמן</h1>
+  <p className="greedyDoc__lead">
+    קידוד מחשב מציג שאלה בסיסית: איך מייצגים נתונים בבינארי? הפתרון ההיסטורי השתמש בקודים באורך קבוע 
+    (ASCII - 7 ביטים, EBCDIC - 8 ביטים). קידוד הופמן מציע פתרון טוב יותר: קודים באורך משתנה שבהם תווים 
+    תכופים מקבלים קודים קצרים, ותווים נדירים קודים ארוכים. זה קוד קודם-ממונע (prefix-free) - אף קוד אינו 
+    תחילית של אחר, מה שמאפשר פענוח חד-משמעי.
+  </p>
+  <ul className="greedyDoc__tags">
+    <li>Variable Length Code</li>
+    <li>Prefix-Free Code</li>
+    <li>Data Compression</li>
+  </ul>
+</div>
+
+<figure className="conceptStory container" aria-label="עץ הופמן עם תדירויות">
+  <div className="conceptStory__canvas">
+    <svg viewBox="0 0 600 280" role="img">
+      <defs>
+        <linearGradient id="treeBg" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#1a2d4d" />
+          <stop offset="100%" stopColor="#0d1a30" />
+        </linearGradient>
+        <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#64f6c8" stopOpacity="0.9" />
+          <stop offset="100%" stopColor="#64f6c8" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="edgeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#a78bfa" />
+          <stop offset="100%" stopColor="#64f6c8" />
+        </linearGradient>
+        <filter id="treeShadow">
+          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+
+      <rect width="600" height="280" fill="url(#treeBg)" rx="16" />
+
+      {/* עץ הופמן */}
+      {/* שורה עליונה - צומת שורש */}
+      <circle cx="300" cy="30" r="18" fill="#fbbf24" filter="url(#treeShadow)" />
+      <text x="300" y="36" fill="#000" fontSize="12" fontWeight="bold" textAnchor="middle">9</text>
+
+      {/* שורה שנייה */}
+      <line x1="285" y1="45" x2="240" y2="80" stroke="url(#edgeGradient)" strokeWidth="3" />
+      <line x1="315" y1="45" x2="360" y2="80" stroke="url(#edgeGradient)" strokeWidth="3" />
+      
+      <circle cx="240" cy="95" r="16" fill="#a78bfa" filter="url(#treeShadow)" />
+      <text x="240" y="100" fill="#fff" fontSize="11" fontWeight="bold" textAnchor="middle">5</text>
+      
+      <circle cx="360" cy="95" r="16" fill="#64f6c8" filter="url(#treeShadow)" />
+      <text x="360" y="100" fill="#000" fontSize="11" fontWeight="bold" textAnchor="middle">4</text>
+
+      {/* שורה שלישית - עלים */}
+      <line x1="225" y1="108" x2="190" y2="140" stroke="#a78bfa" strokeWidth="2" strokeDasharray="4" />
+      <line x1="255" y1="108" x2="290" y2="140" stroke="#a78bfa" strokeWidth="2" strokeDasharray="4" />
+      
+      <line x1="345" y1="108" x2="320" y2="140" stroke="#64f6c8" strokeWidth="2" strokeDasharray="4" />
+      <line x1="375" y1="108" x2="400" y2="140" stroke="#64f6c8" strokeWidth="2" strokeDasharray="4" />
+
+      {/* עלים בתחתית */}
+      <circle cx="190" cy="155" r="14" fill="#0d8bd4" filter="url(#treeShadow)" />
+      <text x="190" y="160" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">א</text>
+      
+      <circle cx="290" cy="155" r="14" fill="#088a7b" filter="url(#treeShadow)" />
+      <text x="290" y="160" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">ב</text>
+      
+      <circle cx="320" cy="155" r="14" fill="#f97316" filter="url(#treeShadow)" />
+      <text x="320" y="160" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">ג</text>
+      
+      <circle cx="400" cy="155" r="14" fill="#ec4899" filter="url(#treeShadow)" />
+      <text x="400" y="160" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">ד</text>
+
+      {/* תדירויות תחתון */}
+      <text x="190" y="185" fill="#64f6c8" fontSize="12" fontWeight="bold" textAnchor="middle">3</text>
+      <text x="290" y="185" fill="#64f6c8" fontSize="12" fontWeight="bold" textAnchor="middle">2</text>
+      <text x="320" y="185" fill="#64f6c8" fontSize="12" fontWeight="bold" textAnchor="middle">2</text>
+      <text x="400" y="185" fill="#64f6c8" fontSize="12" fontWeight="bold" textAnchor="middle">2</text>
+
+      {/* קודים בינאריים */}
+      <g opacity="0.85">
+        <rect x="150" y="220" width="100" height="50" fill="rgba(100, 246, 200, 0.1)" stroke="#64f6c8" strokeWidth="2" rx="8" />
+        <text x="200" y="235" fill="#64f6c8" fontSize="11" fontWeight="bold" textAnchor="middle">א = 00</text>
+        <text x="200" y="250" fill="#a78bfa" fontSize="11" fontWeight="bold" textAnchor="middle">ב = 01</text>
+        <text x="200" y="265" fill="#fbbf24" fontSize="11" fontWeight="bold" textAnchor="middle">ג = 10</text>
+      </g>
+
+      <g opacity="0.85">
+        <rect x="350" y="220" width="100" height="50" fill="rgba(251, 191, 36, 0.1)" stroke="#fbbf24" strokeWidth="2" rx="8" />
+        <text x="400" y="235" fill="#fbbf24" fontSize="11" fontWeight="bold" textAnchor="middle">ד = 11</text>
+        <text x="400" y="250" fill="#64f6c8" fontSize="10" textAnchor="middle">בינארי אופטימלי</text>
+      </g>
+
+      {/* דגל סימול */}
+      <path d="M 500 200 L 520 200 L 520 150 Z" fill="#64f6c8" opacity="0.8" />
+      <text x="490" y="210" fill="#64f6c8" fontSize="14" fontWeight="bold">✓</text>
+    </svg>
+  </div>
+  <figcaption className="conceptStory__caption">
+    <h4>בניית עץ הופמן צעד אחר צעד</h4>
+    <p>
+      התהליך החמדני בוחר בכל שלב בשני צמתים בעלי התדר הנמוך ביותר ומחברם לצומת חדשה. 
+      התוצאה היא עץ בינארי שבו התווים בעלי תדר גבוה יותר קרובים לשורש — קודים קצרים יותר.
+    </p>
+    <ul>
+      <li><strong>בחירה חמדנית:</strong> תמיד מחברים את שני הצמתים בעלי התדר המינימלי</li>
+      <li><strong>עץ בינארי:</strong> כל קוד הוא מסלול מהשורש לעלה (0 שמאל, 1 ימין)</li>
+      <li><strong>קוד אופטימלי:</strong> קידוד קודם-ממונע (prefix-free) עם קוד קצר לתווים תכופים</li>
+    </ul>
+  </figcaption>
+</figure>
+
+<section className="conceptGrid container">
+  <article className="conceptCard conceptCard--explain">
+    <p className="conceptCard__label">בעיה</p>
+    <h3 className="conceptCard__title">ייצוג נתונים בבינארי</h3>
+    <p className="conceptCard__body">
+      <strong>שאלה:</strong> איך מייצגים נתונים במחשב? <br/>
+      <strong>פתרון קלאסי:</strong> קודים באורך קבוע - כל סימן מקודד במחרוזת בינארית באורך זהה.
+      דוגמאות: ASCII (7 ביטים), EBCDIC (8 ביטים). <br/>
+      <strong>חסרון:</strong> לקובץ בן n תווים עם קוד באורך ℓ ביטים צריך nℓ ביטים - בזבוז עבור תווים תכופים!
+    </p>
+  </article>
+  <article className="conceptCard conceptCard--algorithm">
+    <p className="conceptCard__label">רעיון</p>
+    <h3 className="conceptCard__title">קודים באורך משתנה</h3>
+    <p className="conceptCard__body">
+      <strong>רעיון:</strong> תווים תכופים מקבלים קודים קצרים, תווים נדירים מקבלים קודים ארוכים.
+      <br/><strong>דוגמה:</strong> אלפבית {`{A, B, C}`} בקובץ של 1,000,000 תווים.
+      <br/>קוד קבוע: 2 ביטים לתו = 2,000,000 ביטים.
+      <br/>קוד משתנה: חיסכון של כמעט 50%!
+    </p>
+  </article>
+  <article className="conceptCard conceptCard--solution">
+    <p className="conceptCard__label">קוד קודם-ממונע</p>
+    <h3 className="conceptCard__title">איך פותרים?</h3>
+    <p className="conceptCard__body">
+      <strong>בעיה:</strong> בקוד קבוע ידוע איפה כל תו מתחיל (כולם באותו אורך).
+      <br/><strong>פתרון:</strong> קוד קודם-ממונע (Prefix-Free Code) - אף קוד אינו תחילית של קוד אחר.
+      <br/><strong>דוגמה:</strong> A=0, B=10, C=11. אף קוד אינו תחילית של אחר → פענוח חד-משמעי!
+    </p>
+  </article>
+</section>
+
+<section className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">דוגמה מפורטת</p>
+    <h2>קוד קבוע לעומת קוד משתנה</h2>
+  </header>
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>אלפבית:</strong> {`{A, B, C}`} עם התפלגות תדירויות:
+      </p>
+      <table className="greedyDoc__table">
+        <thead>
+          <tr>
+            <th>תו</th>
+            <th>תדירות</th>
+            <th>קוד קבוע</th>
+            <th>קוד הופמן</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>A</td>
+            <td>999,000</td>
+            <td>00</td>
+            <td>0</td>
+          </tr>
+          <tr>
+            <td>B</td>
+            <td>500</td>
+            <td>01</td>
+            <td>10</td>
+          </tr>
+          <tr>
+            <td>C</td>
+            <td>500</td>
+            <td>10</td>
+            <td>11</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        <strong>חישוב שטח אחסון:</strong>
+      </p>
+      <ul>
+        <li><strong>קוד קבוע:</strong> 1,000,000 × 2 = 2,000,000 ביטים</li>
+        <li>
+          <strong>קוד משתנה:</strong>
+          <ul>
+            <li>999,000 × 1 (עבור A)</li>
+            <li>+ 500 × 2 (עבור B)</li>
+            <li>+ 500 × 2 (עבור C)</li>
+            <li>= 1,001,000 ביטים</li>
+          </ul>
+        </li>
+        <li><strong>חיסכון:</strong> כמעט 50%!</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<section className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">פענוח</p>
+    <h2>איך פותרים בעיית הפענוח?</h2>
+  </header>
+  <div className="conceptGrid">
+    <article className="conceptCard conceptCard--insight">
+      <p className="conceptCard__label">קוד קבוע</p>
+      <h3 className="conceptCard__title">פענוח בקוד קבוע</h3>
+      <p className="conceptCard__body">
+        בקוד קבוע, כל תו באותו אורך → ידוע איפה כל תו מתחיל.
+        <br/><br/>
+        <strong>דוגמה:</strong> A=00, B=01, C=10
+        <br/>
+        <code style={{ direction: 'ltr', display: 'block', padding: '0.5rem', background: 'rgba(0,0,0,0.3)', borderRadius: '4px', marginTop: '0.5rem' }}>
+          000000010110101001100100001010
+        </code>
+        <br/>
+        פענוח: A A A B B C C C B C B A A C C
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--important">
+      <p className="conceptCard__label">קוד משתנה</p>
+      <h3 className="conceptCard__title">פענוח בקוד משתנה - Prefix Code</h3>
+      <p className="conceptCard__body">
+        <strong>רעיון:</strong> קוד קודם-ממונע - אף קוד אינו תחילית (prefix) של אחר!
+        <br/><br/>
+        <strong>דוגמה:</strong> A=0, B=10, C=11
+        <br/>
+        שום קוד אינו תחילית של אחר:
+        <ul style={{ marginTop: '0.5rem' }}>
+          <li>"0" אינו תחילית של "10" או "11"</li>
+          <li>"10" אינו תחילית של "0" או "11"</li>
+          <li>"11" אינו תחילית של "0" או "10"</li>
+        </ul>
+        <strong>תוצאה:</strong> פענוח חד-משמעי - קוראים ביט אחר ביט עד שמוצאים קוד מלא!
+      </p>
+    </article>
+  </div>
+</section>
+
+<section className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">אלגוריתם</p>
+    <h2>בניית עץ הופמן</h2>
+  </header>
+  <div className="conceptGrid">
+    <article className="conceptCard conceptCard--insight">
+      <p className="conceptCard__label">תהליך</p>
+      <h3 className="conceptCard__title">צעדי הבניה</h3>
+      <ol className="conceptCard__list">
+        <li>אתחל תור עדיפויות (min-heap) עם כל תו ותדירותו</li>
+        <li>בחר שני צמתים בעלי התדר המינימלי</li>
+        <li>צור צומת אב חדשה עם תדר = סכום שני הצמתים</li>
+        <li>הכנס את הצומת החדשה לתור העדיפויות</li>
+        <li>חזור עד שנותר צומת יחידה (שורש העץ)</li>
+      </ol>
+      <p className="conceptCard__body">
+        כל צעד בוחר בחמדנות את שני התדרים הקטנים ביותר. 
+        בניגוד לאינטואיציה, זה יוצר עץ אופטימלי המזעור את הקוד הממוצע.
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--important">
+      <p className="conceptCard__label">זהירות</p>
+      <h3 className="conceptCard__title">טעויות נפוצות</h3>
+      <ul className="conceptCard__list">
+        <li>בחירה כיד הקרה - יש לעדכן תור עדיפויות</li>
+        <li>שכחת עץ בעלי צומת יחידה (אם קיים רק תו אחד)</li>
+        <li>גדלי קודים משתנים - נדרש טבלת ממרה בין קוד וסדר מקורי</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<section className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">דוגמה</p>
+    <h2>בניית קידוד הופמן בפועל</h2>
+  </header>
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>טקסט:</strong> "abbaccc" (7 תווים)
+      </p>
+      <p>
+        <strong>שלב 1: ספירת תדירויות</strong>
+      </p>
+      <ul>
+        <li>a: 2 פעמים</li>
+        <li>b: 2 פעמים</li>
+        <li>c: 3 פעמים</li>
+      </ul>
+
+      <p>
+        <strong>שלב 2: בניית עץ</strong>
+      </p>
+      <ul>
+        <li>בחר a(2) ו-b(2) → צומת ab(4)</li>
+        <li>בחר c(3) ו-ab(4) → שורש cab(7)</li>
+      </ul>
+
+      <p>
+        <strong>שלב 3: הקצאת קודים</strong>
+      </p>
+      <ul>
+        <li>a → 10 (2 סיביות)</li>
+        <li>b → 11 (2 סיביות)</li>
+        <li>c → 0 (1 סיביה)</li>
+      </ul>
+
+      <p>
+        <strong>שלב 4: קידוד הטקסט</strong>
+      </p>
+      <ul>
+        <li>"abbaccc" → "10 11 11 10 0 0 0" = "1011111000" (10 סיביות)</li>
+        <li>ללא דחיסה: 7×8 = 56 סיביות</li>
+        <li>דחיסה: (10 + טבלה) סיביות בערך ≈ 70% קטן</li>
+      </ul>
+    </article>
+  </div>
+
+  <div className="conceptGrid">
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">הוכחה</p>
+      <h3 className="conceptCard__title">אופטימליות</h3>
+      <ul className="conceptCard__list">
+        <li>לא קיים קודוד קודם-ממונע בעל קוד קצר יותר בממוצע</li>
+        <li>הוכחה: בשלב כל בחירה חמדנית, שני הצמתים בתדר מינימלי חייבים להיות עלים בעומק מקסימלי</li>
+        <li>החלפה: אם קודים אחרים היו קצרים יותר, שתיים מהם בעלות אותו קדימות היו חייבות להחליף</li>
+      </ul>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">סיבוכיות</p>
+      <h3 className="conceptCard__title">תחזוקה וביצוע</h3>
+      <ul className="conceptCard__list">
+        <li><strong>בניית עץ:</strong> \\(O(n \\log n)\\) עם תור עדיפויות בינארי</li>
+        <li><strong>קידוד:</strong> \\(O(n)\\) יצעוד דרך הטקסט</li>
+        <li><strong>זיכרון:</strong> \\(O(k)\\) כאשר k מספר התווים הייחודיים</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<section className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">יישומים</p>
+    <h2>שימושים בעולם האמת</h2>
+  </header>
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>ZIP ו-GZIP:</strong> דחיסת קבצים בעזרת Deflate (שיתוף של LZ77 וקידוד הופמן)
+      </p>
+      <p>
+        <strong>JPEG ו-MPEG:</strong> דחיסת תמונות ווידאו (עם כימות תחילה)
+      </p>
+      <p>
+        <strong>טלגרף מורס:</strong> הקדימון של קידוד הופמן — תווים תכופים יותר (E, T) קצרים יותר
+      </p>
+      <p>
+        <strong>ערוצי תקשורת:</strong> שידור נתונים עם דחיסה לקטנה עם רוחב פס מוגבל
+      </p>
+      <p>
+        <strong>מערכות הפעלה:</strong> דחיסת קבצים ביוגדים וארכיונים
+      </p>
+    </article>
+    <div className="greedyDoc__figure">
+      <svg viewBox="0 0 400 200" style={{ width: '100%', height: 'auto' }}>
+        <rect width="400" height="200" fill="rgba(255,255,255,0.05)" rx="12" />
+        
+        {/* ZIP */}
+        <circle cx="60" cy="50" r="30" fill="#0d8bd4" opacity="0.8" />
+        <text x="60" y="55" fill="#fff" fontSize="12" fontWeight="bold" textAnchor="middle">ZIP</text>
+        
+        {/* JPEG */}
+        <circle cx="150" cy="50" r="30" fill="#088a7b" opacity="0.8" />
+        <text x="150" y="55" fill="#fff" fontSize="12" fontWeight="bold" textAnchor="middle">JPEG</text>
+        
+        {/* Morse */}
+        <circle cx="240" cy="50" r="30" fill="#f97316" opacity="0.8" />
+        <text x="240" y="55" fill="#fff" fontSize="12" fontWeight="bold" textAnchor="middle">Morse</text>
+        
+        {/* Network */}
+        <circle cx="330" cy="50" r="30" fill="#ec4899" opacity="0.8" />
+        <text x="330" y="55" fill="#fff" fontSize="12" fontWeight="bold" textAnchor="middle">Network</text>
+
+        {/* Labels */}
+        <text x="60" y="100" fill="#64f6c8" fontSize="11" textAnchor="middle">קבצים</text>
+        <text x="150" y="100" fill="#64f6c8" fontSize="11" textAnchor="middle">מולטימדיה</text>
+        <text x="240" y="100" fill="#64f6c8" fontSize="11" textAnchor="middle">תקשורת</text>
+        <text x="330" y="100" fill="#64f6c8" fontSize="11" textAnchor="middle">רשתות</text>
+
+        {/* Huffman heart */}
+        <circle cx="200" cy="150" r="40" fill="none" stroke="#64f6c8" strokeWidth="2" strokeDasharray="4" />
+        <text x="200" y="160" fill="#64f6c8" fontSize="14" fontWeight="bold" textAnchor="middle">Huffman</text>
+      </svg>
+      <small>קידוד הופמן בשימוש בתחומים שונים</small>
+    </div>
+  </div>
+</section>
+
+<section className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">סיום</p>
+    <h2>סיכום כולל</h2>
+  </header>
+  <article style={{ lineHeight: '1.8', fontSize: '1.05em' }}>
+    <h3 style={{ color: '#64f6c8', borderBottom: '3px solid #64f6c8', paddingBottom: '0.5rem', marginBottom: '1rem' }}>קידוד הופמן - המהות</h3>
+    <p style={{ padding: '1rem', background: 'rgba(13, 139, 212, 0.08)', borderRadius: '8px', borderLeft: '4px solid #0d8bd4' }}>
+      קידוד הופמן הוא שיטה חמדנית לבניית <strong style={{ color: '#0d8bd4' }}>עץ בינארי אופטימלי</strong> 
+      לייצוג נתונים בצורה דחוסה. באמצעות בחירה חמדנית של שני התדרים המינימליים בכל שלב, 
+      האלגוריתם יוצר <strong style={{ color: '#088a7b' }}>קוד קודם-ממונע</strong> 
+      שהוא קצר ביותר בממוצע לפי הלוח התדירויות הנתון.
+    </p>
+    
+    <h3 style={{ color: '#fbbf24', borderBottom: '3px solid #fbbf24', paddingBottom: '0.5rem', marginTop: '2.5rem', marginBottom: '1rem' }}>שלושת העיקרים</h3>
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem', marginTop: '1.5rem' }}>
+      <div style={{ background: 'var(--greedy-section-bg)', padding: '1.5rem', borderRadius: '12px', borderTop: '4px solid #0d8bd4' }}>
+        <h4 style={{ color: '#0d8bd4', margin: '0 0 0.8rem 0' }}>① בחירה חמדנית</h4>
+        <p style={{ margin: 0, fontSize: '0.95em' }}>
+          בחר את שני הצמתים בעלי התדר הנמוך ביותר וחברם לצומת חדשה שתדרה סכום שניהם.
+        </p>
+        <p style={{ margin: '0.8rem 0 0', fontSize: '0.95em' }}>
+          <strong style={{ color: '#0d8bd4' }}>תדר:</strong> סכום תדירויות הצמתים שהתחברו
+        </p>
+      </div>
+      
+      <div style={{ background: 'var(--greedy-section-bg)', padding: '1.5rem', borderRadius: '12px', borderTop: '4px solid #64f6c8' }}>
+        <h4 style={{ color: '#64f6c8', margin: '0 0 0.8rem 0' }}>② עץ בינארי</h4>
+        <p style={{ margin: 0, fontSize: '0.95em' }}>
+          הצומת החדשה הופכת לאב של שני הצמתים הישנים. המסלול מהשורש לעלה הוא הקוד.
+        </p>
+        <p style={{ margin: '0.8rem 0 0', fontSize: '0.95em' }}>
+          <strong style={{ color: '#64f6c8' }}>קודי מסלול:</strong> 0 שמאל, 1 ימין
+        </p>
+      </div>
+      
+      <div style={{ background: 'var(--greedy-section-bg)', padding: '1.5rem', borderRadius: '12px', borderTop: '4px solid #fbbf24' }}>
+        <h4 style={{ color: '#fbbf24', margin: '0 0 0.8rem 0' }}>③ אופטימליות</h4>
+        <p style={{ margin: 0, fontSize: '0.95em' }}>
+          קוד הופמן הוא הקוד הקודם-ממונע בעל אורך בינארי ממוצע המינימלי בין כל הקודים.
+        </p>
+        <p style={{ margin: '0.8rem 0 0', fontSize: '0.95em' }}>
+          <strong style={{ color: '#fbbf24' }}>סיבוכיות:</strong> \\(O(n \\log n)\\) בניה + \\(O(m)\\) קידוד
+        </p>
+      </div>
+    </div>
+    
+    <h3 style={{ color: '#a78bfa', borderBottom: '3px solid #a78bfa', paddingBottom: '0.5rem', marginTop: '2.5rem', marginBottom: '1rem' }}>נקודות קריטיות</h3>
+    <ul style={{ lineHeight: '2' }}>
+      <li style={{ padding: '0.8rem', marginBottom: '0.8rem', background: 'rgba(255, 179, 71, 0.08)', borderLeft: '4px solid #ffb347', borderRadius: '4px' }}>
+        <strong style={{ color: '#ff8c42' }}>✓ דחיסה חסרת הפסד:</strong> הנתונים המקוריים ניתנים להחזרה בדיוק מהקוד ודה הטבלה. 
+        שונה מדחיסה עם הפסד (JPEG).
+      </li>
+      <li style={{ padding: '0.8rem', marginBottom: '0.8rem', background: 'rgba(100, 246, 200, 0.08)', borderLeft: '4px solid #64f6c8', borderRadius: '4px' }}>
+        <strong style={{ color: '#00d9a3' }}>✓ תדירויות קבועות:</strong> אם התפלגות התדירויות משתנה במהלך הטקסט, יש צורך בעץ דינמי (Adaptive Huffman). 
+        בשיטה הסטנדרטית מניחים כי תדירויות ידועות מראש.
+      </li>
+      <li style={{ padding: '0.8rem', marginBottom: '0.8rem', background: 'rgba(251, 191, 36, 0.08)', borderLeft: '4px solid #fbbf24', borderRadius: '4px' }}>
+        <strong style={{ color: '#fbbf24' }}>✓ תור עדיפויות:</strong> בניית העץ דורשת יכולת לבחור שני המינימום בדיוק. 
+        תור עדיפויות בינארי או heap עושה זאת בדיוק בחסינות.
+      </li>
+      <li style={{ padding: '0.8rem', marginBottom: '0.8rem', background: 'rgba(167, 139, 250, 0.08)', borderLeft: '4px solid #a78bfa', borderRadius: '4px' }}>
+        <strong style={{ color: '#a78bfa' }}>✓ טבלה דרושה:</strong> כדי לפענח את הטקסט המקודד, יש לשמור את העץ או טבלת ההמרה כחלק מהקובץ הדחוס. 
+        זה מוסיף overhead קטן אך אשר בעדיין משמעותי בדחיסה של קבצים קטנים.
+      </li>
+    </ul>
+    
+    <p style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(100, 246, 200, 0.08)', borderRadius: '8px', borderLeft: '4px solid var(--greedy-section-title)' }}>
+      <strong>לסיכום:</strong> קידוד הופמן הוא אחת משיטות הדחיסה היעילות ביותר לנתונים בעלי התפלגות תדירויות ידועה. 
+      זו אחת ההשפעות הקלאסיות של חמדנות במדעי המחשב, ושימושיה מתפרסים לכמעט כל יישום של דחיסה בעולם. 
+      למרות פיתוח שיטות מתקדמות יותר (אריתמטיק קודינג, LZ77 וכן הלאה), הופמן עדיין משמש כאבן יסוד בחבילות דחיסה מודרניות.
+    </p>
+  </article>
+</section>

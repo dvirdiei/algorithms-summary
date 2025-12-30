@@ -1,0 +1,557 @@
+
+<div className="greedyDoc container">
+  <p className="greedyDoc__badge">Greedy Strategy</p>
+  <h1>אלגוריתמים חמדניים</h1>
+  <p className="greedyDoc__lead">
+    ניתוח אלגוריתמים וסיבוכיות מתמקד סביב מציאת פתרון מיטבי לבעיה בדידה באמצעות רצף פעולות
+    ברור. לאורך הקורס אנו משווים משפחות שונות של אלגוריתמים ומתמקדים בעיצוב שלהם ולא במבני
+    הנתונים תומכים. הגישה החמדנית בוחרת בצעד מקומי שנראה נכון ברגע נתון ומקווה שהמבנה של
+    הבעיה יבטיח שהקפיצה המקומית תוביל גם לאופטימום גלובלי.
+  </p>
+  <ul className="greedyDoc__tags">
+    <li>Complexity</li>
+    <li>Greedy Choice</li>
+    <li>Optimal Substructure</li>
+  </ul>
+</div>
+<figure className="conceptStory container" aria-label="גנב שבוחר את הפריט היקר ביותר">
+  <div className="conceptStory__canvas">
+    <svg viewBox="0 0 600 280" role="img">
+      <defs>
+        <radialGradient id="moonGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#fffef8" />
+          <stop offset="50%" stopColor="#ffedc9" />
+          <stop offset="100%" stopColor="#ffc97a" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="nightSky" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#1d2742" />
+          <stop offset="100%" stopColor="#0d1526" />
+        </linearGradient>
+        <radialGradient id="goldShine" cx="30%" cy="30%" r="70%">
+          <stop offset="0%" stopColor="#fffef5" />
+          <stop offset="30%" stopColor="#ffe999" />
+          <stop offset="70%" stopColor="#ffd95e" />
+          <stop offset="100%" stopColor="#ff9a3c" />
+        </radialGradient>
+        <radialGradient id="treasureGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#ffeb99" stopOpacity="0.9" />
+          <stop offset="50%" stopColor="#ffd95e" stopOpacity="0.5" />
+          <stop offset="100%" stopColor="#ff9a3c" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="arrowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#64f6c8" stopOpacity="0.6" />
+          <stop offset="100%" stopColor="#64f6c8" stopOpacity="1" />
+        </linearGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+        <filter id="strongGlow">
+          <feGaussianBlur stdDeviation="10" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+        <filter id="softShadow">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+          <feOffset dx="2" dy="5" result="offsetblur"/>
+          <feComponentTransfer>
+            <feFuncA type="linear" slope="0.5"/>
+          </feComponentTransfer>
+          <feMerge>
+            <feMergeNode/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+      
+      <rect width="600" height="280" rx="32" fill="url(#nightSky)" />
+      
+      <g opacity="0.2">
+        <circle cx="480" cy="50" r="2" fill="#fff"><animate attributeName="opacity" values="0.5;1;0.5" dur="3s" repeatCount="indefinite" /></circle>
+        <circle cx="520" cy="80" r="1.5" fill="#fff"><animate attributeName="opacity" values="0.3;0.9;0.3" dur="4s" repeatCount="indefinite" begin="1s" /></circle>
+        <circle cx="450" cy="100" r="1" fill="#fff"><animate attributeName="opacity" values="0.4;1;0.4" dur="3.5s" repeatCount="indefinite" begin="0.5s" /></circle>
+        <circle cx="510" cy="120" r="2" fill="#fff"><animate attributeName="opacity" values="0.6;1;0.6" dur="3.2s" repeatCount="indefinite" begin="2s" /></circle>
+        <circle cx="60" cy="40" r="1.5" fill="#fff"><animate attributeName="opacity" values="0.4;0.9;0.4" dur="3.8s" repeatCount="indefinite" /></circle>
+        <circle cx="90" cy="70" r="1" fill="#fff"><animate attributeName="opacity" values="0.5;1;0.5" dur="3.3s" repeatCount="indefinite" begin="1.5s" /></circle>
+        <circle cx="120" cy="50" r="1.2" fill="#fff"><animate attributeName="opacity" values="0.3;0.8;0.3" dur="4.2s" repeatCount="indefinite" begin="0.8s" /></circle>
+      </g>
+      
+      <circle cx="470" cy="70" r="48" fill="url(#moonGlow)" opacity="0.95" />
+      <circle cx="475" cy="65" r="42" fill="#fff9e6" opacity="0.35" />
+      <ellipse cx="468" cy="72" rx="8" ry="6" fill="#d4c4a8" opacity="0.25" />
+      <ellipse cx="478" cy="68" rx="5" ry="4" fill="#bdb09a" opacity="0.2" />
+      
+      <g filter="url(#softShadow)">
+        <ellipse cx="115" cy="245" rx="70" ry="16" fill="#000" opacity="0.35" />
+        
+        <path d="M85 210 Q70 190 60 160 Q63 148 75 146 L110 148 Q120 146 128 154 Q125 180 115 205 Z" 
+              fill="#2a3856" stroke="#3d4d6b" strokeWidth="3" />
+        <path d="M70 165 Q75 170 82 165" stroke="#1f2d45" strokeWidth="2" fill="none" opacity="0.4" />
+        
+        <circle cx="95" cy="170" r="24" fill="#1a2438" stroke="#2a3856" strokeWidth="2" />
+        <ellipse cx="95" cy="168" rx="20" ry="22" fill="#243048" opacity="0.5" />
+        
+        <g className="thiefEyes">
+          <ellipse cx="88" cy="167" rx="8" ry="10" fill="#3d4f6e" stroke="#2a3856" strokeWidth="1" />
+          <ellipse cx="88" cy="167" rx="6" ry="8" fill="#4d6080" />
+          <circle cx="86" cy="165" r="5" fill="#5a7595" />
+          <circle cx="87" cy="163" r="2" fill="#fff" opacity="0.95">
+            <animate attributeName="opacity" values="0.95;0.3;0.95" dur="4s" repeatCount="indefinite" />
+          </circle>
+          
+          <ellipse cx="102" cy="167" rx="8" ry="10" fill="#3d4f6e" stroke="#2a3856" strokeWidth="1" />
+          <ellipse cx="102" cy="167" rx="6" ry="8" fill="#4d6080" />
+          <circle cx="100" cy="165" r="5" fill="#5a7595" />
+          <circle cx="101" cy="163" r="2" fill="#fff" opacity="0.95">
+            <animate attributeName="opacity" values="0.95;0.3;0.95" dur="4s" repeatCount="indefinite" />
+          </circle>
+        </g>
+        
+        <path d="M83 178 Q95 180 107 178" stroke="#1f2d45" strokeWidth="2" fill="none" strokeLinecap="round" />
+        <circle cx="95" cy="183" r="1.5" fill="#ff9a7f" opacity="0.6" />
+        
+        <path d="M70 205 Q85 210 108 210 Q125 208 140 215 L135 252 L75 252 Z" 
+              fill="#2e3d58" stroke="#243048" strokeWidth="3" />
+        <line x1="105" y1="210" x2="105" y2="240" stroke="#1f2d45" strokeWidth="3" />
+        <path d="M82 218 Q92 221 102 218" stroke="#243048" strokeWidth="2" fill="none" />
+        <circle cx="88" cy="225" r="3" fill="#3d4d6b" opacity="0.5" />
+        <circle cx="100" cy="225" r="3" fill="#3d4d6b" opacity="0.5" />
+        
+        <ellipse cx="130" cy="215" rx="10" ry="30" fill="#1a2438" opacity="0.9" />
+        <path d="M122 220 Q128 235 135 246" stroke="#243048" strokeWidth="3" fill="none" />
+        <ellipse cx="130" cy="232" rx="5" ry="7" fill="#243048" opacity="0.7" />
+        
+        <path d="M75 210 L45 190 Q40 188 37 192 L50 205 Q53 208 57 207 Z" 
+              fill="#2a3856" stroke="#3d4d6b" strokeWidth="2.5" />
+        <ellipse cx="43" cy="195" rx="6" ry="10" fill="#1a2438" />
+        <path d="M41 191 L45 199" stroke="#243048" strokeWidth="1.5" />
+      </g>
+      
+      <g className="treasureItems">
+        <g transform="translate(370, 125)">
+          <circle cx="90" cy="60" r="85" fill="url(#treasureGlow)" opacity="0.7" filter="url(#strongGlow)">
+            <animate attributeName="opacity" values="0.5;0.8;0.5" dur="2.5s" repeatCount="indefinite" />
+            <animate attributeName="r" values="85;90;85" dur="2.5s" repeatCount="indefinite" />
+          </circle>
+          
+          <rect x="0" y="0" width="180" height="110" rx="22" 
+                fill="rgba(255,255,255,0.1)" stroke="rgba(100,246,200,0.5)" strokeWidth="3">
+            <animate attributeName="stroke" values="rgba(100,246,200,0.4);rgba(100,246,200,0.7);rgba(100,246,200,0.4)" dur="2s" repeatCount="indefinite" />
+          </rect>
+          <rect x="3" y="3" width="174" height="104" rx="20" 
+                fill="none" stroke="rgba(100,246,200,0.2)" strokeWidth="1" />
+          
+          <circle cx="90" cy="40" r="36" fill="url(#goldShine)" filter="url(#glow)">
+            <animate attributeName="r" values="36;38;36" dur="2s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="90" cy="40" r="30" fill="#ffe999" opacity="0.8" />
+          <circle cx="86" cy="36" r="10" fill="#fffef5" opacity="0.9" />
+          <circle cx="88" cy="38" r="6" fill="#fff" opacity="0.7" />
+          
+          <text x="90" y="52" fill="#3a2410" fontSize="26" fontWeight="900" textAnchor="middle">★</text>
+          <text x="90" y="84" fill="#fff" fontSize="30" fontWeight="900" textAnchor="middle" 
+                stroke="#64f6c8" strokeWidth="1" filter="url(#glow)">$120</text>
+          
+          <rect x="15" y="92" width="150" height="12" rx="6" fill="rgba(100,246,200,0.2)" />
+          <rect x="15" y="92" width="145" height="12" rx="6" fill="#64f6c8" opacity="0.75">
+            <animate attributeName="opacity" values="0.65;0.85;0.65" dur="1.5s" repeatCount="indefinite" />
+            <animate attributeName="width" values="145;148;145" dur="1.5s" repeatCount="indefinite" />
+          </rect>
+          <text x="90" y="101" fill="#fff" fontSize="9" fontWeight="700" textAnchor="middle" opacity="0.9">MAX VALUE</text>
+        </g>
+        
+        <g transform="translate(385, 45)" opacity="0.45">
+          <rect x="0" y="0" width="145" height="75" rx="16" 
+                fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.18)" strokeWidth="2" />
+          <circle cx="72" cy="32" r="20" fill="#8db4ff" opacity="0.45" />
+          <circle cx="68" cy="28" r="6" fill="#b8d4ff" opacity="0.5" />
+          <text x="72" y="58" fill="#bbb" fontSize="18" fontWeight="700" textAnchor="middle">$80</text>
+        </g>
+        
+        <g transform="translate(375, 248)" opacity="0.35">
+          <rect x="0" y="0" width="125" height="65" rx="14" 
+                fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.15)" strokeWidth="2" />
+          <circle cx="62" cy="28" r="16" fill="#ff9a7f" opacity="0.4" />
+          <circle cx="59" cy="25" r="5" fill="#ffb8a0" opacity="0.5" />
+          <text x="62" y="50" fill="#999" fontSize="16" fontWeight="700" textAnchor="middle">$40</text>
+        </g>
+      </g>
+      
+      <g className="thoughtBubble" opacity="0.9">
+        <ellipse cx="155" cy="150" rx="32" ry="26" fill="rgba(255,255,255,0.15)" 
+                 stroke="rgba(100,246,200,0.4)" strokeWidth="2.5">
+          <animate attributeName="rx" values="32;34;32" dur="3s" repeatCount="indefinite" />
+        </ellipse>
+        <circle cx="177" cy="167" r="12" fill="rgba(255,255,255,0.12)" 
+                stroke="rgba(100,246,200,0.3)" strokeWidth="2" />
+        <circle cx="194" cy="179" r="7" fill="rgba(255,255,255,0.1)" 
+                stroke="rgba(100,246,200,0.25)" strokeWidth="1.5" />
+        <text x="155" y="158" fill="#64f6c8" fontSize="22" fontWeight="700" textAnchor="middle" filter="url(#glow)">💰</text>
+      </g>
+      
+      <g className="actionArrow">
+        <path d="M140 192 Q270 170 370 155" 
+              stroke="url(#arrowGradient)" strokeWidth="8" fill="none" 
+              strokeDasharray="12,6" markerEnd="url(#arrowhead)" opacity="0.9" filter="url(#glow)">
+          <animate attributeName="stroke-dashoffset" values="0;18;0" dur="1.5s" repeatCount="indefinite" />
+        </path>
+        <circle cx="140" cy="192" r="9" fill="#64f6c8" opacity="0.95" filter="url(#glow)">
+          <animate attributeName="r" values="9;12;9" dur="2s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite" />
+        </circle>
+        <circle cx="140" cy="192" r="5" fill="#fff" opacity="0.6" />
+      </g>
+      
+      <g className="sparkles">
+        <circle cx="465" cy="160" r="5" fill="#ffe999" opacity="0.95" filter="url(#glow)">
+          <animate attributeName="opacity" values="0.5;1;0.5" dur="1.3s" repeatCount="indefinite" />
+          <animate attributeName="r" values="4;6;4" dur="1.3s" repeatCount="indefinite" />
+        </circle>
+        <circle cx="465" cy="160" r="3" fill="#fff" opacity="0.7" />
+        
+        <circle cx="445" cy="175" r="4" fill="#ffea9a" opacity="0.9" filter="url(#glow)">
+          <animate attributeName="opacity" values="0.4;0.95;0.4" dur="1.8s" repeatCount="indefinite" begin="0.4s" />
+          <animate attributeName="r" values="3;5;3" dur="1.8s" repeatCount="indefinite" begin="0.4s" />
+        </circle>
+        
+        <circle cx="485" cy="180" r="4.5" fill="#ffe680" opacity="0.9" filter="url(#glow)">
+          <animate attributeName="opacity" values="0.5;1;0.5" dur="1.6s" repeatCount="indefinite" begin="0.8s" />
+          <animate attributeName="r" values="3.5;5.5;3.5" dur="1.6s" repeatCount="indefinite" begin="0.8s" />
+        </circle>
+        
+        <circle cx="472" cy="143" r="3.5" fill="#fff9e6" opacity="0.8" filter="url(#glow)">
+          <animate attributeName="opacity" values="0.4;0.9;0.4" dur="2s" repeatCount="indefinite" begin="0.2s" />
+          <animate attributeName="r" values="2.5;4;2.5" dur="2s" repeatCount="indefinite" begin="0.2s" />
+        </circle>
+        
+        <circle cx="455" cy="152" r="2.5" fill="#fffbf0" opacity="0.75" filter="url(#glow)">
+          <animate attributeName="opacity" values="0.3;0.85;0.3" dur="2.2s" repeatCount="indefinite" begin="1s" />
+        </circle>
+      </g>
+    </svg>
+  </div>
+  <figcaption className="conceptStory__caption">
+    <h4>כך נראה צעד חמדני</h4>
+    <p>
+      הגנב מזהה מיד את הפריט עם הערך הגבוה ביותר (המסומן בזהב וכוכב מנצנץ) ופונה אליו ישירות – 
+      עיניו מכוונות, מחשבותיו ברורות. האלגוריתם החמדני פועל באותו אופן מדויק: סורק, מזהה את הערך 
+      המקסימלי, ובוחר בו מיידית ללא היסוס.
+    </p>
+    <ul>
+      <li><strong>זיהוי מיידי</strong> של הערך המקסימלי בקבוצה הנוכחית</li>
+      <li><strong>בחירה נחושה</strong> ללא התחשבות בחלופות עתידיות</li>
+      <li><strong>התקדמות מהירה</strong> עד למילוי השק או סיום הפריטים</li>
+    </ul>
+  </figcaption>
+</figure>
+
+<section className="conceptGrid container">
+  <article className="conceptCard conceptCard--explain">
+    <p className="conceptCard__label">הסבר</p>
+    <h3 className="conceptCard__title">למה חמדני?</h3>
+    <p className="conceptCard__body">
+    לרוב מהיר ופשוט יותר מדינמי, עם סיבוכיות זמן נמוכה יותר. במקום לבנות טבלאות זיכרון מורכבות,
+    בוחרים בכל שלב את האפשרות שנראית הכי טובה כרגע נתון. היתרון: ביצועים משופרים ופחות זיכרון.
+    </p>
+  </article>
+  <article className="conceptCard conceptCard--algorithm">
+    <p className="conceptCard__label">אלגוריתם</p>
+    <h3 className="conceptCard__title">שני התנאים</h3>
+    <ul className="conceptCard__list">
+      <li>תכונת בחירה חמדנית: הצעד הראשון בפתרון מיטבי הוא הצעד החמדני.</li>
+      <li>תת-מבנה אופטימלי: אחרי הצעד הראשון נותרת אותה בעיה אך קטנה יותר.</li>
+      <li>יעבוד רק אם קיים הוכחת נכונות פורמלית (שיטת הבצל ).</li>
+    </ul>
+  </article>
+  <article className="conceptCard conceptCard--solution">
+    <p className="conceptCard__label">פתרון</p>
+    <h3 className="conceptCard__title">מסלול עבודה</h3>
+    <ol className="conceptCard__list">
+      <li>בצע את הצעד החמדני וקבל פתרון חלקי.</li>
+      <li>הראה שהחלק הנותר הוא אותה בעיה בדיוק.</li>
+      <li>חזור עד שמגיעים לבסיסים ברורים .</li>
+    </ol>
+  </article>
+</section>
+
+
+<section className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">מתודולוגיה</p>
+    <h2>איך מאמתים פתרון חמדני?</h2>
+  </header>
+  <div className="conceptGrid">
+    <article className="conceptCard conceptCard--insight">
+      <p className="conceptCard__label">תהליך</p>
+      <h3 className="conceptCard__title">צעדי האימות</h3>
+      <ol className="conceptCard__list">
+        <li>מבצעים את הצעד החמדני ומקבלים פתרון חלקי.</li>
+        <li>מראים שהחלק שנותר הוא אותה בעיה בדיוק בקנה מידה קטן יותר.</li>
+      </ol>
+      <p className="conceptCard__body">
+        זה מזכיר אינדוקציה "הפוכה": מתחילים בפתרון הכללי ומפרקים אותו. אם התהליך הזה נכשל
+        באחד השלבים, המשמעות היא שהבחירה לא מבטיחה תוצאה אופטימלית.
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--important">
+      <p className="conceptCard__label">אזהרה</p>
+      <h3 className="conceptCard__title">טעויות שיש להימנע מהן</h3>
+      <ul className="conceptCard__list">
+        <li>בלבול בין אינדקס לבין המשמעות הלוגית שלו.</li>
+        <li>הסתמכות על איטואציה</li>
+        <li>הסתמכות על דוגמאות בלבד ללא הוכחה פורמלית.</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<section className="greedyDoc__section container">
+  <header>
+    <img src={require('@site/static/img/greedy/activity-selection.png').default} alt="Knapsack" className="greedyDoc__sectionIcon"
+    style={{ objectPosition: '0% center' }} />
+    <div>
+      <p className="greedyDoc__eyebrow">Fractional Knapsack</p>
+      <h2>בעיית תרמיל הגב בשברים</h2>
+    </div>
+  </header>
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        לתיק יש קיבולת \(W\). לכל פריט משקל \(w_i\) וחשיבות \(v_i\). ניתן לקחת גם חלקי פריטים, ולכן
+        אפשר להגדיר חשיבות סגולית \(c_i = v_i / w_i\) ולמיין לפיה. האלגוריתם החמדני מכניס קודם את
+        הפריט עם \(c_i\) הגבוה ביותר, ממשיך לפי הסדר, ובפריט האחרון לוקח רק את החלק הנדרש.
+      </p>
+      <ol>
+        <li>חשב מחיר סגולי לכל פריט.</li>
+        <li>מיין בסדר יורד לפי \(c_i\).</li>
+        <li>מלא את התיק עד הסוף, כאשר הפריט האחרון נכנס באופן חלקי.</li>
+      </ol>
+      <p>
+        השיטה נאיבית לכאורה אך מבטיחה אופטימום כל עוד ניתן לשבור פריטים. אם נאסור שברים, ניאלץ
+        לעבור לדינמיקה אחרת (0/1 Knapsack) ושם הבחירה החמדנית נכשלת.
+      </p>
+    </article>
+    <div className="greedyDoc__figure">
+      <img src='/img/greedy/fractional-knapsack.png' alt='שלושה שקים ומשקל תיק 50 ק״ג' loading='lazy' />
+      <small>דוגמה קלאסית: פריטים במשקלים שונים וערכים 60$, 100$, 120$ מול תיק קיבולת 50 ק״ג.</small>
+    </div>
+  </div>
+  <div className="conceptGrid">
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">הוכחה</p>
+      <h3 className="conceptCard__title">תכונת הבחירה החמדנית</h3>
+      <ul className="conceptCard__list">
+        <li>נניח בשלילה שפתרון אופטימלי לא לוקח את הפריט עם \(c_1\) הגבוה.</li>
+        <li>מחליפים חלק מהפריט בעל ערך נמוך יותר בפריט מספר 1 ומקבלים ערך גבוה יותר.</li>
+        <li>סתירה → כל פתרון אופטימלי חייב לבחור קודם את הפריט בעל המחיר הסגולי המקסימלי.</li>
+      </ul>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">מבנה</p>
+      <h3 className="conceptCard__title">תת מבנה אופטימלי</h3>
+      <ul className="conceptCard__list">
+        <li>לאחר שהכנסנו את הפריט הראשון, נותר תיק עם קיבולת קטנה יותר.</li>
+        <li>זו תת-בעיה זהה שבה ממשיכים באותו כלל מיון.</li>
+        <li>אם תת-הבעיה הייתה נפתרת אחרת, היינו משפרים גם את הבעיה המקורית — סתירה.</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<section className="greedyDoc__section container">
+  <header>
+    <img src={require('@site/static/img/greedy/knapsack.png').default} alt="Activity Selection" className="greedyDoc__sectionIcon"
+      style={{ objectPosition: '0% center' }}
+ />
+    <div>
+      <p className="greedyDoc__eyebrow">Activity Selection</p>
+      <h2>תזמון פעילויות ללא חפיפה</h2>
+    </div>
+  </header>
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        נתונה קבוצת פעילויות \(S = \{1,\ldots,n\}\) כאשר לכל פעילות זמן התחלה \(s_i\) וסיום \(f_i\).
+        המשאב (כיתה אחת, חדר ישיבות, CPU יחיד) יכול לשרת פעילות אחת בלבד בכל זמן נתון. המטרה היא
+        למקסם את מספר הפעילויות שנוכל לשבץ ללא חפיפה.
+      </p>
+      <ol>
+        <li>ממיינים את הפעילויות לפי זמן סיום עולה.</li>
+        <li>בוחרים את הפעילות הראשונה (המסיימת המוקדמת ביותר).</li>
+        <li>ממשיכים לבחור את הפעילות הבאה שאינה מתנגשת עם האחרונה שנבחרה.</li>
+      </ol>
+      <p>הפתרון אינו אינטואיטיבי כמו "השיעור הקצר ביותר" אך הוא היחיד שמבטיח מספר מקסימלי.</p>
+    </article>
+    <div className="greedyDoc__figure">
+      <img src='/img/greedy/activity-selection.png' alt='גרף פעילויות לאורך ציר הזמן' loading='lazy' />
+      <small>כל פעילות מיוצגת כקטע; הבחירה נעשית לפי זמני סיום מוקדמים.</small>
+    </div>
+  </div>
+  <div style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}>
+    <pre className="greedyDoc__code">
+{`Greedy-Iterative-Activity-Selector(
+    S={a[1]...a[n]}, s={s[1]..s[n]}, f={f[1]..f[n]}):
+
+  1.  Sort S by finish times stored in f
+  2.  Q = {a[1]}
+  3.  k = 1
+  4.  n = S.length
+  5.  for i = 2 to n {
+  6.      if s[i] ≥ f[k]:
+  7.          Q = Q ∪ {a[i]}
+  8.          k = i }
+  9.  return Q
+
+Θ(nlogn) + Θ(n) = Θ(nlogn)  ← זמן ריצה / נימוק`}
+    </pre>
+  </div>
+  
+  <details>
+    <summary>הוכחת אופטימליות</summary>
+    <ul>
+      <li>טענה 1: קיים פתרון אופטימלי המכיל את הפעילות שמסתיימת מוקדם ביותר.</li>
+      <li>טענה 2: לאחר שבחרנו אותה, תת-הבעיה שנותרה עונה לאותו כלל ומכאן אינדוקציה.</li>
+      <li>החלפה: אם פתרון מיטבי לא בחר אותה, החלפת הפעילות הראשונה לא תקטין את מספר הפעילויות.</li>
+    </ul>
+  </details>
+</section>
+
+<section className="greedyDoc__section container">
+  <header>
+    <img src={require('@site/static/img/greedy/fuel-station.png').default} alt="Fuel Station Scheduling" className="greedyDoc__sectionIcon" />
+    <div>
+      <p className="greedyDoc__eyebrow">Scheduling</p>
+      <h2>בעיית תזמון התדלוק (SJF)</h2>
+    </div>
+  </header>
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>בעיה:</strong> בתחנת דלק עומדים \(n\) רכבים בתור. רכב \(i\) דורש זמן דלוק של \(t_i\) דקות. 
+        בכל פעם אנו יכולים לתדלק רכב אחד בלבד. המטרה היא <strong>למזער את זמן ההמתנה הכולל</strong> של כל הרכבים.
+      </p>
+      <p>
+        <strong>דוגמה:</strong> שלושה רכבים עם זמני תדלוק 3, 1, 2 דקות:
+      </p>
+      <ul>
+        <li>סדר <strong>גרוע</strong> [3, 2, 1]: זמני התחזוקה = 3 + (3+2) + (3+2+1) = 14 דקות</li>
+        <li>סדר <strong>אופטימלי</strong> [1, 2, 3]: זמני התחזוקה = 1 + (1+2) + (1+2+3) = 9 דקות</li>
+      </ul>
+      <p>
+        <strong>הפתרון החמדני:</strong> מיון הרכבים לפי זמן תדלוק עולה ובחירת הקצר ביותר תמיד ראשון (SJF - Shortest Job First).
+        זה מובטח שכל רכב קצר לא יגרום לרכבים הקדומים חיכויים ארוכים.
+      </p>
+      <ul>
+        <li>מיון לפי זמני תדלוק ועלייה בסדר.</li>
+        <li>הכנסת הרכב הקצר ביותר ראשון, והשאר בתור.</li>
+        <li>הוכחה: החלפה בין הרכב הראשון לבין קצר יותר מקטינה או משאירה שווה את סכום ההמתנה.</li>
+      </ul>
+      <p>
+        כך נקבל סכום זמני המתנה מינימלי, מפני שכל רכב נהנה ממינימום רכבים קודמים ארוכים ממנו.
+      </p>
+    </article>
+    <div className="greedyDoc__figure">
+      <img src='/img/greedy/fuel-station.png' alt='תחנת דלק עם רכבים וזמני תדלוק שונים' loading='lazy' />
+      <small>הצבת הרכב המהיר ראשון מקטינה את זמני ההמתנה המצטברים.</small>
+    </div>
+  </div>
+  <div className="conceptGrid">
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">הוכחה</p>
+      <h3 className="conceptCard__title">בחירה חמדנית</h3>
+      <p className="conceptCard__body">
+        אם הסדר האופטימלי אינו מתחיל ברכב המהיר ביותר, מחליפים בין הרכב הראשון למהיר. סכום זמני
+        ההמתנה קטן או נשאר שווה → סתירה להנחת אי-אופטימליות.
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">מבנה</p>
+      <h3 className="conceptCard__title">תת בעיה</h3>
+      <p className="conceptCard__body">
+        לאחר תדלוק הרכב הראשון, נשארת אותה בעיה בדיוק עבור יתר הרכבים. אם ניתן היה לבנות סדר טוב
+        יותר לשאר, ניתן היה לצרף אליו את הרכב הראשון ולקבל פתרון טוב יותר למקרה הבסיסי.
+      </p>
+    </article>
+  </div>
+</section>
+
+<section className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">סיום</p>
+    <h2>סיכום כולל</h2>
+  </header>
+  <article style={{ lineHeight: '1.8', fontSize: '1.05em' }}>
+    <h3 style={{ color: '#64f6c8', borderBottom: '3px solid #64f6c8', paddingBottom: '0.5rem', marginBottom: '1rem' }}>אלגוריתמים חמדניים - המהות</h3>
+    <p style={{ padding: '1rem', background: 'rgba(13, 139, 212, 0.08)', borderRadius: '8px', borderLeft: '4px solid #0d8bd4' }}>
+      אלגוריתמים חמדניים פותרים בעיות אופטימיזציה על ידי בחירה מקומית טובה ביותר בכל שלב, 
+      בתקווה שתהליך זה יוביל לפתרון גלובלי אופטימלי. שיטה זו עובדת רק כאשר יש <strong style={{ color: '#0d8bd4' }}>תכונת בחירה חמדנית</strong> 
+      (צעד מקומי אופטימלי כלול בכל פתרון גלובלי אופטימלי) ו<strong style={{ color: '#088a7b' }}>תת-מבנה אופטימלי</strong> 
+      (הבעיה הנותרת לאחר הצעד הראשון שקולה לבעיה המקורית בקנה מידה קטן יותר).
+    </p>
+    
+    <h3 style={{ color: '#fbbf24', borderBottom: '3px solid #fbbf24', paddingBottom: '0.5rem', marginTop: '2.5rem', marginBottom: '1rem' }}>שלוש בעיות קלאסיות</h3>
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem', marginTop: '1.5rem' }}>
+      <div style={{ background: 'var(--greedy-section-bg)', padding: '1.5rem', borderRadius: '12px', borderTop: '4px solid #0d8bd4' }}>
+        <h4 style={{ color: '#0d8bd4', margin: '0 0 0.8rem 0' }}>① תרמיל הגב בשברים</h4>
+        <p style={{ margin: 0, fontSize: '0.95em' }}>
+          <strong>אסטרטגיה:</strong> מיון פריטים לפי ערך סגולי (ערך/משקל) עולה וקבלת הפריטים עם היחס הגבוה ביותר.
+        </p>
+        <p style={{ margin: '0.8rem 0 0', fontSize: '0.95em' }}>
+          <strong style={{ color: '#0d8bd4' }}>סיבוכיות:</strong> \(\Theta(n \log n)\) מיון + \(\Theta(n)\) מילוי = \(\Theta(n \log n)\)
+        </p>
+      </div>
+      
+      <div style={{ background: 'var(--greedy-section-bg)', padding: '1.5rem', borderRadius: '12px', borderTop: '4px solid #64f6c8' }}>
+        <h4 style={{ color: '#64f6c8', margin: '0 0 0.8rem 0' }}>② תזמון פעילויות</h4>
+        <p style={{ margin: 0, fontSize: '0.95em' }}>
+          <strong>אסטרטגיה:</strong> מיון לפי זמני סיום עולה ובחירת הפעילות המסיימת מוקדם ביותר.
+        </p>
+        <p style={{ margin: '0.8rem 0 0', fontSize: '0.95em' }}>
+          <strong style={{ color: '#64f6c8' }}>סיבוכיות:</strong> \(\Theta(n \log n)\) מיון + \(\Theta(n)\) בחירה = \(\Theta(n \log n)\)
+        </p>
+      </div>
+      
+      <div style={{ background: 'var(--greedy-section-bg)', padding: '1.5rem', borderRadius: '12px', borderTop: '4px solid #fbbf24' }}>
+        <h4 style={{ color: '#fbbf24', margin: '0 0 0.8rem 0' }}>③ תזמון עם SJF</h4>
+        <p style={{ margin: 0, fontSize: '0.95em' }}>
+          <strong>אסטרטגיה:</strong> מיון רכבים לפי זמני תדלוק עולה ובחירת הקצר ביותר קודם.
+        </p>
+        <p style={{ margin: '0.8rem 0 0', fontSize: '0.95em' }}>
+          <strong style={{ color: '#fbbf24' }}>סיבוכיות:</strong> \(\Theta(n \log n)\) מיון + \(\Theta(n)\) בחירה = \(\Theta(n \log n)\)
+        </p>
+      </div>
+    </div>
+    
+    <h3 style={{ color: '#a78bfa', borderBottom: '3px solid #a78bfa', paddingBottom: '0.5rem', marginTop: '2.5rem', marginBottom: '1rem' }}>מפתח ההצלחה</h3>
+    <ul style={{ lineHeight: '2' }}>
+      <li style={{ padding: '0.8rem', marginBottom: '0.8rem', background: 'rgba(255, 179, 71, 0.08)', borderLeft: '4px solid #ffb347', borderRadius: '4px' }}>
+        <strong style={{ color: '#ff8c42' }}>✓ הוכחה פורמלית:</strong> כל אלגוריתם חמדני דורש הוכחה כי הוא אכן אופטימלי. 
+        אי אפשר להסתמך על דוגמאות בלבד.
+      </li>
+      <li style={{ padding: '0.8rem', marginBottom: '0.8rem', background: 'rgba(100, 246, 200, 0.08)', borderLeft: '4px solid #64f6c8', borderRadius: '4px' }}>
+        <strong style={{ color: '#00d9a3' }}>✓ מבנה הבעיה:</strong> כל בעיה שונה מצריכה זיהוי מהו הקריטריון הנכון לבחירה המקומית. 
+        אנליטיקה שלא היא מובילה לכישלון.
+      </li>
+      <li style={{ padding: '0.8rem', marginBottom: '0.8rem', background: 'rgba(251, 191, 36, 0.08)', borderLeft: '4px solid #fbbf24', borderRadius: '4px' }}>
+        <strong style={{ color: '#fbbf24' }}>✓ בדיקת מקרים קצה:</strong> קלט ריק, פריט בודד, ערכים זהים וערכים חריגים יכולים לחשוף בעיות 
+        בהוכחה או בקוד.
+      </li>
+      <li style={{ padding: '0.8rem', marginBottom: '0.8rem', background: 'rgba(167, 139, 250, 0.08)', borderLeft: '4px solid #a78bfa', borderRadius: '4px' }}>
+        <strong style={{ color: '#a78bfa' }}>✓ מבדק נגדי:</strong> ניסיון למצוא דוגמה שבה האלגוריתם נכשל עוזר להבין אם ההוכחה תקיפה. 
+        אם לא מוצאים נגד וההוכחה חזקה, אפשר להיות בטוחים.
+      </li>
+    </ul>
+    
+    <p style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(100, 246, 200, 0.08)', borderRadius: '8px', borderLeft: '4px solid var(--greedy-section-title)' }}>
+      <strong>לסיכום:</strong> אלגוריתמים חמדניים הם כלי חזק כאשר המבנה המתמטי של הבעיה תומך בהם. 
+      הם מציעים ביצועים טובים (\(\Theta(n \log n)\) או טוב יותר) ופשטות בקידוד, אך דורשים הבנה עמוקה 
+      של הבעיה ויכולת להוכיח נכונות בקפדנות. זוהי השיטה העדיפה כאשר המבנה של הבעיה מאפשר בחירה 
+      מקומית בטוחה — ולא פחות מכך.
+    </p>
+  </article>
+</section>

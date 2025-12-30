@@ -1,0 +1,118 @@
+/* Dark theme overrides – applied when data-theme="dark" */
+
+[data-theme='dark'] {
+  --ifm-color-primary: #5ef2c5;
+  --ifm-color-primary-dark: #45d6ae;
+  --ifm-color-primary-darker: #37bf9b;
+  --ifm-color-primary-darkest: #249070;
+  --ifm-color-primary-light: #8df6d6;
+  --ifm-color-primary-lighter: #bafae6;
+  --ifm-color-primary-lightest: #dbfff5;
+  --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.08);
+
+  --page-bg:
+    radial-gradient(circle at 18% 18%, rgba(94, 242, 197, 0.32) 0%, rgba(94, 242, 197, 0) 42%),
+    radial-gradient(circle at 82% 10%, rgba(100, 246, 200, 0.26) 0%, rgba(100, 246, 200, 0) 48%),
+    radial-gradient(circle at 28% 62%, rgba(140, 96, 255, 0.27) 0%, rgba(140, 96, 255, 0) 42%),
+    radial-gradient(circle at 75% 70%, rgba(255, 139, 94, 0.2) 0%, rgba(255, 139, 94, 0) 46%),
+    radial-gradient(circle at 50% 95%, rgba(22, 150, 255, 0.24) 0%, rgba(22, 150, 255, 0) 44%),
+    linear-gradient(180deg, #050a18 0%, #01030c 100%);
+  --hero-bg: radial-gradient(circle at 10% 20%, #012239, #041220 70%);
+  --hero-text: #f8fffd;
+  --feature-section-bg: linear-gradient(180deg, #040f1d 0%, #050912 100%);
+  --feature-card-bg: rgba(7, 19, 37, 0.92);
+  --feature-card-border: rgba(255, 255, 255, 0.08);
+  --feature-card-shadow: 0 25px 55px rgba(0, 0, 0, 0.55);
+  --feature-summary: rgba(255, 255, 255, 0.7);
+
+  --dp-hero-bg: radial-gradient(circle at 10% 20%, #081f34, #040913 70%);
+  --dp-card-bg: rgba(5, 14, 26, 0.85);
+  --dp-card-border: rgba(255, 255, 255, 0.08);
+  --dp-card-shadow: 0 35px 65px rgba(0, 0, 0, 0.65);
+  --dp-section-bg: rgba(6, 15, 28, 0.85);
+  --dp-ink: #f5fbff;
+  --dp-muted: rgba(245, 251, 255, 0.75);
+  --dp-badge-bg: rgba(94, 242, 197, 0.12);
+  --dp-accent: #64f6c8;
+  --dp-cube-bg: rgba(4, 14, 28, 0.9);
+  --dp-cube-border: rgba(100, 246, 200, 0.2);
+
+  --greedy-hero-bg: radial-gradient(circle at 10% 20%, #1b0f05, #050203 70%);
+  --greedy-card-bg: rgba(10, 5, 2, 0.92);
+  --greedy-card-border: rgba(255, 255, 255, 0.08);
+  --greedy-card-shadow: 0 35px 65px rgba(0, 0, 0, 0.7);
+  --greedy-text: #fff7ed;
+  --greedy-muted: rgba(255, 247, 237, 0.7);
+  --greedy-badge-bg: rgba(255, 123, 74, 0.25);
+  --greedy-accent: #ffae7f;
+  --greedy-section-bg: linear-gradient(135deg, rgba(15, 8, 4, 0.95) 0%, rgba(25, 15, 8, 0.9) 100%);
+  --greedy-section-title: #64f6c8;
+
+  --concept-text: #fff4e6;
+  --concept-muted: rgba(255, 244, 230, 0.75);
+  --concept-card-bg: rgba(15, 8, 2, 0.9);
+  --concept-card-border: rgba(255, 255, 255, 0.08);
+  --concept-card-shadow: 0 35px 65px rgba(0, 0, 0, 0.75);
+  --concept-label-bg: rgba(255, 255, 255, 0.08);
+  --concept-body-text: #f5f5f5;
+  --concept-explain-bg: linear-gradient(135deg, rgba(82, 41, 6, 0.95) 0%, rgba(112, 54, 11, 0.85) 100%);
+  --concept-explain-border: rgba(255, 189, 120, 0.55);
+  --concept-explain-label: rgba(255, 189, 120, 0.35);
+  --concept-explain-text: #ffc589;
+  --concept-explain-title: #ffb366;
+  --concept-algo-bg: linear-gradient(135deg, rgba(6, 32, 61, 0.95), rgba(14, 48, 92, 0.85));
+  --concept-algo-border: rgba(96, 165, 255, 0.45);
+  --concept-algo-label: rgba(96, 165, 255, 0.28);
+  --concept-algo-text: #93c5fd;
+  --concept-algo-title: #60a5fa;
+  --concept-solution-bg: linear-gradient(135deg, rgba(4, 43, 32, 0.95), rgba(9, 63, 41, 0.85));
+  --concept-solution-border: rgba(123, 255, 200, 0.45);
+  --concept-solution-label: rgba(123, 255, 200, 0.32);
+  --concept-solution-text: #86efac;
+  --concept-solution-title: #4ade80;
+  --concept-important-bg: linear-gradient(135deg, rgba(71, 9, 9, 0.95), rgba(110, 21, 21, 0.85));
+  --concept-important-border: rgba(255, 145, 145, 0.55);
+  --concept-important-label: rgba(255, 145, 145, 0.35);
+  --concept-important-text: #fca5a5;
+  --concept-important-title: #f87171;
+  --concept-extend-bg: linear-gradient(135deg, rgba(36, 16, 66, 0.95), rgba(57, 29, 94, 0.85));
+  --concept-extend-border: rgba(189, 154, 255, 0.5);
+  --concept-extend-label: rgba(189, 154, 255, 0.32);
+  --concept-extend-text: #c4b5fd;
+  --concept-extend-title: #a78bfa;
+  --concept-insight-bg: linear-gradient(135deg, rgba(7, 41, 58, 0.95), rgba(13, 62, 86, 0.85));
+  --concept-insight-border: rgba(135, 230, 255, 0.5);
+  --concept-insight-label: rgba(135, 230, 255, 0.32);
+  --concept-insight-text: #7dd3fc;
+  --concept-insight-title: #38bdf8;
+}
+
+[data-theme='dark'] .greedyDoc__sectionIcon {
+  border-width: 4px;
+  box-shadow: 0 0 20px rgba(100, 246, 200, 0.3), 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme='dark'] .greedyDoc__section:nth-of-type(4) h2 {
+  background: #64f6c8;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+[data-theme='dark'] .greedyDoc__section:nth-of-type(5) h2 {
+  background: #a78bfa;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+[data-theme='dark'] .greedyDoc__section:nth-of-type(6) h2 {
+  background: #fbbf24;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+[data-theme='dark'] .conceptStory__canvas {
+  box-shadow: 0 0 25px rgba(100, 246, 200, 0.2), 0 25px 65px rgba(5, 11, 24, 0.4);
+}

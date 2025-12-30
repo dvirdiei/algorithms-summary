@@ -1,0 +1,192 @@
+---
+id: dynamic-programming
+title: תכנות דינמי
+description: טכניקה לפתרון בעיות אופטימיזציה באמצעות זיכרון ומבנה רקורסיבי
+---
+
+<div className="dpHero container">
+   <div className="dpHero__content">
+      <p className="dpHero__badge">Dynamic Programming</p>
+      <h1>תכנות דינמי</h1>
+      <p className="dpHero__lead">
+         מפרקים בעיות גדולות לתת בעיות חופפות, פותרים כל תת בעיה פעם אחת ושומרים
+         את התוצאה לשימוש חוזר. כך מרוויחים פתרונות מדויקים תוך שליטה מלאה בסיבוכיות.
+      </p>
+      <ul className="dpHero__tags">
+         <li>זיכרון</li>
+         <li>Optimal Substructure</li>
+         <li>Overlapping Subproblems</li>
+      </ul>
+   </div>
+   <div className="dpHero__card">
+      <h3>למה זה חשוב?</h3>
+      <p>
+         DP מאפשר לקצר זמן ריצה מ-\(O(2^n)\) ל-\(O(n^2)\) ואף פחות,
+         ובכך להפוך בעיות "בלתי פתירות" לפרקטיות.
+      </p>
+      <dl>
+         <div>
+            <dt>סיבוכיות רצויה</dt>
+            <dd>\(O(n \cdot m)\) או טוב מכך</dd>
+         </div>
+         <div>
+            <dt>איפה נפגוש?</dt>
+            <dd>תרמיל, מחרוזות, עיבוד אותות, בינה מלאכותית</dd>
+         </div>
+         <div>
+            <dt>כללי זהב</dt>
+            <dd>ניסוח רקורסיה → הגדרת טבלה → בסיסים → מעבר</dd>
+         </div>
+      </dl>
+   </div>
+</div>
+
+<section className="dpCubes container">
+   <header className="dpSection__header">
+      <p className="dpSection__eyebrow">מפת קוביות</p>
+      <h2>חמש אבני הבניין של DP</h2>
+      <p>כל קוביה היא בדיקה מהירה שמבטיחה שהפתרון יעמוד בזיכרון ובזמן.</p>
+   </header>
+   <div className="dpCubeGrid">
+      <article className="dpCube">
+         <span className="dpCube__index">01</span>
+         <h3>הגדרת מצב</h3>
+         <p>מה נשמר ב-\(dp[state]\)? אורך, סכום, זוג אינדקסים? בלי הגדרה חדה אי אפשר להתקדם.</p>
+      </article>
+      <article className="dpCube">
+         <span className="dpCube__index">02</span>
+         <h3>מעבר</h3>
+         <p>איך מחשבים מצב חדש ממצבים קיימים. ודאו שתמיד משתמשים במידע שכבר חושב.</p>
+      </article>
+      <article className="dpCube">
+         <span className="dpCube__index">03</span>
+         <h3>בסיסים</h3>
+         <p>ערכים ידועים מראש שמונעים גישה לאינדקסים שליליים או ערכים לא מאותחלים.</p>
+      </article>
+      <article className="dpCube">
+         <span className="dpCube__index">04</span>
+         <h3>סדר מילוי</h3>
+         <p>טופ-דאון או בוטום-אפ? לוחות חד-ממדיים חייבים להתקדם בכיוון הנכון כדי לא לדרוס ערכים.</p>
+      </article>
+      <article className="dpCube">
+         <span className="dpCube__index">05</span>
+         <h3>שחזור ותשובה</h3>
+         <p>איך בוחרים את התוצאה מתוך הטבלה ואיך מציגים את הבחירות עצמן אם נדרש.</p>
+      </article>
+   </div>
+</section>
+
+<section className="dpSection container">
+   <header className="dpSection__header">
+      <p className="dpSection__eyebrow">תהליך העבודה</p>
+      <h2>5 צעדים לניצחון</h2>
+      <p>עוברים שלב אחר שלב ומוודאים שכל טבלת DP עומדת בכללים.</p>
+   </header>
+   <div className="dpGrid dpGrid--four">
+      <article className="dpCard">
+         <h3>1. זיהוי תת בעיות</h3>
+         <p>
+            הגדירו את \(F(state)\) כך שהוא מתאר בדיוק את מה שמבקשים לפתור.
+            בדקו שהבעיה מציגה חפיפה בין תתי הבעיות.
+         </p>
+      </article>
+      <article className="dpCard">
+         <h3>2. ניסוח רקורסיה</h3>
+         <p>
+            הביעו את \(F(state)\) באמצעות מצבים קטנים יותר. זה המקום להוכיח את
+            ה-optimal substructure.
+         </p>
+      </article>
+      <article className="dpCard">
+         <h3>3. בחירת כיוון</h3>
+         <ul>
+            <li>Top-Down: רקורסיה + memoization.</li>
+            <li>Bottom-Up: מילוי טבלה לפי סדר תלות.</li>
+         </ul>
+      </article>
+      <article className="dpCard">
+         <h3>4. בסיסים ושחזור</h3>
+         <p>
+            אתחלו ערכי קצה ברורים והחליטו איך משחזרים את הפתרון: שמירת מצביעים או
+            מעבר אחורה על הטבלה.
+         </p>
+      </article>
+   </div>
+</section>
+
+<section className="dpSection container">
+   <header className="dpSection__header">
+      <p className="dpSection__eyebrow">דוגמאות מרכזיות</p>
+      <h2>מה צריך לדעת בעל פה?</h2>
+   </header>
+   <div className="dpGrid dpGrid--two">
+      <article className="dpCard dpCard--accent">
+         <div className="dpCard__badge">פיבונאצי</div>
+         <h3>\(F(n) = F(n-1) + F(n-2)\)</h3>
+         <p>מילוי טבלה ליניארי שמחליף רקורסיה אקספוננציאלית.</p>
+         <table>
+            <thead>
+               <tr>
+                  <th>n</th>
+                  <th>F(n)</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr><td>0</td><td>0</td></tr>
+               <tr><td>1</td><td>1</td></tr>
+               <tr><td>2</td><td>1</td></tr>
+               <tr><td>3</td><td>2</td></tr>
+               <tr><td>4</td><td>3</td></tr>
+               <tr><td>5</td><td>5</td></tr>
+            </tbody>
+         </table>
+         <p className="dpCard__note">סיבוכיות: \(O(n)\) זמן, \(O(1)\) זיכרון עם rolling array.</p>
+      </article>
+      <article className="dpCard dpCard--accent">
+         <div className="dpCard__badge">0/1 תרמיל</div>
+         <h3>מקסום ערך תחת מגבלת משקל</h3>
+         <p>
+            \(dp[i][w]\) — ערך מקסימלי עם \(i\) פריטים ראשונים וקיבולת \(w\).
+         </p>
+         <p>
+            $$
+            dp[i][w] = \max\left(dp[i-1][w],\ value_i + dp[i-1][w-weight_i]\right)
+            $$
+            כאשר \(weight_i \leq w\).
+         </p>
+         <ul>
+            <li>טבלה בגודל \((n+1) \times (W+1)\).</li>
+            <li>לשיפור זיכרון: עדכון חד-ממדי מהקיבולת הגבוהה לנמוכה.</li>
+         </ul>
+      </article>
+   </div>
+</section>
+
+<section className="dpSection container">
+   <div className="dpSplit">
+      <div>
+         <header className="dpSection__header">
+            <p className="dpSection__eyebrow">מה להפיל במבחן</p>
+            <h2>טעויות נפוצות</h2>
+         </header>
+         <ul className="dpList">
+            <li>ערבוב בין שם האינדקס למשמעות הלוגית שלו.</li>
+            <li>בסיסים שגויים שמחזירים ערך ברירת מחדל.</li>
+            <li>כיוון עדכון שגוי במערך חד-ממדי (הורס נתונים קיימים).</li>
+            <li>שכחת שחזור — אין אפשרות להציג פתרון, רק ערך.</li>
+         </ul>
+      </div>
+      <div>
+         <header className="dpSection__header">
+            <p className="dpSection__eyebrow">בדיקת מוכנות</p>
+            <h2>צ'קליסט מהיר</h2>
+         </header>
+         <ul className="dpChecklist">
+            <li>האם כל מצבי הקצה מכוסים ומאותחלים?</li>
+            <li>האם סדר החישוב תואם את התלות בין התאים?</li>
+            <li>האם נשמרות גם בחירות (למשל מצביעים או backtracking)?</li>
+            <li>האם נמדדה סיבוכיות זמן וזיכרון לכל גישה?</li>
+         </ul>
+      </div>
+   </div>
+</section>

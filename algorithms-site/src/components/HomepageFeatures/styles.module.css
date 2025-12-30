@@ -1,11 +1,127 @@
 .features {
-  display: flex;
-  align-items: center;
-  padding: 2rem 0;
+  background: var(--feature-section-bg);
+  padding: 4rem 0 5rem;
   width: 100%;
 }
 
-.featureSvg {
-  height: 200px;
-  width: 200px;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2.5rem;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: var(--feature-card-bg);
+  border: 1px solid var(--feature-card-border);
+  border-radius: 28px;
+  padding: 3rem 2rem 2.5rem;
+  text-decoration: none;
+  color: var(--hero-text);
+  transition: transform 0.3s ease, border-color 0.3s ease,
+    box-shadow 0.3s ease;
+  box-shadow: var(--feature-card-shadow);
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.01);
+  border-color: var(--accent);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+}
+
+.circleWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.circle {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 3px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.12), transparent);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+}
+
+.circle::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  animation: halo 3s infinite;
+}
+
+.icon {
+  font-size: 3.4rem;
+}
+
+.wave {
+  width: 70%;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  animation: waveFlow 2.2s ease-in-out infinite;
+}
+
+.heading {
+  color: var(--hero-text);
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.4rem;
+}
+
+.summary {
+  color: var(--feature-summary);
+  min-height: 90px;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.cta {
+  margin-top: 1.25rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+@keyframes halo {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.4;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(0.9);
+    opacity: 0.4;
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+}
+
+@keyframes waveFlow {
+  0% {
+    transform: scaleX(0.7);
+    opacity: 0.2;
+  }
+  50% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(0.7);
+    opacity: 0.2;
+  }
 }

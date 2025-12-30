@@ -1,51 +1,45 @@
-import clsx from 'clsx';
+import Link from '@docusaurus/Link';
 import Heading from '@theme/Heading';
 import styles from './styles.module.css';
 
 const FeatureList = [
   {
-    title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
-    description: (
-      <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
-      </>
-    ),
+    title: 'אלגוריתמים חמדניים',
+    summary: 'בחירות מקומיות עם הוכחת נכונות, אינטואיציה ברורה ודוגמאות מפורקות צעד-צעד.',
+    to: '/docs/greedy-algorithms',
+    icon: '⚡',
+    accent: '#ffd369',
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
-    description: (
-      <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
-      </>
-    ),
+    title: 'קידוד הופמן',
+    summary: 'דחיסת נתונים בעזרת עצים בינאריים - קודים קצרים לתווים תכופים, אופטימליות מובטחת.',
+    to: '/docs/huffman-coding',
+    icon: '🌳',
+    accent: '#64f6c8',
   },
   {
-    title: 'Powered by React',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
-    description: (
-      <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
-      </>
-    ),
+    title: 'תכנות דינמי',
+    summary: 'מפרקים בעיות גדולות לטבלה אחת מסודרת, עם שחזור הפתרון וסיבוכיות מדויקת.',
+    to: '/docs/dynamic-programming',
+    icon: '🧮',
+    accent: '#8deaff',
   },
 ];
 
-function Feature({Svg, title, description}) {
+function Feature({title, summary, to, icon, accent}) {
   return (
-    <div className={clsx('col col--4')}>
-      <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
+    <Link className={styles.card} to={to} style={{'--accent': accent}}>
+      <div className={styles.circleWrap}>
+        <div className={styles.circle}>
+          <span className={styles.icon}>{icon}</span>
+        </div>
+        <span className={styles.wave} />
       </div>
-      <div className="text--center padding-horiz--md">
-        <Heading as="h3">{title}</Heading>
-        <p>{description}</p>
-      </div>
-    </div>
+      <Heading as="h3" className={styles.heading}>
+        {title}
+      </Heading>
+      <p className={styles.summary}>{summary}</p>
+    </Link>
   );
 }
 
@@ -53,9 +47,9 @@ export default function HomepageFeatures() {
   return (
     <section className={styles.features}>
       <div className="container">
-        <div className="row">
-          {FeatureList.map((props, idx) => (
-            <Feature key={idx} {...props} />
+        <div className={styles.grid}>
+          {FeatureList.map((props) => (
+            <Feature key={props.title} {...props} />
           ))}
         </div>
       </div>

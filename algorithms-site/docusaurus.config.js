@@ -11,7 +11,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'סיכומי אלגוריתמים וסיבוכיות',
-  tagline: 'מבוסס על הסיכומים של יוחנן חאיק',
+  tagline: 'כרגע עדיין בהרצה ',
   url: 'https://dvirdiei.github.io', // הכתובת העתידית בגיטהאב
   baseUrl: '/algorithms-summary/', // שם ה-Repository שתפתח
   projectName: 'algorithms-summary',
@@ -56,10 +56,7 @@ const config = {
           sidebarPath: './sidebars.js',
           remarkPlugins: [require('remark-math')],
           rehypePlugins: [require('rehype-katex')],
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          editUrl: 'https://github.com/dvirdiei/algorithms-summary/tree/main/algorithms-site/',
         },
         blog: {
           showReadingTime: true,
@@ -67,10 +64,7 @@ const config = {
             type: ['rss', 'atom'],
             xslt: true,
           },
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          editUrl: 'https://github.com/dvirdiei/algorithms-summary/tree/main/algorithms-site/',
           // Useful options to enforce blogging best practices
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
@@ -92,21 +86,22 @@ const config = {
         respectPrefersColorScheme: true,
       },
       navbar: {
-        title: 'My Site',
+        title: 'סיכומי אלגוריתמים',
         logo: {
-          alt: 'My Site Logo',
+          alt: 'סיכומי אלגוריתמים',
           src: 'img/logo.svg',
         },
         items: [
           {
             type: 'docSidebar',
             sidebarId: 'tutorialSidebar',
+            docId: 'greedy-algorithms',
             position: 'left',
-            label: 'Tutorial',
+            label: 'הסילבוס',
           },
-          {to: '/blog', label: 'Blog', position: 'left'},
+          {to: '/blog', label: 'בלוג', position: 'left'},
           {
-            href: 'https://github.com/facebook/docusaurus',
+            href: 'https://github.com/dvirdiei/algorithms-summary',
             label: 'GitHub',
             position: 'right',
           },
@@ -116,16 +111,20 @@ const config = {
         style: 'dark',
         links: [
           {
-            title: 'Docs',
+            title: 'החומר',
             items: [
               {
-                label: 'Tutorial',
-                to: '/docs/intro',
+                label: 'אלגוריתמים חמדניים',
+                to: '/docs/greedy-algorithms',
+              },
+              {
+                label: 'תכנות דינמי',
+                to: '/docs/dynamic-programming',
               },
             ],
           },
           {
-            title: 'Community',
+            title: 'קהילה ולמידה',
             items: [
               {
                 label: 'Stack Overflow',
@@ -142,20 +141,20 @@ const config = {
             ],
           },
           {
-            title: 'More',
+            title: 'עוד',
             items: [
               {
-                label: 'Blog',
+                label: 'בלוג',
                 to: '/blog',
               },
               {
                 label: 'GitHub',
-                href: 'https://github.com/facebook/docusaurus',
+                href: 'https://github.com/dvirdiei/algorithms-summary',
               },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+        copyright: `נבנה באהבה © ${new Date().getFullYear()} דביר דיאי`,
       },
       prism: {
         theme: prismThemes.github,

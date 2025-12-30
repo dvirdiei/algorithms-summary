@@ -8,6 +8,8 @@
   text-align: center;
   position: relative;
   overflow: hidden;
+  background: var(--hero-bg);
+  color: var(--hero-text);
 }
 
 @media screen and (max-width: 996px) {
@@ -20,4 +22,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.heroBanner :global(.button) {
+  color: #021220;
+}
+
+[data-theme='dark'] .heroBanner :global(.button) {
+  color: #041420;
 }
