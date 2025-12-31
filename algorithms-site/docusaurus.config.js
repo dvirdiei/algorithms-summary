@@ -11,7 +11,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'סיכומי אלגוריתמים וסיבוכיות',
-  tagline: 'כרגע עדיין בהרצה ',
+  tagline: 'כרגע עדיין בבניה... ',
   url: 'https://dvirdiei.github.io', // הכתובת העתידית בגיטהאב
   baseUrl: '/algorithms-summary/', // שם ה-Repository שתפתח
   projectName: 'algorithms-summary',
@@ -154,7 +154,7 @@ const config = {
             ],
           },
         ],
-        copyright: `נבנה באהבה © ${new Date().getFullYear()} דביר דיאי`,
+        copyright: `נבנה באהבה © ${new Date().getFullYear()} דביר דיעי`,
       },
       prism: {
         theme: prismThemes.github,

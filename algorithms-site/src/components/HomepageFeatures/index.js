@@ -11,7 +11,7 @@ const FeatureList = [
     accent: '#ffd369',
   },
   {
-    title: 'קידוד הופמן',
+    title: 'עצי הופמן',
     summary: 'דחיסת נתונים בעזרת עצים בינאריים - קודים קצרים לתווים תכופים, אופטימליות מובטחת.',
     to: '/docs/huffman-coding',
     icon: '🌳',
