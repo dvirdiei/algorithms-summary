@@ -1,0 +1,773 @@
+---
+id: minimum-spanning-tree
+title: עץ פורש מינימלי
+description: אלגוריתמי קרוסקל ופרים למציאת עץ פורש מינימלי בגרף
+sidebar_label: עץ פורש מינימלי (MST)
+---
+
+<div className="greedyDoc container">
+  <p className="greedyDoc__badge">Minimum Spanning Tree</p>
+  <h1>עץ פורש מינימלי (MST)</h1>
+  <p className="greedyDoc__lead">
+    עץ פורש מינימלי הוא עץ המחבר את כל הקודקודים בגרף לא מכוון וממושקל, כך שסכום משקלי הקשתות 
+    מינימלי. זוהי בעיה קלאסית בתורת הגרפים עם יישומים רבים: תכנון רשתות תקשורת, חשמל, כבישים, 
+    ואפילו clustering באלגוריתמי למידת מכונה. שני האלגוריתמים העיקריים - קרוסקל ופרים - משתמשים 
+    בגישה חמדנית ומבטיחים פתרון אופטימלי.
+  </p>
+  <ul className="greedyDoc__tags">
+    <li>Kruskal</li>
+    <li>Prim</li>
+    <li>Cut Property</li>
+    <li>Cycle Property</li>
+  </ul>
+</div>
+
+<figure className="conceptStory container" aria-label="עץ פורש מינימלי המחבר ערים">
+  <div className="conceptStory__canvas">
+    <svg viewBox="0 0 600 280" role="img">
+      <defs>
+        <linearGradient id="mstBg" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#1a2d4d" />
+          <stop offset="100%" stopColor="#0d1a30" />
+        </linearGradient>
+        <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#64f6c8" stopOpacity="0.9" />
+          <stop offset="100%" stopColor="#64f6c8" stopOpacity="0" />
+        </radialGradient>
+        <filter id="mstShadow">
+          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+
+      <rect width="600" height="280" fill="url(#mstBg)" rx="16" />
+
+      {/* קשתות לא נבחרות (אפורות) */}
+      <line x1="150" y1="80" x2="300" y2="60" stroke="#64f6c8" strokeWidth="4" filter="url(#mstShadow)">
+        <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite" />
+        </line>
+      <line x1="300" y1="60" x2="450" y2="80" stroke="#3d4d6b" strokeWidth="2" strokeDasharray="5,5" />
+      <line x1="150" y1="80" x2="200" y2="180" stroke="#3d4d6b" strokeWidth="2" strokeDasharray="5,5" />
+
+      {/* קשתות MST (ירוקות) */}
+      <line x1="150" y1="80" x2="300" y2="140" stroke="#64f6c8" strokeWidth="4" filter="url(#mstShadow)">
+        <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite" />
+      </line>
+      <line x1="300" y1="140" x2="450" y2="80" stroke="#64f6c8" strokeWidth="4" filter="url(#mstShadow)">
+        <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite" begin="0.3s" />
+      </line>
+      <line x1="300" y1="140" x2="200" y2="180" stroke="#64f6c8" strokeWidth="4" filter="url(#mstShadow)">
+        <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite" begin="0.6s" />
+      </line>
+      <line x1="200" y1="180" x2="400" y2="200" stroke="#3d4d6b" strokeWidth="4" strokeDasharray="5,5">
+        
+      </line>
+      <line x1="400" y1="200" x2="450" y2="80" stroke="#64f6c8" strokeWidth="4" filter="url(#mstShadow)">
+        <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite" begin="1.2s" />
+      </line>
+
+      {/* משקלים על הקשתות */}
+      <text x="220" y="100" fill="#64f6c8" fontSize="14" fontWeight="bold">3</text>
+      <text x="380" y="100" fill="#64f6c8" fontSize="14" fontWeight="bold">2</text>
+      <text x="240" y="150" fill="#64f6c8" fontSize="14" fontWeight="bold">1</text>
+      <text x="300" y="190" fill="#64f6c8" fontSize="14" fontWeight="bold">4</text>
+      <text x="440" y="150" fill="#64f6c8" fontSize="14" fontWeight="bold">2</text>
+      <text x="200" y="50" fill="#64f6c8" fontSize="14" fontWeight="bold">2</text>
+
+      {/* קודקודים */}
+      <circle cx="150" cy="80" r="22" fill="#0d8bd4" stroke="#fff" strokeWidth="3" />
+      <text x="150" y="87" fill="#fff" fontSize="16" fontWeight="bold" textAnchor="middle">A</text>
+
+      <circle cx="300" cy="60" r="22" fill="#0d8bd4" stroke="#fff" strokeWidth="3" />
+      <text x="300" y="67" fill="#fff" fontSize="16" fontWeight="bold" textAnchor="middle">B</text>
+
+      <circle cx="450" cy="80" r="22" fill="#0d8bd4" stroke="#fff" strokeWidth="3" />
+      <text x="450" y="87" fill="#fff" fontSize="16" fontWeight="bold" textAnchor="middle">C</text>
+
+      <circle cx="300" cy="140" r="22" fill="#fbbf24" stroke="#fff" strokeWidth="3" />
+      <text x="300" y="147" fill="#fff" fontSize="16" fontWeight="bold" textAnchor="middle">D</text>
+
+      <circle cx="200" cy="180" r="22" fill="#0d8bd4" stroke="#fff" strokeWidth="3" />
+      <text x="200" y="187" fill="#fff" fontSize="16" fontWeight="bold" textAnchor="middle">E</text>
+
+      <circle cx="400" cy="200" r="22" fill="#0d8bd4" stroke="#fff" strokeWidth="3" />
+      <text x="400" y="207" fill="#fff" fontSize="16" fontWeight="bold" textAnchor="middle">F</text>
+
+      {/* כותרת */}
+      <text x="300" y="255" fill="#64f6c8" fontSize="14" fontWeight="bold" textAnchor="middle">
+        סה"כ משקל MST: 3+2+1+4+2 = 12
+      </text>
+    </svg>
+  </div>
+  <figcaption className="conceptStory__caption">
+    <h4>חיבור מינימלי של כל הקודקודים</h4>
+    <p>
+      עץ פורש מינימלי מחבר את כל הקודקודים בגרף תוך שימוש במספר מינימלי של קשתות 
+      (n-1 קשתות ל-n קודקודים) וסכום משקלים מינימלי. הקווים המקווקווים מייצגים קשתות 
+      שלא נבחרו כי הן היו יוצרות מעגל או שמשקלן גבוה יותר.
+    </p>
+    <ul>
+      <li><strong>עץ:</strong> גרף קשיר ללא מעגלים</li>
+      <li><strong>פורש:</strong> מכיל את כל הקודקודים</li>
+      <li><strong>מינימלי:</strong> סכום המשקלים הקטן ביותר האפשרי</li>
+    </ul>
+  </figcaption>
+</figure>
+
+<section className="conceptGrid container">
+  <article className="conceptCard conceptCard--explain">
+    <p className="conceptCard__label">בעיה</p>
+    <h3 className="conceptCard__title">הגדרת הבעיה</h3>
+    <p className="conceptCard__body">
+      <strong>קלט:</strong> גרף לא מכוון וקשיר G = (V, E) עם פונקציית משקל w: E → ℝ
+      <br/><br/>
+      <strong>פלט:</strong> תת-קבוצה T ⊆ E כך ש:
+      <br/>• (V, T) הוא עץ (קשיר וללא מעגלים)
+      <br/>• סכום המשקלים Σw(e) מינימלי
+      <br/><br/>
+      <strong>תכונה:</strong> עץ עם n קודקודים מכיל בדיוק n-1 קשתות.
+    </p>
+  </article>
+  <article className="conceptCard conceptCard--algorithm">
+    <p className="conceptCard__label">יישומים</p>
+    <h3 className="conceptCard__title">למה זה חשוב?</h3>
+    <p className="conceptCard__body">
+      <strong>תקשורת:</strong> חיבור רשת מחשבים בעלות מינימלית
+      <br/>
+      <strong>חשמל:</strong> פריסת כבלים בין ערים במינימום חומר
+      <br/>
+      <strong>כבישים:</strong> תכנון רשת דרכים עם מינימום סלילה
+      <br/>
+      <strong>Clustering:</strong> קיבוץ נקודות לפי קרבה
+      <br/><br/>
+      בכל מקרה שצריך לחבר n נקודות במינימום עלות!
+    </p>
+  </article>
+  <article className="conceptCard conceptCard--solution">
+    <p className="conceptCard__label">פתרון</p>
+    <h3 className="conceptCard__title">שני אלגוריתמים חמדניים</h3>
+    <p className="conceptCard__body">
+      <strong>קרוסקל (Kruskal):</strong> מיון קשתות לפי משקל, הוספה אם לא יוצרת מעגל.
+      <br/>
+      סיבוכיות: O(E log E)
+      <br/><br/>
+      <strong>פרים (Prim):</strong> גידול עץ מקודקוד התחלתי, בכל שלב מוסיפים את הקשת הקלה ביותר שמחברת לעץ.
+      <br/>
+      סיבוכיות: O(E log V) עם ערימה בינארית
+    </p>
+  </article>
+</section>
+
+<section id="cut-property" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">תכונות יסוד</p>
+    <h2>חתך, קשת בטוחה ותכונת הקשת הקלה</h2>
+  </header>
+  
+  <div className="conceptGrid">
+    <article className="conceptCard conceptCard--explain">
+      <p className="conceptCard__label">הגדרה</p>
+      <h3 className="conceptCard__title">מהו חתך?</h3>
+      <p className="conceptCard__body">
+        <strong>חתך (Cut)</strong> הוא חלוקה של קודקודי הגרף לשתי קבוצות זרות: (S, V-S)
+        <br/><br/>
+        <strong>קשת חוצה:</strong> קשת (u,v) שמחברת קודקוד מ-S לקודקוד מ-V-S
+        <br/><br/>
+        <strong>חתך מכבד קבוצה A:</strong> אין קשת מ-A שחוצה את החתך
+        <br/><br/>
+        <strong>קשת קלה:</strong> הקשת עם המשקל המינימלי מבין כל הקשתות החוצות
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">משפט מרכזי</p>
+      <h3 className="conceptCard__title">תכונת החתך (Cut Property)</h3>
+      <p className="conceptCard__body">
+        תהי A ⊆ MST ותהי (S, V-S) חתך שמכבד את A.
+        <br/><br/>
+        <strong>אם e היא קשת קלה החוצה את החתך, אז:</strong>
+        <br/>
+        A ∪ {'{e}'} ⊆ MST כלשהו
+        <br/><br/>
+        <strong>משמעות:</strong> תמיד בטוח להוסיף את הקשת הקלה ביותר שחוצה חתך - היא בהכרח חלק מ-MST אופטימלי!
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">הוכחה</p>
+      <h3 className="conceptCard__title">למה זה עובד?</h3>
+      <p className="conceptCard__body">
+        נניח בשלילה ש-e = (u,v) קשת קלה אבל לא ב-MST מסוים T.
+        <br/><br/>
+        • ב-T קיים מסלול מ-u ל-v (כי T קשיר)
+        <br/>
+        • המסלול חוצה את החתך בקשת אחרת e'
+        <br/>
+        • w(e) ≤ w(e') כי e קלה
+        <br/>
+        • נחליף: T' = T - {'{e\''} + {'{e}'}
+        <br/>
+        • w(T') ≤ w(T) ⇒ T' גם MST ✓
+      </p>
+    </article>
+  </div>
+
+  <figure style={{ margin: '2rem 0', padding: '1.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '16px' }}>
+    <svg viewBox="0 0 600 300" style={{ width: '100%', maxWidth: '600px', margin: '0 auto', display: 'block' }}>
+      <defs>
+        <linearGradient id="cutBg" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#1a3d5c" />
+          <stop offset="50%" stopColor="#0d1a30" />
+          <stop offset="100%" stopColor="#3d1a1a" />
+        </linearGradient>
+      </defs>
+      
+      <rect width="600" height="300" fill="url(#cutBg)" rx="12" />
+      
+      {/* קו החתך */}
+      <line x1="300" y1="20" x2="300" y2="280" stroke="#fbbf24" strokeWidth="3" strokeDasharray="10,5" />
+      <text x="300" y="295" fill="#fbbf24" fontSize="12" fontWeight="bold" textAnchor="middle">חתך (S, V-S)</text>
+      
+      {/* צד שמאל - S */}
+      <text x="100" y="30" fill="#64f6c8" fontSize="14" fontWeight="bold" textAnchor="middle">S</text>
+      <circle cx="80" cy="100" r="25" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+      <text x="80" y="107" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">A</text>
+      
+      <circle cx="150" cy="180" r="25" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+      <text x="150" y="187" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">B</text>
+      
+      <circle cx="100" cy="250" r="25" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+      <text x="100" y="257" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">C</text>
+      
+      {/* קשתות פנימיות ב-S */}
+      <line x1="100" y1="115" x2="140" y2="160" stroke="#64f6c8" strokeWidth="3" />
+      <line x1="125" y1="195" x2="110" y2="230" stroke="#64f6c8" strokeWidth="3" />
+      
+      {/* צד ימין - V-S */}
+      <text x="500" y="30" fill="#f97316" fontSize="14" fontWeight="bold" textAnchor="middle">V - S</text>
+      <circle cx="520" cy="100" r="25" fill="#f97316" stroke="#fff" strokeWidth="2" />
+      <text x="520" y="107" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">D</text>
+      
+      <circle cx="450" cy="180" r="25" fill="#f97316" stroke="#fff" strokeWidth="2" />
+      <text x="450" y="187" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">E</text>
+      
+      <circle cx="500" cy="250" r="25" fill="#f97316" stroke="#fff" strokeWidth="2" />
+      <text x="500" y="257" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">F</text>
+      
+      {/* קשתות פנימיות ב-V-S */}
+      <line x1="500" y1="120" x2="465" y2="160" stroke="#f97316" strokeWidth="3" />
+      <line x1="470" y1="200" x2="490" y2="230" stroke="#f97316" strokeWidth="3" />
+      
+      {/* קשתות חוצות */}
+      <line x1="170" y1="170" x2="425" y2="180" stroke="#a78bfa" strokeWidth="2" strokeDasharray="5,3" />
+      <text x="300" y="165" fill="#a78bfa" fontSize="12" fontWeight="bold" textAnchor="middle">w=7</text>
+      
+      <line x1="100" y1="85" x2="495" y2="90" stroke="#a78bfa" strokeWidth="2" strokeDasharray="5,3" />
+      <text x="300" y="80" fill="#a78bfa" fontSize="12" fontWeight="bold" textAnchor="middle">w=5</text>
+      
+      {/* קשת קלה */}
+      <line x1="128" y1="250" x2="476" y2="250" stroke="#64f6c8" strokeWidth="4">
+        <animate attributeName="stroke-opacity" values="0.6;1;0.6" dur="1.5s" repeatCount="indefinite" />
+      </line>
+      <text x="300" y="230" fill="#64f6c8" fontSize="14" fontWeight="bold" textAnchor="middle">w=2 ← קשת קלה!</text>
+      
+    </svg>
+    <figcaption style={{ textAlign: 'center', marginTop: '1rem', color: '#a0aec0' }}>
+      הקשת הקלה ביותר שחוצה את החתך (w=2) מובטחת להיות חלק מ-MST
+    </figcaption>
+  </figure>
+</section>
+
+<section id="kruskal" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">אלגוריתם 1</p>
+    <h2>אלגוריתם קרוסקל (Kruskal)</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>רעיון מרכזי:</strong> ממיינים את כל הקשתות לפי משקל עולה, ועוברים עליהן בסדר. 
+        כל קשת שלא יוצרת מעגל עם הקשתות שכבר נבחרו - מוסיפים ל-MST.
+      </p>
+      <ol>
+        <li>מיין את כל הקשתות לפי משקל עולה</li>
+        <li>אתחל יער: כל קודקוד הוא עץ בפני עצמו</li>
+        <li>לכל קשת (u,v) בסדר עולה: אם u ו-v בעצים שונים → הוסף את הקשת ואחד את העצים. אחרת → דלג (הקשת תיצור מעגל)</li>
+        <li>עצור כשיש n-1 קשתות</li>
+      </ol>
+      <p>
+        <strong>מבנה נתונים:</strong> Union-Find מאפשר לבדוק אם שני קודקודים באותו עץ 
+        ולאחד עצים ב-O(α(n)) (כמעט קבוע).
+      </p>
+    </article>
+  </div>
+
+  <div style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}>
+    <pre className="greedyDoc__code">
+{`Kruskal(G = (V, E), w):
+  1.  A = ∅
+  2.  for each v ∈ V:
+  3.      Make-Set(v)
+  4.  Sort E by w in ascending order
+  5.  for each (u, v) ∈ E (in sorted order):
+  6.      if Find-Set(u) ≠ Find-Set(v):
+  7.          A = A ∪ {(u, v)}
+  8.          Union(u, v)
+  9.  return A
+
+Time: O(E log E) = O(E log V)  ← מיון שולט`}
+    </pre>
+  </div>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">נכונות</p>
+      <h3 className="conceptCard__title">למה זה עובד?</h3>
+      <p className="conceptCard__body">
+        כשמוסיפים קשת (u,v), היא הקשת הקלה ביותר שחוצה את החתך בין העץ של u לשאר הקודקודים.
+        <br/><br/>
+        לפי <strong>תכונת החתך</strong>, קשת כזו בטוחה להוספה ל-MST.
+        <br/><br/>
+        אינדוקציה: בכל שלב A ⊆ MST כלשהו.
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">סיבוכיות</p>
+      <h3 className="conceptCard__title">ניתוח זמן ריצה</h3>
+      <p className="conceptCard__body">
+        <strong>מיון:</strong> O(E log E)
+        <br/>
+        <strong>Make-Set:</strong> O(V)
+        <br/>
+        <strong>Find + Union:</strong> O(E · α(V)) ≈ O(E)
+        <br/><br/>
+        <strong>סה"כ:</strong> O(E log E) = O(E log V)
+        <br/>
+        (כי E ≤ V² ולכן log E ≤ 2·log V)
+      </p>
+    </article>
+  </div>
+
+  <figure style={{ margin: '2rem 0', padding: '1.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '16px' }}>
+    <h4 style={{ textAlign: 'center', color: '#64f6c8', marginBottom: '1rem' }}>דוגמה ויזואלית: קרוסקל על גרף פשוט</h4>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+      
+      {/* שלב 1 */}
+      <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '8px', padding: '1rem' }}>
+        <p style={{ textAlign: 'center', color: '#fbbf24', fontSize: '0.9rem', marginBottom: '0.5rem' }}>שלב 1: קשת (C,D) w=1</p>
+        <svg viewBox="0 0 200 150" style={{ width: '100%' }}>
+          <line x1="40" y1="40" x2="160" y2="40" stroke="#3d4d6b" strokeWidth="2" />
+          <line x1="40" y1="40" x2="40" y2="110" stroke="#3d4d6b" strokeWidth="2" />
+          <line x1="160" y1="40" x2="160" y2="110" stroke="#3d4d6b" strokeWidth="2" />
+          <line x1="40" y1="110" x2="160" y2="110" stroke="#64f6c8" strokeWidth="3" />
+          <line x1="40" y1="40" x2="160" y2="110" stroke="#3d4d6b" strokeWidth="2" />
+          
+          <circle cx="40" cy="40" r="15" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+          <text x="40" y="45" fill="#fff" fontSize="12" textAnchor="middle">A</text>
+          <circle cx="160" cy="40" r="15" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+          <text x="160" y="45" fill="#fff" fontSize="12" textAnchor="middle">B</text>
+          <circle cx="40" cy="110" r="15" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+          <text x="40" y="115" fill="#fff" fontSize="12" textAnchor="middle">C</text>
+          <circle cx="160" cy="110" r="15" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+          <text x="160" y="115" fill="#fff" fontSize="12" textAnchor="middle">D</text>
+          
+          <text x="100" y="130" fill="#64f6c8" fontSize="10" textAnchor="middle">1</text>
+        </svg>
+      </div>
+
+      {/* שלב 2 */}
+      <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '8px', padding: '1rem' }}>
+        <p style={{ textAlign: 'center', color: '#fbbf24', fontSize: '0.9rem', marginBottom: '0.5rem' }}>שלב 2: קשת (A,C) w=2</p>
+        <svg viewBox="0 0 200 150" style={{ width: '100%' }}>
+          <line x1="40" y1="40" x2="160" y2="40" stroke="#3d4d6b" strokeWidth="2" />
+          <line x1="40" y1="40" x2="40" y2="110" stroke="#64f6c8" strokeWidth="3" />
+          <line x1="160" y1="40" x2="160" y2="110" stroke="#3d4d6b" strokeWidth="2" />
+          <line x1="40" y1="110" x2="160" y2="110" stroke="#64f6c8" strokeWidth="3" />
+          <line x1="40" y1="40" x2="160" y2="110" stroke="#3d4d6b" strokeWidth="2" />
+          
+          <circle cx="40" cy="40" r="15" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+          <text x="40" y="45" fill="#fff" fontSize="12" textAnchor="middle">A</text>
+          <circle cx="160" cy="40" r="15" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+          <text x="160" y="45" fill="#fff" fontSize="12" textAnchor="middle">B</text>
+          <circle cx="40" cy="110" r="15" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+          <text x="40" y="115" fill="#fff" fontSize="12" textAnchor="middle">C</text>
+          <circle cx="160" cy="110" r="15" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+          <text x="160" y="115" fill="#fff" fontSize="12" textAnchor="middle">D</text>
+          
+          <text x="25" y="75" fill="#64f6c8" fontSize="10" textAnchor="middle">2</text>
+          <text x="100" y="130" fill="#64f6c8" fontSize="10" textAnchor="middle">1</text>
+        </svg>
+      </div>
+
+      {/* שלב 3 */}
+      <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '8px', padding: '1rem' }}>
+        <p style={{ textAlign: 'center', color: '#fbbf24', fontSize: '0.9rem', marginBottom: '0.5rem' }}>שלב 3: קשת (A,B) w=3</p>
+        <svg viewBox="0 0 200 150" style={{ width: '100%' }}>
+          <line x1="40" y1="40" x2="160" y2="40" stroke="#64f6c8" strokeWidth="3" />
+          <line x1="40" y1="40" x2="40" y2="110" stroke="#64f6c8" strokeWidth="3" />
+          <line x1="160" y1="40" x2="160" y2="110" stroke="#3d4d6b" strokeWidth="2" strokeDasharray="4,4" />
+          <line x1="40" y1="110" x2="160" y2="110" stroke="#64f6c8" strokeWidth="3" />
+          <line x1="40" y1="40" x2="160" y2="110" stroke="#3d4d6b" strokeWidth="2" strokeDasharray="4,4" />
+          
+          <circle cx="40" cy="40" r="15" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+          <text x="40" y="45" fill="#fff" fontSize="12" textAnchor="middle">A</text>
+          <circle cx="160" cy="40" r="15" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+          <text x="160" y="45" fill="#fff" fontSize="12" textAnchor="middle">B</text>
+          <circle cx="40" cy="110" r="15" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+          <text x="40" y="115" fill="#fff" fontSize="12" textAnchor="middle">C</text>
+          <circle cx="160" cy="110" r="15" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+          <text x="160" y="115" fill="#fff" fontSize="12" textAnchor="middle">D</text>
+          
+          <text x="100" y="30" fill="#64f6c8" fontSize="10" textAnchor="middle">3</text>
+          <text x="25" y="75" fill="#64f6c8" fontSize="10" textAnchor="middle">2</text>
+          <text x="100" y="130" fill="#64f6c8" fontSize="10" textAnchor="middle">1</text>
+        </svg>
+        <p style={{ textAlign: 'center', color: '#a0aec0', fontSize: '0.8rem', marginTop: '0.5rem' }}>MST מושלם! (n-1=3 קשתות)</p>
+      </div>
+    </div>
+    
+    <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(100, 246, 200, 0.1)', borderRadius: '8px', borderRight: '4px solid #64f6c8' }}>
+      <p style={{ margin: 0, color: '#a0aec0', fontSize: '0.9rem' }}>
+        <strong style={{ color: '#64f6c8' }}>קשתות לפי סדר:</strong> (C,D)=1 ✓ → (A,C)=2 ✓ → (A,B)=3 ✓ → (B,D)=4 ✗ (מעגל!) → (A,D)=5 ✗ (מעגל!)
+        <br/>
+        <strong style={{ color: '#fbbf24' }}>סה"כ MST:</strong> 1 + 2 + 3 = 6
+      </p>
+    </div>
+  </figure>
+</section>
+
+<section id="prim" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">אלגוריתם 2</p>
+    <h2>אלגוריתם פרים (Prim)</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>רעיון מרכזי:</strong> מגדלים עץ מקודקוד התחלתי. בכל שלב מוסיפים את הקשת 
+        הקלה ביותר שמחברת קודקוד שבעץ לקודקוד שמחוצה לו.
+      </p>
+      <ol>
+        <li>בחר קודקוד התחלתי r ושים אותו בעץ</li>
+        <li>כל עוד העץ לא מכיל את כל הקודקודים: מצא את הקשת הקלה ביותר (u,v) כך ש-u בעץ ו-v מחוצה לו, והוסף את v לעץ ואת (u,v) ל-MST</li>
+      </ol>
+      <p>
+        <strong>מבנה נתונים:</strong> ערימת מינימום (Min-Heap) לניהול הקודקודים 
+        שמחוץ לעץ, עם מפתח = משקל הקשת הקלה ביותר שמחברת אותם לעץ.
+      </p>
+    </article>
+  </div>
+
+  <div style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}>
+    <pre className="greedyDoc__code">
+{`Prim(G = (V, E), w, r):
+  1.  for each u ∈ V:
+  2.      key[u] = ∞
+  3.      π[u] = NIL
+  4.  key[r] = 0
+  5.  Q = Build-Min-Heap(V)  // by key values
+  6.  while Q ≠ ∅:
+  7.      u = Extract-Min(Q)
+  8.      for each v ∈ Adj[u]:
+  9.          if v ∈ Q and w(u,v) < key[v]:
+ 10.              π[v] = u
+ 11.              key[v] = w(u,v)
+ 12.              Decrease-Key(Q, v, key[v])
+ 13. return {(v, π[v]) : v ∈ V - {r}}
+
+Time: O(E log V) with binary heap
+      O(E + V log V) with Fibonacci heap`}
+    </pre>
+  </div>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">נכונות</p>
+      <h3 className="conceptCard__title">למה זה עובד?</h3>
+      <p className="conceptCard__body">
+        בכל איטרציה, נגדיר חתך: S = קודקודים שכבר בעץ, V-S = השאר.
+        <br/><br/>
+        הקשת שמוסיפים היא הקשת הקלה ביותר שחוצה את החתך.
+        <br/><br/>
+        לפי <strong>תכונת החתך</strong>, היא בטוחה להוספה ל-MST.
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">סיבוכיות</p>
+      <h3 className="conceptCard__title">ניתוח זמן ריצה</h3>
+      <p className="conceptCard__body">
+        <strong>עם ערימה בינארית:</strong>
+        <br/>
+        • Build-Heap: O(V)
+        <br/>
+        • Extract-Min: O(V log V) (V פעמים)
+        <br/>
+        • Decrease-Key: O(E log V) (E פעמים)
+        <br/>
+        <strong>סה"כ:</strong> O(E log V)
+        <br/><br/>
+        <strong>עם ערימת פיבונאצ'י:</strong> O(E + V log V)
+      </p>
+    </article>
+  </div>
+
+  <figure style={{ margin: '2rem 0', padding: '1.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '16px' }}>
+    <h4 style={{ textAlign: 'center', color: '#a78bfa', marginBottom: '1rem' }}>דוגמה ויזואלית: פרים על גרף פשוט (מתחילים מ-A)</h4>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+      
+      {/* שלב 1 */}
+      <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '8px', padding: '1rem' }}>
+        <p style={{ textAlign: 'center', color: '#fbbf24', fontSize: '0.9rem', marginBottom: '0.5rem' }}>שלב 1: מתחילים מ-A</p>
+        <svg viewBox="0 0 200 150" style={{ width: '100%' }}>
+          <line x1="40" y1="40" x2="160" y2="40" stroke="#a78bfa" strokeWidth="2" />
+          <text x="100" y="30" fill="#a78bfa" fontSize="10" textAnchor="middle">3</text>
+          <line x1="40" y1="40" x2="40" y2="110" stroke="#a78bfa" strokeWidth="3">
+            <animate attributeName="stroke-opacity" values="0.5;1;0.5" dur="1s" repeatCount="indefinite" />
+          </line>
+          <text x="25" y="75" fill="#a78bfa" fontSize="10" textAnchor="middle">2</text>
+          <line x1="160" y1="40" x2="160" y2="110" stroke="#3d4d6b" strokeWidth="2" />
+          <line x1="40" y1="110" x2="160" y2="110" stroke="#3d4d6b" strokeWidth="2" />
+          <line x1="40" y1="40" x2="160" y2="110" stroke="#3d4d6b" strokeWidth="2" />
+          
+          <circle cx="40" cy="40" r="15" fill="#fbbf24" stroke="#fff" strokeWidth="3" />
+          <text x="40" y="45" fill="#fff" fontSize="12" textAnchor="middle">A</text>
+          <circle cx="160" cy="40" r="15" fill="#3d4d6b" stroke="#fff" strokeWidth="2" />
+          <text x="160" y="45" fill="#fff" fontSize="12" textAnchor="middle">B</text>
+          <circle cx="40" cy="110" r="15" fill="#3d4d6b" stroke="#fff" strokeWidth="2" />
+          <text x="40" y="115" fill="#fff" fontSize="12" textAnchor="middle">C</text>
+          <circle cx="160" cy="110" r="15" fill="#3d4d6b" stroke="#fff" strokeWidth="2" />
+          <text x="160" y="115" fill="#fff" fontSize="12" textAnchor="middle">D</text>
+        </svg>
+        <p style={{ textAlign: 'center', color: '#a0aec0', fontSize: '0.8rem' }}>בוחרים (A,C)=2 הקלה ביותר</p>
+      </div>
+
+      {/* שלב 2 */}
+      <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '8px', padding: '1rem' }}>
+        <p style={{ textAlign: 'center', color: '#fbbf24', fontSize: '0.9rem', marginBottom: '0.5rem' }}>שלב 2: A,C בעץ</p>
+        <svg viewBox="0 0 200 150" style={{ width: '100%' }}>
+          <line x1="40" y1="40" x2="160" y2="40" stroke="#a78bfa" strokeWidth="2" />
+          <text x="100" y="30" fill="#a78bfa" fontSize="10" textAnchor="middle">3</text>
+          <line x1="40" y1="40" x2="40" y2="110" stroke="#a78bfa" strokeWidth="3" />
+          <text x="25" y="75" fill="#a78bfa" fontSize="10" textAnchor="middle">2</text>
+          <line x1="160" y1="40" x2="160" y2="110" stroke="#3d4d6b" strokeWidth="2" />
+          <line x1="40" y1="110" x2="160" y2="110" stroke="#a78bfa" strokeWidth="3">
+            <animate attributeName="stroke-opacity" values="0.5;1;0.5" dur="1s" repeatCount="indefinite" />
+          </line>
+          <text x="100" y="130" fill="#a78bfa" fontSize="10" textAnchor="middle">1</text>
+          <line x1="40" y1="40" x2="160" y2="110" stroke="#3d4d6b" strokeWidth="2" />
+          
+          <circle cx="40" cy="40" r="15" fill="#fbbf24" stroke="#fff" strokeWidth="3" />
+          <text x="40" y="45" fill="#fff" fontSize="12" textAnchor="middle">A</text>
+          <circle cx="160" cy="40" r="15" fill="#3d4d6b" stroke="#fff" strokeWidth="2" />
+          <text x="160" y="45" fill="#fff" fontSize="12" textAnchor="middle">B</text>
+          <circle cx="40" cy="110" r="15" fill="#fbbf24" stroke="#fff" strokeWidth="3" />
+          <text x="40" y="115" fill="#fff" fontSize="12" textAnchor="middle">C</text>
+          <circle cx="160" cy="110" r="15" fill="#3d4d6b" stroke="#fff" strokeWidth="2" />
+          <text x="160" y="115" fill="#fff" fontSize="12" textAnchor="middle">D</text>
+        </svg>
+        <p style={{ textAlign: 'center', color: '#a0aec0', fontSize: '0.8rem' }}>בוחרים (C,D)=1 הקלה ביותר</p>
+      </div>
+
+      {/* שלב 3 */}
+      <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '8px', padding: '1rem' }}>
+        <p style={{ textAlign: 'center', color: '#fbbf24', fontSize: '0.9rem', marginBottom: '0.5rem' }}>שלב 3: A,C,D בעץ</p>
+        <svg viewBox="0 0 200 150" style={{ width: '100%' }}>
+          <line x1="40" y1="40" x2="160" y2="40" stroke="#a78bfa" strokeWidth="3">
+            <animate attributeName="stroke-opacity" values="0.5;1;0.5" dur="1s" repeatCount="indefinite" />
+          </line>
+          <text x="100" y="30" fill="#a78bfa" fontSize="10" textAnchor="middle">3</text>
+          <line x1="40" y1="40" x2="40" y2="110" stroke="#a78bfa" strokeWidth="3" />
+          <text x="25" y="75" fill="#a78bfa" fontSize="10" textAnchor="middle">2</text>
+          <line x1="160" y1="40" x2="160" y2="110" stroke="#3d4d6b" strokeWidth="2" strokeDasharray="4,4" />
+          <line x1="40" y1="110" x2="160" y2="110" stroke="#a78bfa" strokeWidth="3" />
+          <text x="100" y="130" fill="#a78bfa" fontSize="10" textAnchor="middle">1</text>
+          <line x1="40" y1="40" x2="160" y2="110" stroke="#3d4d6b" strokeWidth="2" strokeDasharray="4,4" />
+          
+          <circle cx="40" cy="40" r="15" fill="#fbbf24" stroke="#fff" strokeWidth="3" />
+          <text x="40" y="45" fill="#fff" fontSize="12" textAnchor="middle">A</text>
+          <circle cx="160" cy="40" r="15" fill="#fbbf24" stroke="#fff" strokeWidth="3" />
+          <text x="160" y="45" fill="#fff" fontSize="12" textAnchor="middle">B</text>
+          <circle cx="40" cy="110" r="15" fill="#fbbf24" stroke="#fff" strokeWidth="3" />
+          <text x="40" y="115" fill="#fff" fontSize="12" textAnchor="middle">C</text>
+          <circle cx="160" cy="110" r="15" fill="#fbbf24" stroke="#fff" strokeWidth="3" />
+          <text x="160" y="115" fill="#fff" fontSize="12" textAnchor="middle">D</text>
+        </svg>
+        <p style={{ textAlign: 'center', color: '#a0aec0', fontSize: '0.8rem' }}>בוחרים (A,B)=3 → MST מושלם!</p>
+      </div>
+    </div>
+    
+    <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(167, 139, 250, 0.1)', borderRadius: '8px', borderRight: '4px solid #a78bfa' }}>
+      <p style={{ margin: 0, color: '#a0aec0', fontSize: '0.9rem' }}>
+        <strong style={{ color: '#a78bfa' }}>סדר ההוספה:</strong> A (התחלה) → C (קשת 2) → D (קשת 1) → B (קשת 3)
+        <br/>
+        <strong style={{ color: '#fbbf24' }}>סה"כ MST:</strong> 2 + 1 + 3 = 6 (אותו משקל כמו קרוסקל!)
+      </p>
+    </div>
+  </figure>
+</section>
+
+<section id="cycle-property" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">תכונה נוספת</p>
+    <h2>תכונת המעגלים (Cycle Property)</h2>
+  </header>
+  
+  <div className="conceptGrid">
+    <article className="conceptCard conceptCard--explain">
+      <p className="conceptCard__label">משפט</p>
+      <h3 className="conceptCard__title">תכונת המעגל</h3>
+      <p className="conceptCard__body">
+        יהי C מעגל בגרף G, ותהי e הקשת עם המשקל <strong>המקסימלי</strong> ב-C 
+        (ונניח שהיא יחידה).
+        <br/><br/>
+        <strong>אז e לא שייכת לשום MST של G.</strong>
+        <br/><br/>
+        במילים אחרות: הקשת הכבדה ביותר במעגל היא "מיותרת" - תמיד אפשר להסיר אותה ועדיין לשמור על קשירות דרך שאר קשתות המעגל.
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">הוכחה</p>
+      <h3 className="conceptCard__title">למה הקשת הכבדה לא ב-MST?</h3>
+      <p className="conceptCard__body">
+        נניח בשלילה ש-e = (u,v) הקשת הכבדה ביותר במעגל C, ו-e ∈ T (MST).
+        <br/><br/>
+        • הסרת e מ-T מפרידה את העץ לשני חלקים
+        <br/>
+        • אבל C - {'{e}'} הוא מסלול מ-u ל-v, אז קיימת קשת e' שמחברת בחזרה
+        <br/>
+        • w(e') {'<'} w(e) כי e כבדה ביותר ב-C
+        <br/>
+        • T' = T - {'{e}'} + {'{e\''} הוא עץ פורש עם משקל קטן יותר
+        <br/>
+        • סתירה! T לא היה MST
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">יישום</p>
+      <h3 className="conceptCard__title">שימוש בקרוסקל</h3>
+      <p className="conceptCard__body">
+        כשקרוסקל דוחה קשת כי היא יוצרת מעגל, זו בדיוק תכונת המעגל בפעולה!
+        <br/><br/>
+        הקשת הנדחית היא הכבדה ביותר במעגל שנוצר (כי כל הקשתות הקודמות קלות יותר).
+        <br/><br/>
+        <strong>לכן:</strong> קרוסקל לא מחמיץ אף קשת שצריכה להיות ב-MST.
+      </p>
+    </article>
+  </div>
+
+  <figure style={{ margin: '2rem 0', padding: '1.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '16px' }}>
+    <svg viewBox="0 0 500 200" style={{ width: '100%', maxWidth: '500px', margin: '0 auto', display: 'block' }}>
+      <rect width="500" height="200" fill="#0d1a30" rx="12" />
+      
+      {/* מעגל */}
+      <circle cx="100" cy="100" r="30" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+      <text x="100" y="107" fill="#fff" fontSize="14" textAnchor="middle">A</text>
+      
+      <circle cx="250" cy="50" r="30" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+      <text x="250" y="57" fill="#fff" fontSize="14" textAnchor="middle">B</text>
+      
+      <circle cx="400" cy="100" r="30" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+      <text x="400" y="107" fill="#fff" fontSize="14" textAnchor="middle">C</text>
+      
+      <circle cx="250" cy="150" r="30" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+      <text x="250" y="157" fill="#fff" fontSize="14" textAnchor="middle">D</text>
+      
+      {/* קשתות המעגל */}
+      <line x1="125" y1="85" x2="225" y2="60" stroke="#64f6c8" strokeWidth="3" />
+      <text x="170" y="60" fill="#64f6c8" fontSize="12" fontWeight="bold">2</text>
+      
+      <line x1="275" y1="60" x2="375" y2="85" stroke="#64f6c8" strokeWidth="3" />
+      <text x="330" y="60" fill="#64f6c8" fontSize="12" fontWeight="bold">3</text>
+      
+      <line x1="375" y1="115" x2="275" y2="140" stroke="#64f6c8" strokeWidth="3" />
+      <text x="330" y="140" fill="#64f6c8" fontSize="12" fontWeight="bold">1</text>
+      
+      <line x1="225" y1="140" x2="125" y2="115" stroke="#64f6c8" strokeWidth="3" />
+      <text x="170" y="140" fill="#64f6c8" fontSize="12" fontWeight="bold">4</text>
+      
+      {/* הקשת הכבדה */}
+      <line x1="130" y1="100" x2="370" y2="100" stroke="#f97316" strokeWidth="4" strokeDasharray="8,4" />
+      <text x="250" y="95" fill="#f97316" fontSize="14" fontWeight="bold">7 ← הכבדה ביותר - לא ב-MST!</text>
+    </svg>
+    <figcaption style={{ textAlign: 'center', marginTop: '1rem', color: '#a0aec0' }}>
+      הקשת (A,C) עם משקל 7 היא הכבדה ביותר במעגל A→B→C→D→A, לכן היא לא תהיה חלק מ-MST
+    </figcaption>
+  </figure>
+</section>
+
+<section id="summary" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">סיום</p>
+    <h2>סיכום והשוואה</h2>
+  </header>
+  
+  <article style={{ lineHeight: '1.8', fontSize: '1.05em' }}>
+    <h3 style={{ color: '#64f6c8', borderBottom: '3px solid #64f6c8', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
+      עץ פורש מינימלי - המהות
+    </h3>
+    <p style={{ padding: '1rem', background: 'rgba(13, 139, 212, 0.08)', borderRadius: '8px', borderLeft: '4px solid #0d8bd4' }}>
+      עץ פורש מינימלי מחבר את כל הקודקודים בגרף תוך מינימום עלות. שני האלגוריתמים - קרוסקל ופרים - 
+      משתמשים בגישה חמדנית המבוססת על <strong style={{ color: '#0d8bd4' }}>תכונת החתך</strong>: 
+      הקשת הקלה ביותר שחוצה חתך תמיד בטוחה להוספה ל-MST.
+    </p>
+    
+    <h3 style={{ color: '#fbbf24', borderBottom: '3px solid #fbbf24', paddingBottom: '0.5rem', marginTop: '2.5rem', marginBottom: '1rem' }}>
+      השוואה בין האלגוריתמים
+    </h3>
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginTop: '1.5rem' }}>
+      <div style={{ background: 'var(--greedy-section-bg)', padding: '1.5rem', borderRadius: '12px', borderTop: '4px solid #64f6c8' }}>
+        <h4 style={{ color: '#64f6c8', margin: '0 0 0.8rem 0' }}>קרוסקל (Kruskal)</h4>
+        <p style={{ margin: 0, fontSize: '0.95em' }}>
+          <strong>גישה:</strong> מיון גלובלי של קשתות, בניית יער
+        </p>
+        <p style={{ margin: '0.5rem 0', fontSize: '0.95em' }}>
+          <strong>מבנה נתונים:</strong> Union-Find
+        </p>
+        <p style={{ margin: '0.5rem 0', fontSize: '0.95em' }}>
+          <strong style={{ color: '#64f6c8' }}>סיבוכיות:</strong> \(O(E \log E)\)
+        </p>
+        <p style={{ margin: '0.5rem 0', fontSize: '0.95em' }}>
+          <strong>מתאים:</strong> גרפים דלילים (\(E \approx V\))
+        </p>
+      </div>
+      
+      <div style={{ background: 'var(--greedy-section-bg)', padding: '1.5rem', borderRadius: '12px', borderTop: '4px solid #a78bfa' }}>
+        <h4 style={{ color: '#a78bfa', margin: '0 0 0.8rem 0' }}>פרים (Prim)</h4>
+        <p style={{ margin: 0, fontSize: '0.95em' }}>
+          <strong>גישה:</strong> גידול עץ מקודקוד התחלתי
+        </p>
+        <p style={{ margin: '0.5rem 0', fontSize: '0.95em' }}>
+          <strong>מבנה נתונים:</strong> ערימת מינימום
+        </p>
+        <p style={{ margin: '0.5rem 0', fontSize: '0.95em' }}>
+          <strong style={{ color: '#a78bfa' }}>סיבוכיות:</strong> \(O(E \log V)\) או \(O(E + V \log V)\)
+        </p>
+        <p style={{ margin: '0.5rem 0', fontSize: '0.95em' }}>
+          <strong>מתאים:</strong> גרפים צפופים (\(E \approx V^2\))
+        </p>
+      </div>
+    </div>
+    
+    <h3 style={{ color: '#f97316', borderBottom: '3px solid #f97316', paddingBottom: '0.5rem', marginTop: '2.5rem', marginBottom: '1rem' }}>
+      נקודות חשובות למבחן
+    </h3>
+    <ul style={{ lineHeight: '2' }}>
+      <li style={{ padding: '0.8rem', marginBottom: '0.8rem', background: 'rgba(100, 246, 200, 0.08)', borderLeft: '4px solid #64f6c8', borderRadius: '4px' }}>
+        <strong style={{ color: '#64f6c8' }}>תכונת החתך:</strong> הקשת הקלה ביותר החוצה חתך שמכבד את A תמיד בטוחה להוספה ל-MST
+      </li>
+      <li style={{ padding: '0.8rem', marginBottom: '0.8rem', background: 'rgba(249, 115, 22, 0.08)', borderLeft: '4px solid #f97316', borderRadius: '4px' }}>
+        <strong style={{ color: '#f97316' }}>תכונת המעגל:</strong> הקשת הכבדה ביותר במעגל לא יכולה להיות חלק מ-MST
+      </li>
+      <li style={{ padding: '0.8rem', marginBottom: '0.8rem', background: 'rgba(167, 139, 250, 0.08)', borderLeft: '4px solid #a78bfa', borderRadius: '4px' }}>
+        <strong style={{ color: '#a78bfa' }}>ייחודיות:</strong> אם כל משקלי הקשתות שונים, קיים MST יחיד
+      </li>
+      <li style={{ padding: '0.8rem', marginBottom: '0.8rem', background: 'rgba(251, 191, 36, 0.08)', borderLeft: '4px solid #fbbf24', borderRadius: '4px' }}>
+        <strong style={{ color: '#fbbf24' }}>מספר קשתות:</strong> MST עם n קודקודים מכיל בדיוק n-1 קשתות
+      </li>
+    </ul>
+  </article>
+</section>
+
