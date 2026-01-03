@@ -293,8 +293,118 @@ sidebar_label: קידוד הופמן (Huffman)
     <p className="greedyDoc__eyebrow">דוגמה</p>
     <h2>בניית קידוד הופמן בפועל</h2>
   </header>
-  <div className="greedyDoc__media">
-    <article>
+  <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start' }}>
+    <div style={{ flex: '0 0 400px' }}>
+      <svg viewBox="0 0 400 900" style={{ width: '100%', height: 'auto', background: 'rgba(0,0,0,0.1)', borderRadius: '12px', padding: '1rem' }}>
+        <defs>
+          <filter id="stepGlow">
+            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+
+        {/* שלב 1: שלושה צמתים נפרדים */}
+        <text x="200" y="25" fill="#64f6c8" fontSize="16" fontWeight="bold" textAnchor="middle">שלב 1: תדירויות התחלתיות</text>
+        <rect x="10" y="35" width="380" height="2" fill="#64f6c8" opacity="0.3" />
+        
+        <circle cx="100" cy="100" r="30" fill="#0d8bd4" stroke="#fff" strokeWidth="2" filter="url(#stepGlow)" />
+        <text x="100" y="107" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">a(2)</text>
+        
+        <circle cx="200" cy="100" r="30" fill="#088a7b" stroke="#fff" strokeWidth="2" filter="url(#stepGlow)" />
+        <text x="200" y="107" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">b(2)</text>
+        
+        <circle cx="300" cy="100" r="30" fill="#f97316" stroke="#fff" strokeWidth="2" filter="url(#stepGlow)" />
+        <text x="300" y="107" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">c(3)</text>
+
+        <text x="200" y="155" fill="#a78bfa" fontSize="11" textAnchor="middle">3 צמתים נפרדים</text>
+
+        {/* חץ למטה */}
+        <path d="M 200 165 L 200 195" stroke="#64f6c8" strokeWidth="2" markerEnd="url(#arrowhead)" />
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+            <polygon points="0 0, 10 5, 0 10" fill="#64f6c8" />
+          </marker>
+        </defs>
+
+        {/* שלב 2: איחוד a ו-b */}
+        <text x="200" y="220" fill="#64f6c8" fontSize="16" fontWeight="bold" textAnchor="middle">שלב 2: איחוד a(2) + b(2)</text>
+        <rect x="10" y="230" width="380" height="2" fill="#64f6c8" opacity="0.3" />
+        
+        <circle cx="150" cy="360" r="30" fill="#64f6c8" stroke="#fff" strokeWidth="2" filter="url(#stepGlow)" />
+        <text x="150" y="367" fill="#000" fontSize="14" fontWeight="bold" textAnchor="middle">ab(4)</text>
+        
+        <line x1="135" y1="380" x2="110" y2="420" stroke="#a78bfa" strokeWidth="2" />
+        <line x1="165" y1="380" x2="190" y2="420" stroke="#a78bfa" strokeWidth="2" />
+        
+        <circle cx="110" cy="440" r="22" fill="#0d8bd4" stroke="#fff" strokeWidth="2" filter="url(#stepGlow)" />
+        <text x="110" y="447" fill="#fff" fontSize="12" fontWeight="bold" textAnchor="middle">a(2)</text>
+        
+        <circle cx="190" cy="440" r="22" fill="#088a7b" stroke="#fff" strokeWidth="2" filter="url(#stepGlow)" />
+        <text x="190" y="447" fill="#fff" fontSize="12" fontWeight="bold" textAnchor="middle">b(2)</text>
+
+        <circle cx="300" cy="360" r="30" fill="#f97316" stroke="#fff" strokeWidth="2" filter="url(#stepGlow)" />
+        <text x="300" y="367" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">c(3)</text>
+
+        <text x="200" y="485" fill="#a78bfa" fontSize="11" textAnchor="middle">צומת חדשה ab(4) + c(3) נפרד</text>
+
+        {/* חץ למטה */}
+        <path d="M 200 495 L 200 525" stroke="#64f6c8" strokeWidth="2" markerEnd="url(#arrowhead2)" />
+        <defs>
+          <marker id="arrowhead2" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+            <polygon points="0 0, 10 5, 0 10" fill="#64f6c8" />
+          </marker>
+        </defs>
+
+        {/* שלב 3: עץ מלא */}
+        <text x="200" y="550" fill="#64f6c8" fontSize="16" fontWeight="bold" textAnchor="middle">שלב 3: איחוד ab(4) + c(3)</text>
+        <rect x="10" y="560" width="380" height="2" fill="#64f6c8" opacity="0.3" />
+        
+        {/* שורש */}
+        <circle cx="200" cy="610" r="32" fill="#fbbf24" stroke="#fff" strokeWidth="2" filter="url(#stepGlow)" />
+        <text x="200" y="618" fill="#000" fontSize="14" fontWeight="bold" textAnchor="middle">cab(7)</text>
+
+        {/* קשתות */}
+        <line x1="180" y1="635" x2="130" y2="680" stroke="#64f6c8" strokeWidth="3" />
+        <text x="145" y="655" fill="#64f6c8" fontSize="12" fontWeight="bold">0</text>
+        
+        <line x1="220" y1="635" x2="270" y2="680" stroke="#a78bfa" strokeWidth="3" />
+        <text x="255" y="655" fill="#a78bfa" fontSize="12" fontWeight="bold">1</text>
+
+        {/* c */}
+        <circle cx="130" cy="700" r="26" fill="#f97316" stroke="#fff" strokeWidth="2" filter="url(#stepGlow)" />
+        <text x="130" y="707" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">c(3)</text>
+
+        {/* ab */}
+        <circle cx="270" cy="700" r="26" fill="#64f6c8" stroke="#fff" strokeWidth="2" filter="url(#stepGlow)" />
+        <text x="270" y="707" fill="#000" fontSize="13" fontWeight="bold" textAnchor="middle">ab(4)</text>
+
+        {/* קשתות מab */}
+        <line x1="255" y1="720" x2="230" y2="760" stroke="#a78bfa" strokeWidth="2.5" />
+        <text x="237" y="738" fill="#a78bfa" fontSize="11" fontWeight="bold">0</text>
+        
+        <line x1="285" y1="720" x2="310" y2="760" stroke="#a78bfa" strokeWidth="2.5" />
+        <text x="303" y="738" fill="#a78bfa" fontSize="11" fontWeight="bold">1</text>
+
+        {/* a ו-b */}
+        <circle cx="230" cy="780" r="22" fill="#0d8bd4" stroke="#fff" strokeWidth="2" filter="url(#stepGlow)" />
+        <text x="230" y="787" fill="#fff" fontSize="12" fontWeight="bold" textAnchor="middle">a(2)</text>
+        
+        <circle cx="310" cy="780" r="22" fill="#088a7b" stroke="#fff" strokeWidth="2" filter="url(#stepGlow)" />
+        <text x="310" y="787" fill="#fff" fontSize="12" fontWeight="bold" textAnchor="middle">b(2)</text>
+
+        <text x="200" y="825" fill="#fbbf24" fontSize="11" fontWeight="bold" textAnchor="middle">עץ הופמן המלא!</text>
+
+        {/* תיבת קודים */}
+        <rect x="20" y="840" width="360" height="50" fill="rgba(100, 246, 200, 0.1)" stroke="#64f6c8" strokeWidth="2" rx="8" />
+        <text x="200" y="860" fill="#64f6c8" fontSize="12" fontWeight="bold" textAnchor="middle">קודים: c=0, a=10, b=11</text>
+        <text x="200" y="878" fill="#a78bfa" fontSize="11" textAnchor="middle">המסלולים מהשורש לעלים</text>
+      </svg>
+    </div>
+
+    <article style={{ flex: '1' }}>
       <p>
         <strong>טקסט:</strong> "abbaccc" (7 תווים)
       </p>
@@ -319,9 +429,9 @@ sidebar_label: קידוד הופמן (Huffman)
         <strong>שלב 3: הקצאת קודים</strong>
       </p>
       <ul>
+        <li>c → 0 (1 סיביה)</li>
         <li>a → 10 (2 סיביות)</li>
         <li>b → 11 (2 סיביות)</li>
-        <li>c → 0 (1 סיביה)</li>
       </ul>
 
       <p>
