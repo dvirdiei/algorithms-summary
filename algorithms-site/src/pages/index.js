@@ -19,8 +19,8 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/greedy-algorithms">
-            להתחיל עם האלגוריתמים
+            to="/docs/dynamic-programming">
+            להתחיל עם תכנות דינמי
           </Link>
         </div>
       </div>

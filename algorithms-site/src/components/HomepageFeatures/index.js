@@ -24,6 +24,27 @@ const FeatureList = [
     icon: '🧮',
     accent: '#8deaff',
   },
+  {
+    title: 'עץ פורש מינימלי',
+    summary: 'אלגוריתמי קרוסקל ופרים לחיבור גרף בעלות מינימלית - תכונת החתך והמעגלים.',
+    to: '/docs/minimum-spanning-tree',
+    icon: '🌲',
+    accent: '#a78bfa',
+  },
+  {
+    title: 'מסלולים קצרים',
+    summary: 'דייקסטרה, בלמן-פורד, DAG ופלויד-וורשל - מציאת הדרך הקצרה בגרפים ממוקשלים.',
+    to: '/docs/shortest-paths',
+    icon: '🛤️',
+    accent: '#f472b6',
+  },
+  {
+    title: 'רשתות זרימה',
+    summary: 'פורד-פולקרסון ואדמונדס-קארפ לזרימה מקסימלית, רדוקציה לזיווג דו-צדדי.',
+    to: '/docs/flow-networks',
+    icon: '🌊',
+    accent: '#38bdf8',
+  },
 ];
 
 function Feature({title, summary, to, icon, accent}) {
