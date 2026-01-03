@@ -1,0 +1,907 @@
+---
+id: flow-networks
+title: רשתות זרימה
+description: אלגוריתמי פורד-פולקרסון ואדמונדס-קארפ למציאת זרימה מקסימלית ברשתות
+sidebar_label: רשתות זרימה (Flow Networks)
+---
+
+<div className="greedyDoc container">
+  <p className="greedyDoc__badge">Flow Networks</p>
+  <h1>רשתות זרימה (Flow Networks)</h1>
+  <p className="greedyDoc__lead">
+    רשת זרימה היא גרף מכוון וממושקל המייצג מערכת שבה "משהו" זורם ממקור (source) ליעד (sink).
+    המשקל על כל קשת מייצג את הקיבולת - כמה יכול לזרום דרכה. המטרה: למצוא את הזרימה המקסימלית
+    מהמקור ליעד, תוך כיבוד מגבלות הקיבולת. יישומים: תעבורת רשת, לוגיסטיקה, שיבוץ משימות,
+    ואפילו זיווג מקסימלי בגרף דו-צדדי!
+  </p>
+  <ul className="greedyDoc__tags">
+    <li>Ford-Fulkerson</li>
+    <li>Edmonds-Karp</li>
+    <li>Max-Flow Min-Cut</li>
+    <li>Bipartite Matching</li>
+  </ul>
+</div>
+
+<figure className="conceptStory container" aria-label="רשת זרימה">
+  <div className="conceptStory__canvas">
+    <svg viewBox="0 0 600 280" role="img">
+      <defs>
+        <linearGradient id="flowBg" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#1a2d4d" />
+          <stop offset="100%" stopColor="#0d1a30" />
+        </linearGradient>
+        <filter id="flowGlow">
+          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+        <marker id="arrowFlow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 10 3, 0 6" fill="#64f6c8" />
+        </marker>
+        <marker id="arrowFlowGray" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 10 3, 0 6" fill="#3d4d6b" />
+        </marker>
+      </defs>
+
+      <rect width="600" height="280" fill="url(#flowBg)" rx="16" />
+
+      {/* קשתות עם זרימה */}
+      <line x1="90" y1="140" x2="175" y2="75" stroke="#64f6c8" strokeWidth="4" markerEnd="url(#arrowFlow)" filter="url(#flowGlow)">
+        <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite" />
+      </line>
+      <line x1="90" y1="140" x2="175" y2="200" stroke="#64f6c8" strokeWidth="4" markerEnd="url(#arrowFlow)" filter="url(#flowGlow)">
+        <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite" begin="0.2s" />
+      </line>
+      <line x1="220" y1="65" x2="365" y2="65" stroke="#64f6c8" strokeWidth="4" markerEnd="url(#arrowFlow)" filter="url(#flowGlow)">
+        <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite" begin="0.4s" />
+      </line>
+      <line x1="220" y1="210" x2="365" y2="210" stroke="#64f6c8" strokeWidth="4" markerEnd="url(#arrowFlow)" filter="url(#flowGlow)">
+        <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite" begin="0.6s" />
+      </line>
+      <line x1="200" y1="80" x2="200" y2="190" stroke="#3d4d6b" strokeWidth="2" markerEnd="url(#arrowFlowGray)" />
+      <line x1="400" y1="80" x2="400" y2="190" stroke="#3d4d6b" strokeWidth="2" markerEnd="url(#arrowFlowGray)" />
+      <line x1="425" y1="65" x2="510" y2="130" stroke="#64f6c8" strokeWidth="4" markerEnd="url(#arrowFlow)" filter="url(#flowGlow)">
+        <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite" begin="0.8s" />
+      </line>
+      <line x1="425" y1="210" x2="510" y2="150" stroke="#64f6c8" strokeWidth="4" markerEnd="url(#arrowFlow)" filter="url(#flowGlow)">
+        <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite" begin="1s" />
+      </line>
+
+      {/* תוויות זרימה/קיבולת */}
+      <text x="120" y="95" fill="#64f6c8" fontSize="12" fontWeight="bold">10/10</text>
+      <text x="120" y="185" fill="#64f6c8" fontSize="12" fontWeight="bold">10/15</text>
+      <text x="285" y="55" fill="#64f6c8" fontSize="12" fontWeight="bold">10/12</text>
+      <text x="285" y="230" fill="#64f6c8" fontSize="12" fontWeight="bold">10/14</text>
+      <text x="175" y="145" fill="#3d4d6b" fontSize="11">0/5</text>
+      <text x="410" y="145" fill="#3d4d6b" fontSize="11">0/3</text>
+      <text x="470" y="90" fill="#64f6c8" fontSize="12" fontWeight="bold">10/10</text>
+      <text x="470" y="195" fill="#64f6c8" fontSize="12" fontWeight="bold">10/15</text>
+
+      {/* קודקודים */}
+      <circle cx="70" cy="140" r="25" fill="#fbbf24" stroke="#fff" strokeWidth="3" />
+      <text x="70" y="147" fill="#fff" fontSize="18" fontWeight="bold" textAnchor="middle">s</text>
+
+      <circle cx="200" cy="65" r="22" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+      <text x="200" y="72" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">A</text>
+
+      <circle cx="200" cy="210" r="22" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+      <text x="200" y="217" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">B</text>
+
+      <circle cx="400" cy="65" r="22" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+      <text x="400" y="72" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">C</text>
+
+      <circle cx="400" cy="210" r="22" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+      <text x="400" y="217" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">D</text>
+
+      <circle cx="530" cy="140" r="25" fill="#f97316" stroke="#fff" strokeWidth="3" />
+      <text x="530" y="147" fill="#fff" fontSize="18" fontWeight="bold" textAnchor="middle">t</text>
+
+      {/* כותרת */}
+      <text x="300" y="260" fill="#64f6c8" fontSize="14" fontWeight="bold" textAnchor="middle">
+        זרימה מקסימלית: 20 יחידות (s → t)
+      </text>
+    </svg>
+  </div>
+  <figcaption className="conceptStory__caption">
+    <h4>זרימה ברשת</h4>
+    <p>
+      על כל קשת מופיע f/c (זרימה/קיבולת). הזרימה המקסימלית היא 20:
+      10 יחידות דרך הנתיב העליון ו-10 דרך התחתון.
+    </p>
+    <ul>
+      <li><strong>s (מקור):</strong> משם יוצאת כל הזרימה</li>
+      <li><strong>t (בור):</strong> לשם מגיעה כל הזרימה</li>
+      <li><strong>f/c:</strong> כמה זורם / כמה אפשר</li>
+    </ul>
+  </figcaption>
+</figure>
+
+<section className="conceptGrid container">
+  <article className="conceptCard conceptCard--explain">
+    <p className="conceptCard__label">הגדרה</p>
+    <h3 className="conceptCard__title">רשת זרימה</h3>
+    <p className="conceptCard__body">
+      <strong>G = (V, E)</strong> - גרף מכוון
+      <br/><br/>
+      <strong>c: E → ℝ⁺</strong> - פונקציית קיבולת (capacity)
+      <br/><br/>
+      <strong>s ∈ V</strong> - מקור (source)
+      <br/><br/>
+      <strong>t ∈ V</strong> - בור/יעד (sink)
+    </p>
+  </article>
+  <article className="conceptCard conceptCard--algorithm">
+    <p className="conceptCard__label">אילוצים</p>
+    <h3 className="conceptCard__title">מהי זרימה חוקית?</h3>
+    <p className="conceptCard__body">
+      <strong>1. מגבלת קיבולת:</strong>
+      <br/>
+      0 ≤ f(u,v) ≤ c(u,v)
+      <br/><br/>
+      <strong>2. שימור זרימה:</strong>
+      <br/>
+      לכל v ≠ s,t:
+      <br/>
+      סכום נכנס = סכום יוצא
+      <br/><br/>
+      (מה שנכנס - יוצא, לא "נעלם")
+    </p>
+  </article>
+  <article className="conceptCard conceptCard--solution">
+    <p className="conceptCard__label">מטרה</p>
+    <h3 className="conceptCard__title">זרימה מקסימלית</h3>
+    <p className="conceptCard__body">
+      <strong>|f| = סכום הזרימה היוצאת מ-s</strong>
+      <br/><br/>
+      המטרה: למצוא זרימה חוקית f שממקסמת את |f|
+      <br/><br/>
+      <strong>משפט:</strong> |f| = סכום הזרימה הנכנסת ל-t
+      <br/>
+      (כי הכל משתמר בדרך)
+    </p>
+  </article>
+</section>
+
+<section id="residual-network" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">מושג מפתח</p>
+    <h2>רשת שארית (Residual Network)</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>הרעיון:</strong> בהינתן זרימה f, הרשת השארית Gf מראה כמה עוד אפשר להעביר בכל כיוון.
+      </p>
+      <p>
+        <strong>קיבולת שארית:</strong> לכל קשת (u,v):
+      </p>
+      <ul>
+        <li><strong>קשת קדמית:</strong> cf(u,v) = c(u,v) - f(u,v) (כמה נשאר)</li>
+        <li><strong>קשת אחורית:</strong> cf(v,u) = f(u,v) (כמה אפשר "לבטל")</li>
+      </ul>
+      <p>
+        <strong>מסלול משפר (Augmenting Path):</strong> מסלול מ-s ל-t ברשת השארית. 
+        אם קיים כזה - אפשר להגדיל את הזרימה!
+      </p>
+    </article>
+  </div>
+
+  <figure style={{ margin: '2rem 0', padding: '1.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '16px' }}>
+    <h4 style={{ textAlign: 'center', color: '#64f6c8', marginBottom: '1rem' }}>הרשת המקורית vs הרשת השארית</h4>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
+      
+      <div style={{ textAlign: 'center' }}>
+        <p style={{ color: '#fbbf24', marginBottom: '0.5rem', fontWeight: 'bold' }}>רשת מקורית עם זרימה</p>
+        <svg viewBox="0 0 200 120" style={{ width: '100%', maxWidth: '200px' }}>
+          <defs>
+            <marker id="arr1" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#64f6c8" />
+            </marker>
+          </defs>
+          <line x1="40" y1="60" x2="155" y2="60" stroke="#64f6c8" strokeWidth="3" markerEnd="url(#arr1)" />
+          <circle cx="30" cy="60" r="18" fill="#fbbf24" stroke="#fff" strokeWidth="2" />
+          <text x="30" y="66" fill="#fff" fontSize="12" textAnchor="middle" fontWeight="bold">u</text>
+          <circle cx="170" cy="60" r="18" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+          <text x="170" y="66" fill="#fff" fontSize="12" textAnchor="middle" fontWeight="bold">v</text>
+          <text x="100" y="50" fill="#64f6c8" fontSize="12" fontWeight="bold" textAnchor="middle">7/10</text>
+          <text x="100" y="95" fill="#a0aec0" fontSize="10" textAnchor="middle">זרימה 7, קיבולת 10</text>
+        </svg>
+      </div>
+
+      <div style={{ textAlign: 'center' }}>
+        <p style={{ color: '#64f6c8', marginBottom: '0.5rem', fontWeight: 'bold' }}>רשת שארית Gf</p>
+        <svg viewBox="0 0 200 120" style={{ width: '100%', maxWidth: '200px' }}>
+          <defs>
+            <marker id="arr2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#64f6c8" />
+            </marker>
+            <marker id="arr3" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#a78bfa" />
+            </marker>
+          </defs>
+          {/* קשת קדמית */}
+          <line x1="50" y1="50" x2="145" y2="50" stroke="#64f6c8" strokeWidth="2" markerEnd="url(#arr2)" />
+          {/* קשת אחורית */}
+          <line x1="150" y1="70" x2="55" y2="70" stroke="#a78bfa" strokeWidth="2" strokeDasharray="4,2" markerEnd="url(#arr3)" />
+          <circle cx="30" cy="60" r="18" fill="#fbbf24" stroke="#fff" strokeWidth="2" />
+          <text x="30" y="66" fill="#fff" fontSize="12" textAnchor="middle" fontWeight="bold">u</text>
+          <circle cx="170" cy="60" r="18" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+          <text x="170" y="66" fill="#fff" fontSize="12" textAnchor="middle" fontWeight="bold">v</text>
+          <text x="100" y="42" fill="#64f6c8" fontSize="11" fontWeight="bold" textAnchor="middle">3</text>
+          <text x="100" y="88" fill="#a78bfa" fontSize="11" fontWeight="bold" textAnchor="middle">7</text>
+        </svg>
+        <p style={{ color: '#a0aec0', fontSize: '0.8rem', marginTop: '0.5rem' }}>
+          <span style={{ color: '#64f6c8' }}>3 = נשאר להעביר</span> | <span style={{ color: '#a78bfa' }}>7 = אפשר לבטל</span>
+        </p>
+      </div>
+    </div>
+  </figure>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">קשת קדמית</p>
+      <h3 className="conceptCard__title">Forward Edge</h3>
+      <p className="conceptCard__body">
+        <strong>cf(u,v) = c(u,v) - f(u,v)</strong>
+        <br/><br/>
+        כמה עוד אפשר להעביר מ-u ל-v?
+        <br/><br/>
+        <strong>בדוגמה:</strong> 10 - 7 = 3
+        <br/>
+        אפשר להוסיף עוד 3 יחידות
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">קשת אחורית</p>
+      <h3 className="conceptCard__title">Backward Edge</h3>
+      <p className="conceptCard__body">
+        <strong>cf(v,u) = f(u,v)</strong>
+        <br/><br/>
+        כמה אפשר "לבטל" מהזרימה הקיימת?
+        <br/><br/>
+        <strong>בדוגמה:</strong> 7
+        <br/>
+        אפשר להפחית עד 7 יחידות
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--property">
+      <p className="conceptCard__label">למה צריך?</p>
+      <h3 className="conceptCard__title">ביטול = תיקון טעויות</h3>
+      <p className="conceptCard__body">
+        הקשת האחורית מאפשרת "לחזור" על החלטות!
+        <br/><br/>
+        אם שלחנו זרימה בנתיב לא אופטימלי, 
+        הקשת האחורית מאפשרת לתקן.
+        <br/><br/>
+        <strong>זה מה שמבטיח אופטימליות!</strong>
+      </p>
+    </article>
+  </div>
+</section>
+
+<section id="max-flow-min-cut" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">משפט מרכזי</p>
+    <h2>משפט זרימה מקסימלית - חתך מינימלי</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>משפט Max-Flow Min-Cut:</strong> זהו אחד המשפטים החשובים ביותר בתורת הגרפים!
+        הוא מקשר בין שני מושגים שנראים שונים לחלוטין.
+      </p>
+      <p>
+        <strong>חתך (S, T):</strong> חלוקה של הקודקודים לשתי קבוצות, כך ש-s ∈ S ו-t ∈ T.
+      </p>
+      <p>
+        <strong>קיבולת החתך:</strong> סכום הקיבולויות של כל הקשתות שיוצאות מ-S ל-T.
+      </p>
+    </article>
+  </div>
+
+  <figure style={{ margin: '2rem 0', padding: '1.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '16px' }}>
+    <h4 style={{ textAlign: 'center', color: '#64f6c8', marginBottom: '1rem' }}>מהו חתך ברשת?</h4>
+    <svg viewBox="0 0 500 200" style={{ width: '100%' }}>
+      <defs>
+        <marker id="arr-cut" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#64f6c8" />
+        </marker>
+      </defs>
+      
+      {/* אזור S */}
+      <ellipse cx="130" cy="100" rx="100" ry="85" fill="rgba(251,191,36,0.15)" stroke="#fbbf24" strokeWidth="2" strokeDasharray="8,4" />
+      <text x="130" y="30" fill="#fbbf24" fontSize="14" fontWeight="bold" textAnchor="middle">S</text>
+      
+      {/* אזור T */}
+      <ellipse cx="370" cy="100" rx="100" ry="85" fill="rgba(249,115,22,0.15)" stroke="#f97316" strokeWidth="2" strokeDasharray="8,4" />
+      <text x="370" y="30" fill="#f97316" fontSize="14" fontWeight="bold" textAnchor="middle">T</text>
+      
+      {/* קשתות החתך */}
+      <line x1="175" y1="60" x2="285" y2="60" stroke="#ef4444" strokeWidth="4" markerEnd="url(#arr-cut)" />
+      <line x1="175" y1="100" x2="285" y2="100" stroke="#ef4444" strokeWidth="4" markerEnd="url(#arr-cut)" />
+      <line x1="175" y1="140" x2="285" y2="140" stroke="#ef4444" strokeWidth="4" markerEnd="url(#arr-cut)" />
+      
+      {/* קיבולויות על קשתות החתך */}
+      <text x="230" y="50" fill="#ef4444" fontSize="12" fontWeight="bold" textAnchor="middle">c=10</text>
+      <text x="230" y="90" fill="#ef4444" fontSize="12" fontWeight="bold" textAnchor="middle">c=8</text>
+      <text x="230" y="155" fill="#ef4444" fontSize="12" fontWeight="bold" textAnchor="middle">c=5</text>
+      
+      {/* קודקודים */}
+      <circle cx="70" cy="100" r="20" fill="#fbbf24" stroke="#fff" strokeWidth="2" />
+      <text x="70" y="106" fill="#fff" fontSize="14" textAnchor="middle" fontWeight="bold">s</text>
+      
+      <circle cx="160" cy="60" r="16" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+      <text x="160" y="65" fill="#fff" fontSize="11" textAnchor="middle">a</text>
+      
+      <circle cx="160" cy="100" r="16" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+      <text x="160" y="105" fill="#fff" fontSize="11" textAnchor="middle">b</text>
+      
+      <circle cx="160" cy="140" r="16" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+      <text x="160" y="145" fill="#fff" fontSize="11" textAnchor="middle">c</text>
+      
+      <circle cx="340" cy="60" r="16" fill="#a78bfa" stroke="#fff" strokeWidth="2" />
+      <text x="340" y="65" fill="#fff" fontSize="11" textAnchor="middle">d</text>
+      
+      <circle cx="340" cy="100" r="16" fill="#a78bfa" stroke="#fff" strokeWidth="2" />
+      <text x="340" y="105" fill="#fff" fontSize="11" textAnchor="middle">e</text>
+      
+      <circle cx="340" cy="140" r="16" fill="#a78bfa" stroke="#fff" strokeWidth="2" />
+      <text x="340" y="145" fill="#fff" fontSize="11" textAnchor="middle">f</text>
+      
+      <circle cx="430" cy="100" r="20" fill="#f97316" stroke="#fff" strokeWidth="2" />
+      <text x="430" y="106" fill="#fff" fontSize="14" textAnchor="middle" fontWeight="bold">t</text>
+    </svg>
+    <p style={{ textAlign: 'center', color: '#ef4444', marginTop: '1rem', fontWeight: 'bold' }}>
+      קיבולת החתך = 10 + 8 + 5 = 23
+    </p>
+    <p style={{ textAlign: 'center', color: '#a0aec0', fontSize: '0.9rem' }}>
+      הקשתות האדומות הן קשתות החתך - יוצאות מ-S ונכנסות ל-T
+    </p>
+  </figure>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--explain">
+      <p className="conceptCard__label">המשפט</p>
+      <h3 className="conceptCard__title">Max-Flow = Min-Cut</h3>
+      <p className="conceptCard__body">
+        <strong>שלושה דברים שקולים:</strong>
+        <br/><br/>
+        1. f היא זרימה מקסימלית
+        <br/><br/>
+        2. אין מסלול משפר ב-Gf
+        <br/><br/>
+        3. |f| = קיבולת חתך מינימלי כלשהו
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">אינטואיציה</p>
+      <h3 className="conceptCard__title">למה זה נכון?</h3>
+      <p className="conceptCard__body">
+        <strong>חסם עליון:</strong> כל זרימה חייבת לעבור דרך כל חתך!
+        <br/>
+        לכן: |f| ≤ קיבולת כל חתך
+        <br/><br/>
+        <strong>השגה:</strong> פורד-פולקרסון מוצא זרימה שמגיעה לחסם העליון הזה.
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">מציאת החתך</p>
+      <h3 className="conceptCard__title">איך מוצאים את Min-Cut?</h3>
+      <p className="conceptCard__body">
+        <strong>אחרי סיום פורד-פולקרסון:</strong>
+        <br/><br/>
+        S = כל הקודקודים שניתן להגיע אליהם מ-s ברשת השארית
+        <br/><br/>
+        T = V - S
+        <br/><br/>
+        <strong>זה החתך המינימלי!</strong>
+      </p>
+    </article>
+  </div>
+
+</section>
+
+<section id="ford-fulkerson" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">אלגוריתם 1</p>
+    <h2>אלגוריתם פורד-פולקרסון (Ford-Fulkerson)</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>רעיון מרכזי:</strong> כל עוד יש מסלול משפר ברשת השארית - הגדל את הזרימה דרכו!
+      </p>
+      <p>
+        <strong>השיטה:</strong>
+      </p>
+      <ol>
+        <li>התחל עם זרימה 0</li>
+        <li>כל עוד קיים מסלול משפר p מ-s ל-t ברשת השארית:</li>
+        <ul>
+          <li>מצא את הקיבולת המינימלית על המסלול (צוואר בקבוק)</li>
+          <li>הגדל את הזרימה לאורך המסלול בכמות זו</li>
+        </ul>
+        <li>החזר את הזרימה</li>
+      </ol>
+      <p>
+        <strong>משפט Max-Flow Min-Cut:</strong> הזרימה המקסימלית = הקיבולת של החתך המינימלי!
+      </p>
+    </article>
+  </div>
+
+  <div style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}>
+    <pre className="greedyDoc__code">
+{`Ford-Fulkerson(G, s, t):
+  1.  for each edge (u, v) in E:
+  2.      f[u,v] = 0             // initialize flow
+  3.  
+  4.  while exists augmenting path p from s to t in Gf:
+  5.      // Find bottleneck capacity
+  6.      cf(p) = min{ cf(u,v) : (u,v) in p }
+  7.      
+  8.      // Augment flow along path
+  9.      for each edge (u, v) in p:
+ 10.          if (u, v) is forward edge:
+ 11.              f[u,v] = f[u,v] + cf(p)
+ 12.          else:  // backward edge
+ 13.              f[v,u] = f[v,u] - cf(p)
+ 14.  
+ 15.  return f
+
+Time: O(E · |f*|) where |f*| is max flow value
+      (can be very slow with bad path choices!)`}
+    </pre>
+  </div>
+
+  <figure style={{ margin: '2rem 0', padding: '1.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '16px' }}>
+    <h4 style={{ textAlign: 'center', color: '#64f6c8', marginBottom: '1rem' }}>דוגמה: מציאת מסלול משפר</h4>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+      
+      <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '8px', padding: '1rem', textAlign: 'center' }}>
+        <p style={{ color: '#fbbf24', fontSize: '0.9rem', marginBottom: '0.5rem' }}>שלב 1: זרימה התחלתית</p>
+        <svg viewBox="0 0 150 100" style={{ width: '100%' }}>
+          <defs>
+            <marker id="ar1" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#3d4d6b" />
+            </marker>
+          </defs>
+          <line x1="35" y1="50" x2="70" y2="25" stroke="#3d4d6b" strokeWidth="2" markerEnd="url(#ar1)" />
+          <line x1="35" y1="50" x2="70" y2="75" stroke="#3d4d6b" strokeWidth="2" markerEnd="url(#ar1)" />
+          <line x1="90" y1="25" x2="115" y2="50" stroke="#3d4d6b" strokeWidth="2" markerEnd="url(#ar1)" />
+          <line x1="90" y1="75" x2="115" y2="50" stroke="#3d4d6b" strokeWidth="2" markerEnd="url(#ar1)" />
+          <circle cx="25" cy="50" r="12" fill="#fbbf24" />
+          <text x="25" y="54" fill="#fff" fontSize="10" textAnchor="middle">s</text>
+          <circle cx="80" cy="20" r="12" fill="#0d8bd4" />
+          <text x="80" y="24" fill="#fff" fontSize="10" textAnchor="middle">a</text>
+          <circle cx="80" cy="80" r="12" fill="#0d8bd4" />
+          <text x="80" y="84" fill="#fff" fontSize="10" textAnchor="middle">b</text>
+          <circle cx="125" cy="50" r="12" fill="#f97316" />
+          <text x="125" y="54" fill="#fff" fontSize="10" textAnchor="middle">t</text>
+          <text x="50" y="30" fill="#a0aec0" fontSize="8">0/10</text>
+          <text x="50" y="72" fill="#a0aec0" fontSize="8">0/5</text>
+        </svg>
+        <p style={{ color: '#a0aec0', fontSize: '0.75rem', margin: 0 }}>f = 0</p>
+      </div>
+
+      <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '8px', padding: '1rem', textAlign: 'center' }}>
+        <p style={{ color: '#fbbf24', fontSize: '0.9rem', marginBottom: '0.5rem' }}>שלב 2: מסלול s→a→t</p>
+        <svg viewBox="0 0 150 100" style={{ width: '100%' }}>
+          <defs>
+            <marker id="ar2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#64f6c8" />
+            </marker>
+            <marker id="ar2g" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#3d4d6b" />
+            </marker>
+          </defs>
+          <line x1="35" y1="50" x2="70" y2="25" stroke="#64f6c8" strokeWidth="3" markerEnd="url(#ar2)" />
+          <line x1="35" y1="50" x2="70" y2="75" stroke="#3d4d6b" strokeWidth="2" markerEnd="url(#ar2g)" />
+          <line x1="90" y1="25" x2="115" y2="50" stroke="#64f6c8" strokeWidth="3" markerEnd="url(#ar2)" />
+          <line x1="90" y1="75" x2="115" y2="50" stroke="#3d4d6b" strokeWidth="2" markerEnd="url(#ar2g)" />
+          <circle cx="25" cy="50" r="12" fill="#fbbf24" />
+          <text x="25" y="54" fill="#fff" fontSize="10" textAnchor="middle">s</text>
+          <circle cx="80" cy="20" r="12" fill="#0d8bd4" />
+          <text x="80" y="24" fill="#fff" fontSize="10" textAnchor="middle">a</text>
+          <circle cx="80" cy="80" r="12" fill="#0d8bd4" />
+          <text x="80" y="84" fill="#fff" fontSize="10" textAnchor="middle">b</text>
+          <circle cx="125" cy="50" r="12" fill="#f97316" />
+          <text x="125" y="54" fill="#fff" fontSize="10" textAnchor="middle">t</text>
+          <text x="50" y="30" fill="#64f6c8" fontSize="8">+10</text>
+        </svg>
+        <p style={{ color: '#64f6c8', fontSize: '0.75rem', margin: 0 }}>f = 10</p>
+      </div>
+
+      <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '8px', padding: '1rem', textAlign: 'center' }}>
+        <p style={{ color: '#fbbf24', fontSize: '0.9rem', marginBottom: '0.5rem' }}>שלב 3: מסלול s→b→t</p>
+        <svg viewBox="0 0 150 100" style={{ width: '100%' }}>
+          <defs>
+            <marker id="ar3" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#64f6c8" />
+            </marker>
+          </defs>
+          <line x1="35" y1="50" x2="70" y2="25" stroke="#64f6c8" strokeWidth="3" markerEnd="url(#ar3)" />
+          <line x1="35" y1="50" x2="70" y2="75" stroke="#64f6c8" strokeWidth="3" markerEnd="url(#ar3)" />
+          <line x1="90" y1="25" x2="115" y2="50" stroke="#64f6c8" strokeWidth="3" markerEnd="url(#ar3)" />
+          <line x1="90" y1="75" x2="115" y2="50" stroke="#64f6c8" strokeWidth="3" markerEnd="url(#ar3)" />
+          <circle cx="25" cy="50" r="12" fill="#fbbf24" />
+          <text x="25" y="54" fill="#fff" fontSize="10" textAnchor="middle">s</text>
+          <circle cx="80" cy="20" r="12" fill="#0d8bd4" />
+          <text x="80" y="24" fill="#fff" fontSize="10" textAnchor="middle">a</text>
+          <circle cx="80" cy="80" r="12" fill="#0d8bd4" />
+          <text x="80" y="84" fill="#fff" fontSize="10" textAnchor="middle">b</text>
+          <circle cx="125" cy="50" r="12" fill="#f97316" />
+          <text x="125" y="54" fill="#fff" fontSize="10" textAnchor="middle">t</text>
+          <text x="50" y="72" fill="#64f6c8" fontSize="8">+5</text>
+        </svg>
+        <p style={{ color: '#64f6c8', fontSize: '0.75rem', margin: 0 }}>f = 15 (מקסימום!)</p>
+      </div>
+    </div>
+  </figure>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">נכונות</p>
+      <h3 className="conceptCard__title">Max-Flow Min-Cut</h3>
+      <p className="conceptCard__body">
+        <strong>משפט חשוב:</strong>
+        <br/>
+        הזרימה המקסימלית = קיבולת החתך המינימלי
+        <br/><br/>
+        <strong>חתך (S,T):</strong> חלוקה כך ש-s∈S, t∈T
+        <br/>
+        <strong>קיבולת חתך:</strong> סכום הקיבולויות מ-S ל-T
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">סיבוכיות</p>
+      <h3 className="conceptCard__title">הבעיה עם פורד-פולקרסון</h3>
+      <p className="conceptCard__body">
+        <strong>O(E · |f*|)</strong>
+        <br/><br/>
+        אם הקיבולויות גדולות (או אי-רציונליות!) 
+        האלגוריתם יכול לרוץ הרבה מאוד זמן.
+        <br/><br/>
+        <strong>פתרון:</strong> אדמונדס-קארפ!
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--property">
+      <p className="conceptCard__label">תנאי עצירה</p>
+      <h3 className="conceptCard__title">מתי עוצרים?</h3>
+      <p className="conceptCard__body">
+        כשאין מסלול מ-s ל-t ברשת השארית.
+        <br/><br/>
+        <strong>אז:</strong> הזרימה הנוכחית מקסימלית!
+        <br/><br/>
+        הקודקודים שניתן להגיע אליהם מ-s יוצרים את S בחתך המינימלי.
+      </p>
+    </article>
+  </div>
+</section>
+
+<section id="edmonds-karp" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">אלגוריתם 2</p>
+    <h2>אלגוריתם אדמונדס-קארפ (Edmonds-Karp)</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>שיפור פשוט אך קריטי:</strong> תמיד בחר את המסלול המשפר <strong>הקצר ביותר</strong> (BFS)!
+      </p>
+      <p>
+        זהו בדיוק פורד-פולקרסון, אבל במקום לבחור מסלול כלשהו, משתמשים ב-BFS 
+        למציאת מסלול עם מספר קשתות מינימלי.
+      </p>
+      <p>
+        <strong>יתרון:</strong> סיבוכיות מובטחת O(VE²) - לא תלוי בערכי הקיבולויות!
+      </p>
+    </article>
+  </div>
+
+  <div style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}>
+    <pre className="greedyDoc__code">
+{`Edmonds-Karp(G, s, t):
+  1.  for each edge (u, v) in E:
+  2.      f[u,v] = 0
+  3.  
+  4.  while True:
+  5.      // BFS to find shortest augmenting path
+  6.      p = BFS(Gf, s, t)
+  7.      if p == NULL:
+  8.          break           // no more paths
+  9.      
+ 10.      // Find bottleneck
+ 11.      cf(p) = min{ cf(u,v) : (u,v) in p }
+ 12.      
+ 13.      // Augment flow
+ 14.      for each edge (u, v) in p:
+ 15.          if (u, v) is forward edge:
+ 16.              f[u,v] = f[u,v] + cf(p)
+ 17.          else:
+ 18.              f[v,u] = f[v,u] - cf(p)
+ 19.  
+ 20.  return f
+
+Time: O(V · E²)
+      (at most O(VE) augmentations, each O(E) for BFS)`}
+    </pre>
+  </div>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">למה BFS?</p>
+      <h3 className="conceptCard__title">מסלול קצר = מהיר יותר</h3>
+      <p className="conceptCard__body">
+        <strong>תובנה מפתח:</strong>
+        <br/>
+        כשמשתמשים במסלול הקצר ביותר, המרחק מ-s לכל קודקוד ברשת השארית יכול רק לגדול!
+        <br/><br/>
+        לכן יש לכל היותר O(VE) מסלולים משפרים.
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">סיבוכיות</p>
+      <h3 className="conceptCard__title">ניתוח מדויק</h3>
+      <p className="conceptCard__body">
+        <strong>מספר איטרציות:</strong> O(VE)
+        <br/>
+        (כל קשת יכולה להיות קריטית O(V) פעמים)
+        <br/><br/>
+        <strong>כל איטרציה:</strong> O(E) ל-BFS
+        <br/><br/>
+        <strong>סה"כ:</strong> O(V · E²)
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--property">
+      <p className="conceptCard__label">השוואה</p>
+      <h3 className="conceptCard__title">פורד-פולקרסון vs אדמונדס-קארפ</h3>
+      <p className="conceptCard__body">
+        <strong>פורד-פולקרסון:</strong>
+        <br/>
+        O(E · |f*|) - תלוי בזרימה
+        <br/><br/>
+        <strong>אדמונדס-קארפ:</strong>
+        <br/>
+        O(VE²) - פולינומי תמיד!
+        <br/><br/>
+        <strong>בפועל:</strong> עדיף אדמונדס-קארפ
+      </p>
+    </article>
+  </div>
+</section>
+
+<section id="bipartite-matching" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">רדוקציה</p>
+    <h2>זיווג מקסימלי בגרף דו-צדדי</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>הבעיה:</strong> נתון גרף דו-צדדי G = (L ∪ R, E). מצא זיווג מקסימלי - 
+        קבוצת קשתות מקסימלית כך שכל קודקוד משתתף לכל היותר בקשת אחת.
+      </p>
+      <p>
+        <strong>דוגמה:</strong> שיבוץ עובדים למשימות, סטודנטים לפרויקטים, וכו'.
+      </p>
+      <p>
+        <strong>הרדוקציה:</strong> נבנה רשת זרימה ונמצא זרימה מקסימלית!
+      </p>
+    </article>
+  </div>
+
+  <figure style={{ margin: '2rem 0', padding: '1.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '16px' }}>
+    <h4 style={{ textAlign: 'center', color: '#64f6c8', marginBottom: '1rem' }}>רדוקציה: גרף דו-צדדי → רשת זרימה</h4>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '2rem' }}>
+      
+      <div style={{ textAlign: 'center' }}>
+        <p style={{ color: '#fbbf24', marginBottom: '0.5rem', fontWeight: 'bold' }}>גרף דו-צדדי מקורי</p>
+        <svg viewBox="0 0 180 140" style={{ width: '100%', maxWidth: '180px' }}>
+          <line x1="50" y1="30" x2="130" y2="30" stroke="#64f6c8" strokeWidth="2" />
+          <line x1="50" y1="30" x2="130" y2="70" stroke="#3d4d6b" strokeWidth="2" />
+          <line x1="50" y1="70" x2="130" y2="70" stroke="#64f6c8" strokeWidth="2" />
+          <line x1="50" y1="110" x2="130" y2="110" stroke="#64f6c8" strokeWidth="2" />
+          <line x1="50" y1="110" x2="130" y2="70" stroke="#3d4d6b" strokeWidth="2" />
+          
+          <circle cx="40" cy="30" r="14" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+          <text x="40" y="35" fill="#fff" fontSize="11" textAnchor="middle">A</text>
+          <circle cx="40" cy="70" r="14" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+          <text x="40" y="75" fill="#fff" fontSize="11" textAnchor="middle">B</text>
+          <circle cx="40" cy="110" r="14" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+          <text x="40" y="115" fill="#fff" fontSize="11" textAnchor="middle">C</text>
+          
+          <circle cx="140" cy="30" r="14" fill="#a78bfa" stroke="#fff" strokeWidth="2" />
+          <text x="140" y="35" fill="#fff" fontSize="11" textAnchor="middle">1</text>
+          <circle cx="140" cy="70" r="14" fill="#a78bfa" stroke="#fff" strokeWidth="2" />
+          <text x="140" y="75" fill="#fff" fontSize="11" textAnchor="middle">2</text>
+          <circle cx="140" cy="110" r="14" fill="#a78bfa" stroke="#fff" strokeWidth="2" />
+          <text x="140" y="115" fill="#fff" fontSize="11" textAnchor="middle">3</text>
+          
+          <text x="20" y="70" fill="#0d8bd4" fontSize="10" textAnchor="middle">L</text>
+          <text x="160" y="70" fill="#a78bfa" fontSize="10" textAnchor="middle">R</text>
+        </svg>
+        <p style={{ color: '#a0aec0', fontSize: '0.8rem', marginTop: '0.5rem' }}>מצא זיווג מקסימלי</p>
+      </div>
+
+      <div style={{ textAlign: 'center' }}>
+        <p style={{ color: '#64f6c8', marginBottom: '0.5rem', fontWeight: 'bold' }}>רשת זרימה מתאימה</p>
+        <svg viewBox="0 0 220 140" style={{ width: '100%', maxWidth: '220px' }}>
+          <defs>
+            <marker id="arr-bp" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+              <polygon points="0 0, 6 2.5, 0 5" fill="#64f6c8" />
+            </marker>
+          </defs>
+          {/* s → L */}
+          <line x1="25" y1="70" x2="55" y2="30" stroke="#fbbf24" strokeWidth="2" markerEnd="url(#arr-bp)" />
+          <line x1="25" y1="70" x2="55" y2="70" stroke="#fbbf24" strokeWidth="2" markerEnd="url(#arr-bp)" />
+          <line x1="25" y1="70" x2="55" y2="110" stroke="#fbbf24" strokeWidth="2" markerEnd="url(#arr-bp)" />
+          {/* L → R */}
+          <line x1="80" y1="30" x2="130" y2="30" stroke="#64f6c8" strokeWidth="2" markerEnd="url(#arr-bp)" />
+          <line x1="80" y1="30" x2="130" y2="70" stroke="#3d4d6b" strokeWidth="1" markerEnd="url(#arr-bp)" />
+          <line x1="80" y1="70" x2="130" y2="70" stroke="#64f6c8" strokeWidth="2" markerEnd="url(#arr-bp)" />
+          <line x1="80" y1="110" x2="130" y2="110" stroke="#64f6c8" strokeWidth="2" markerEnd="url(#arr-bp)" />
+          <line x1="80" y1="110" x2="130" y2="70" stroke="#3d4d6b" strokeWidth="1" markerEnd="url(#arr-bp)" />
+          {/* R → t */}
+          <line x1="155" y1="30" x2="190" y2="70" stroke="#f97316" strokeWidth="2" markerEnd="url(#arr-bp)" />
+          <line x1="155" y1="70" x2="190" y2="70" stroke="#f97316" strokeWidth="2" markerEnd="url(#arr-bp)" />
+          <line x1="155" y1="110" x2="190" y2="70" stroke="#f97316" strokeWidth="2" markerEnd="url(#arr-bp)" />
+          
+          <circle cx="15" cy="70" r="12" fill="#fbbf24" stroke="#fff" strokeWidth="2" />
+          <text x="15" y="74" fill="#fff" fontSize="10" textAnchor="middle">s</text>
+          
+          <circle cx="65" cy="30" r="12" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+          <text x="65" y="34" fill="#fff" fontSize="9" textAnchor="middle">A</text>
+          <circle cx="65" cy="70" r="12" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+          <text x="65" y="74" fill="#fff" fontSize="9" textAnchor="middle">B</text>
+          <circle cx="65" cy="110" r="12" fill="#0d8bd4" stroke="#fff" strokeWidth="2" />
+          <text x="65" y="114" fill="#fff" fontSize="9" textAnchor="middle">C</text>
+          
+          <circle cx="145" cy="30" r="12" fill="#a78bfa" stroke="#fff" strokeWidth="2" />
+          <text x="145" y="34" fill="#fff" fontSize="9" textAnchor="middle">1</text>
+          <circle cx="145" cy="70" r="12" fill="#a78bfa" stroke="#fff" strokeWidth="2" />
+          <text x="145" y="74" fill="#fff" fontSize="9" textAnchor="middle">2</text>
+          <circle cx="145" cy="110" r="12" fill="#a78bfa" stroke="#fff" strokeWidth="2" />
+          <text x="145" y="114" fill="#fff" fontSize="9" textAnchor="middle">3</text>
+          
+          <circle cx="200" cy="70" r="12" fill="#f97316" stroke="#fff" strokeWidth="2" />
+          <text x="200" y="74" fill="#fff" fontSize="10" textAnchor="middle">t</text>
+        </svg>
+        <p style={{ color: '#a0aec0', fontSize: '0.8rem', marginTop: '0.5rem' }}>כל הקיבולויות = 1</p>
+      </div>
+    </div>
+    <p style={{ textAlign: 'center', color: '#64f6c8', marginTop: '1rem' }}>
+      <strong>זרימה מקסימלית = גודל הזיווג המקסימלי!</strong>
+    </p>
+  </figure>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">בניית הרשת</p>
+      <h3 className="conceptCard__title">איך בונים?</h3>
+      <p className="conceptCard__body">
+        <strong>1.</strong> הוסף מקור s וחבר לכל קודקוד ב-L
+        <br/>
+        <strong>2.</strong> הוסף בור t וחבר מכל קודקוד ב-R
+        <br/>
+        <strong>3.</strong> כיוון קשתות מקוריות: L → R
+        <br/>
+        <strong>4.</strong> כל הקיבולויות = 1
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">נכונות</p>
+      <h3 className="conceptCard__title">למה זה עובד?</h3>
+      <p className="conceptCard__body">
+        <strong>קיבולת 1 מ-s:</strong> כל קודקוד ב-L מזווג לכל היותר פעם אחת
+        <br/><br/>
+        <strong>קיבולת 1 ל-t:</strong> כל קודקוד ב-R מזווג לכל היותר פעם אחת
+        <br/><br/>
+        <strong>זרימה = זיווג חוקי!</strong>
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--property">
+      <p className="conceptCard__label">סיבוכיות</p>
+      <h3 className="conceptCard__title">זמן ריצה</h3>
+      <p className="conceptCard__body">
+        <strong>עם אדמונדס-קארפ:</strong>
+        <br/>
+        O(VE²)
+        <br/><br/>
+        <strong>ספציפית לזיווג:</strong>
+        <br/>
+        O(V · E) כי |f*| ≤ V
+        <br/><br/>
+        (יש גם אלגוריתמים מהירים יותר)
+      </p>
+    </article>
+  </div>
+</section>
+
+<section id="summary" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">סיכום</p>
+    <h2>השוואת אלגוריתמים</h2>
+  </header>
+
+  <div style={{ overflowX: 'auto', marginTop: '1.5rem' }}>
+    <table style={{ width: '100%', borderCollapse: 'collapse', background: 'rgba(0,0,0,0.2)', borderRadius: '16px', overflow: 'hidden' }}>
+      <thead>
+        <tr style={{ background: 'rgba(100,246,200,0.2)' }}>
+          <th style={{ padding: '1rem', textAlign: 'right', borderBottom: '2px solid #64f6c8', color: '#64f6c8' }}>אלגוריתם</th>
+          <th style={{ padding: '1rem', textAlign: 'center', borderBottom: '2px solid #64f6c8', color: '#64f6c8' }}>סיבוכיות</th>
+          <th style={{ padding: '1rem', textAlign: 'right', borderBottom: '2px solid #64f6c8', color: '#64f6c8' }}>שיטת חיפוש</th>
+          <th style={{ padding: '1rem', textAlign: 'right', borderBottom: '2px solid #64f6c8', color: '#64f6c8' }}>הערות</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style={{ padding: '1rem', borderBottom: '1px solid #3d4d6b', color: '#fbbf24', fontWeight: 'bold' }}>פורד-פולקרסון</td>
+          <td style={{ padding: '1rem', borderBottom: '1px solid #3d4d6b', color: '#fff', textAlign: 'center' }}>O(E · |f*|)</td>
+          <td style={{ padding: '1rem', borderBottom: '1px solid #3d4d6b', color: '#a0aec0' }}>DFS / כלשהו</td>
+          <td style={{ padding: '1rem', borderBottom: '1px solid #3d4d6b', color: '#a0aec0' }}>פשוט, אבל יכול להיות איטי</td>
+        </tr>
+        <tr>
+          <td style={{ padding: '1rem', borderBottom: '1px solid #3d4d6b', color: '#fbbf24', fontWeight: 'bold' }}>אדמונדס-קארפ</td>
+          <td style={{ padding: '1rem', borderBottom: '1px solid #3d4d6b', color: '#fff', textAlign: 'center' }}>O(V · E²)</td>
+          <td style={{ padding: '1rem', borderBottom: '1px solid #3d4d6b', color: '#a0aec0' }}>BFS (מסלול קצר)</td>
+          <td style={{ padding: '1rem', borderBottom: '1px solid #3d4d6b', color: '#a0aec0' }}>פולינומי מובטח</td>
+        </tr>
+        <tr>
+          <td style={{ padding: '1rem', color: '#fbbf24', fontWeight: 'bold' }}>זיווג דו-צדדי</td>
+          <td style={{ padding: '1rem', color: '#fff', textAlign: 'center' }}>O(V · E)</td>
+          <td style={{ padding: '1rem', color: '#a0aec0' }}>רדוקציה לזרימה</td>
+          <td style={{ padding: '1rem', color: '#a0aec0' }}>מקרה פרטי עם |f*| ≤ V</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">מושגי מפתח</p>
+      <h3 className="conceptCard__title">מה חשוב לזכור?</h3>
+      <p className="conceptCard__body">
+        <strong>רשת שארית:</strong> מראה כמה עוד אפשר להעביר
+        <br/><br/>
+        <strong>מסלול משפר:</strong> מסלול s→t ברשת השארית
+        <br/><br/>
+        <strong>קשת אחורית:</strong> מאפשרת "לבטל" זרימה
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">משפטים</p>
+      <h3 className="conceptCard__title">Max-Flow Min-Cut</h3>
+      <p className="conceptCard__body">
+        <strong>שלושה שקולים:</strong>
+        <br/>
+        1. f זרימה מקסימלית
+        <br/>
+        2. אין מסלול משפר ב-Gf
+        <br/>
+        3. |f| = קיבולת חתך מינימלי
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--property">
+      <p className="conceptCard__label">יישומים</p>
+      <h3 className="conceptCard__title">מתי משתמשים?</h3>
+      <p className="conceptCard__body">
+        <strong>✓</strong> תעבורת רשת
+        <br/>
+        <strong>✓</strong> שיבוץ משימות
+        <br/>
+        <strong>✓</strong> זיווג דו-צדדי
+        <br/>
+        <strong>✓</strong> לוגיסטיקה ושרשרת אספקה
+        <br/>
+        <strong>✓</strong> חיתוך תמונות (image segmentation)
+      </p>
+    </article>
+  </div>
+</section>
