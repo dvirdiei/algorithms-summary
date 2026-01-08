@@ -1,0 +1,624 @@
+---
+id: reductions
+title: רדוקציות
+description: מדריך מקיף לרדוקציות פולינומיות - כלי מרכזי בתורת הסיבוכיות
+sidebar_label: רדוקציות (Reductions)
+---
+
+<div className="greedyDoc container">
+  <p className="greedyDoc__badge">Polynomial Reductions</p>
+  <h1>רדוקציות פולינומיות</h1>
+  <p className="greedyDoc__lead">
+    רדוקציה היא כלי מרכזי בתורת הסיבוכיות המאפשר להשוות בין קושי של בעיות.
+    הרעיון: אם נוכל להמיר בעיה A לבעיה B ביעילות, אזי B לפחות קשה כמו A.
+    נלמד את סוגי הרדוקציות השונים, נראה דוגמאות מלאות, ונבין למה זה כלי כל כך חזק.
+  </p>
+  <ul className="greedyDoc__tags">
+    <li>Polynomial Reduction</li>
+    <li>NP-Completeness</li>
+    <li>Hamiltonian Path</li>
+    <li>Transitivity</li>
+  </ul>
+</div>
+
+<figure className="conceptStory container" aria-label="רדוקציה פולינומית">
+  <div className="conceptStory__canvas">
+    <svg viewBox="0 0 600 280" role="img">
+      <defs>
+        <linearGradient id="reductionBg" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#2d1a4d" />
+          <stop offset="100%" stopColor="#0d1a30" />
+        </linearGradient>
+        <marker id="reductionArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 10 3, 0 6" fill="#fbbf24" />
+        </marker>
+      </defs>
+
+      <rect width="600" height="280" fill="url(#reductionBg)" rx="16" />
+
+      {/* בעיה A */}
+      <rect x="50" y="100" width="150" height="80" rx="12" fill="rgba(100,246,200,0.2)" stroke="#64f6c8" strokeWidth="3" />
+      <text x="125" y="130" fill="#64f6c8" fontSize="16" fontWeight="bold" textAnchor="middle">בעיה A</text>
+      <text x="125" y="155" fill="#a0aec0" fontSize="12" textAnchor="middle">(קלט מקורי)</text>
+
+      {/* חץ רדוקציה */}
+      <line x1="200" y1="140" x2="280" y2="140" stroke="#fbbf24" strokeWidth="4" markerEnd="url(#reductionArrow)" />
+      <text x="240" y="125" fill="#fbbf24" fontSize="14" fontWeight="bold" textAnchor="middle">f</text>
+      <text x="240" y="170" fill="#fbbf24" fontSize="11" textAnchor="middle">רדוקציה O(nᵏ)</text>
+
+      {/* בעיה B */}
+      <rect x="280" y="100" width="150" height="80" rx="12" fill="rgba(167,139,250,0.2)" stroke="#a78bfa" strokeWidth="3" />
+      <text x="355" y="130" fill="#a78bfa" fontSize="16" fontWeight="bold" textAnchor="middle">בעיה B</text>
+      <text x="355" y="155" fill="#a0aec0" fontSize="12" textAnchor="middle">(קלט מתורגם)</text>
+
+      {/* חץ פתרון */}
+      <path d="M 355 180 L 355 210 L 125 210 L 125 180" 
+            stroke="#10b981" strokeWidth="3" fill="none" 
+            strokeDasharray="6,3" markerEnd="url(#reductionArrow)" />
+      <text x="240" y="230" fill="#10b981" fontSize="11" textAnchor="middle">פתרון B → פתרון A</text>
+
+      {/* כיתוב */}
+      <text x="300" y="265" fill="#f97316" fontSize="13" fontWeight="bold" textAnchor="middle">
+        A ≤ₚ B : A מתרדצת ל-B
+      </text>
+    </svg>
+  </div>
+  <figcaption className="conceptStory__caption">
+    <h4>רדוקציה פולינומית</h4>
+    <p>
+      רדוקציה A ≤ₚ B אומרת: אם יש לנו אלגוריתם יעיל לפתור B, 
+      נוכל להשתמש בו כדי לפתור A ביעילות. זה אומר ש-B לפחות קשה כמו A!
+    </p>
+    <ul>
+      <li><strong>f:</strong> פונקציית הרדוקציה - מתרגמת קלט של A לקלט של B</li>
+      <li><strong>זמן:</strong> f רצה בזמן פולינומי O(nᵏ)</li>
+      <li><strong>נכונות:</strong> x ∈ A ⟺ f(x) ∈ B</li>
+    </ul>
+  </figcaption>
+</figure>
+
+<section className="conceptGrid container">
+  <article className="conceptCard conceptCard--explain">
+    <p className="conceptCard__label">הגדרה</p>
+    <h3 className="conceptCard__title">מה זו רדוקציה?</h3>
+    <p className="conceptCard__body">
+      רדוקציה היא דרך להמיר בעיה אחת לאחרת.<br/>
+      אם A ≤ₚ B, אז פתרון ל-B נותן לנו פתרון ל-A.<br/>
+      זה מראה ש-B לפחות קשה כמו A!
+    </p>
+  </article>
+  <article className="conceptCard conceptCard--algorithm">
+    <p className="conceptCard__label">שימושים</p>
+    <h3 className="conceptCard__title">למה זה חשוב?</h3>
+    <p className="conceptCard__body">
+      <strong>1.</strong> להוכיח NP-Completeness<br/>
+      <strong>2.</strong> להשוות קושי בעיות<br/>
+      <strong>3.</strong> להשתמש באלגוריתמים קיימים
+    </p>
+  </article>
+  <article className="conceptCard conceptCard--solution">
+    <p className="conceptCard__label">אינטואיציה</p>
+    <h3 className="conceptCard__title">אנלוגיה</h3>
+    <p className="conceptCard__body">
+      כמו לתרגם שאלה לשפה אחרת!<br/>
+      אם יש לך מומחה לשפה B, תוכל לקבל תשובות לשאלות בשפה A<br/>
+      על ידי תרגום + שאלה + תרגום חזרה
+    </p>
+  </article>
+</section>
+
+<section id="polynomial-reduction" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">רדוקציה פולינומית</p>
+    <h2>הגדרה פורמלית של A ≤ₚ B</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>הגדרה:</strong> אומרים ש-A מתרדצת ל-B בזמן פולינומי (A ≤ₚ B) אם קיימת פונקציה f שחישובית בזמן פולינומי המקיימת:
+      </p>
+      <p style={{ textAlign: 'center', fontSize: '1.2rem', padding: '1rem', background: 'rgba(251,191,36,0.1)', borderRadius: '8px', margin: '1rem 0' }}>
+        <strong>x ∈ A ⟺ f(x) ∈ B</strong>
+      </p>
+      <p>
+        <strong>תנאים:</strong>
+      </p>
+      <ol style={{ color: '#a0aec0', paddingRight: '1.5rem', lineHeight: '1.8' }}>
+        <li><strong>f חישובית בזמן פולינומי:</strong> יש אלגוריתם שמחשב f(x) בזמן O(nᵏ)</li>
+        <li><strong>שומרת נכונות:</strong> x הוא "כן"-instance של A אם ורק אם f(x) הוא "כן"-instance של B</li>
+        <li><strong>הפיכות לוגית:</strong> גם "לא"-instances נשמרים</li>
+      </ol>
+    </article>
+  </div>
+
+  <figure style={{ margin: '2rem 0', padding: '1.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '16px' }}>
+    <h4 style={{ textAlign: 'center', color: '#fbbf24', marginBottom: '1rem' }}>מה זה אומר?</h4>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '2rem' }}>
+      
+      <div style={{ padding: '1rem', background: 'rgba(100,246,200,0.1)', borderRadius: '12px' }}>
+        <h5 style={{ color: '#64f6c8', marginBottom: '0.5rem' }}>✅ אם B קלה (ב-P)</h5>
+        <p style={{ color: '#a0aec0', fontSize: '0.9rem', lineHeight: '1.6' }}>
+          אם יש אלגוריתם פולינומי ל-B, אז יש גם אלגוריתם פולינומי ל-A!<br/><br/>
+          <strong>למה?</strong><br/>
+          1. תרגם את הקלט של A ל-B (זמן פולינומי)<br/>
+          2. פתור את B (זמן פולינומי)<br/>
+          3. התשובה ל-B היא התשובה ל-A<br/><br/>
+          <strong>סה"כ:</strong> פולינומי + פולינומי = פולינומי!
+        </p>
+      </div>
+
+      <div style={{ padding: '1rem', background: 'rgba(239,68,68,0.1)', borderRadius: '12px' }}>
+        <h5 style={{ color: '#ef4444', marginBottom: '0.5rem' }}>❌ אם A קשה (NP-Complete)</h5>
+        <p style={{ color: '#a0aec0', fontSize: '0.9rem', lineHeight: '1.6' }}>
+          אם A היא NP-Complete ו-A ≤ₚ B, אז B גם היא לפחות NP-Hard!<br/><br/>
+          <strong>למה?</strong><br/>
+          כל בעיה ב-NP מתרדצת ל-A (כי A היא NPC)<br/>
+          A מתרדצת ל-B (לפי הנתון)<br/>
+          לכן כל בעיה ב-NP מתרדצת ל-B (טרנזיטיביות!)<br/><br/>
+          <strong>מסקנה:</strong> B היא NP-Hard (ואם B ∈ NP אז B היא NPC!)
+        </p>
+      </div>
+    </div>
+  </figure>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--explain">
+      <p className="conceptCard__label">דוגמה פשוטה</p>
+      <h3 className="conceptCard__title">רדוקציה טריוויאלית</h3>
+      <p className="conceptCard__body">
+        <strong>A:</strong> "האם x זוגי?"<br/>
+        <strong>B:</strong> "האם y מתחלק ב-2?"<br/>
+        <strong>רדוקציה:</strong> f(x) = x (פשוט!)<br/>
+        x זוגי ⟺ x מתחלק ב-2<br/>
+        זמן: O(1) - רדוקציה טריוויאלית!
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">דוגמה מעניינת</p>
+      <h3 className="conceptCard__title">Independent Set ≤ₚ Clique</h3>
+      <p className="conceptCard__body">
+        <strong>A:</strong> Independent Set (קבוצה עצמאית)<br/>
+        <strong>B:</strong> Clique (קליקה)<br/>
+        <strong>רדוקציה:</strong> f(G) = Ḡ (גרף משלים)<br/>
+        קבוצה עצמאית ב-G ⟺ קליקה ב-Ḡ<br/>
+        זמן: O(V²) - בניית גרף משלים
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">דוגמה קלאסית</p>
+      <h3 className="conceptCard__title">3-SAT ≤ₚ Clique</h3>
+      <p className="conceptCard__body">
+        <strong>A:</strong> 3-SAT (ספיקות עם 3 ליטרלים)<br/>
+        <strong>B:</strong> Clique<br/>
+        <strong>רדוקציה:</strong> כל clause → משולש בגרף<br/>
+        קשתות רק בין literals שלא סותרים<br/>
+        זמן: O(m³) עבור m clauses
+      </p>
+    </article>
+  </div>
+
+  <div style={{ marginTop: '2rem', padding: '1rem', background: 'rgba(251,191,36,0.1)', borderRadius: '12px', borderRight: '4px solid #fbbf24' }}>
+    <h4 style={{ color: '#fbbf24', margin: '0 0 0.5rem 0' }}>🎯 נקודה חשובה</h4>
+    <p style={{ color: '#a0aec0', margin: 0 }}>
+      רדוקציה A ≤ₚ B <strong>לא</strong> אומרת ש-A קלה יותר! היא אומרת ש-<strong>B קשה יותר (או שווה)</strong>.<br/>
+      לכן, אם רוצים להוכיח ש-B קשה, נראה רדוקציה מבעיה קשה A ל-B.
+    </p>
+  </div>
+</section>
+
+<section id="hamiltonian-example" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">דוגמה מלאה</p>
+    <h2>Hamiltonian Path ≤ₚ Hamiltonian Cycle</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>המטרה:</strong> להוכיח שבעיית Hamiltonian Cycle לפחות קשה כמו Hamiltonian Path.
+      </p>
+      <p>
+        <strong>Hamiltonian Path:</strong> האם יש מסלול בגרף שעובר בכל קודקוד בדיוק פעם אחת?
+      </p>
+      <p>
+        <strong>Hamiltonian Cycle:</strong> האם יש מעגל בגרף שעובר בכל קודקוד בדיוק פעם אחת?
+      </p>
+      <p>
+        נראה איך לתרגם כל instance של HAM-PATH ל-instance של HAM-CYCLE בזמן פולינומי.
+      </p>
+    </article>
+  </div>
+
+  <figure style={{ margin: '2rem 0', padding: '1.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '16px' }}>
+    <h4 style={{ textAlign: 'center', color: '#64f6c8', marginBottom: '1rem' }}>הבנייה</h4>
+    
+    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <p style={{ color: '#a0aec0', textAlign: 'center', marginBottom: '1rem' }}>
+        <strong>קלט:</strong> גרף G = (V, E) עם קודקודי התחלה וסיום s, t
+      </p>
+      
+      <svg viewBox="0 0 700 350" style={{ width: '100%' }}>
+        <defs>
+          <marker id="hamArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#64f6c8" />
+          </marker>
+        </defs>
+
+        {/* גרף מקורי - משמאל */}
+        <text x="150" y="25" fill="#64f6c8" fontSize="14" fontWeight="bold" textAnchor="middle">גרף מקורי G</text>
+        <text x="150" y="45" fill="#a0aec0" fontSize="11" textAnchor="middle">(HAM-PATH מ-s ל-t?)</text>
+        
+        <circle cx="80" cy="100" r="20" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="2" />
+        <text x="80" y="107" fill="#64f6c8" fontSize="13" fontWeight="bold" textAnchor="middle">s</text>
+        
+        <circle cx="220" cy="100" r="20" fill="rgba(239,68,68,0.3)" stroke="#ef4444" strokeWidth="2" />
+        <text x="220" y="107" fill="#ef4444" fontSize="13" fontWeight="bold" textAnchor="middle">t</text>
+        
+        <circle cx="150" cy="160" r="20" fill="rgba(167,139,250,0.2)" stroke="#a78bfa" strokeWidth="2" />
+        <text x="150" y="167" fill="#a78bfa" fontSize="13" fontWeight="bold" textAnchor="middle">u</text>
+        
+        <circle cx="100" cy="200" r="20" fill="rgba(167,139,250,0.2)" stroke="#a78bfa" strokeWidth="2" />
+        <text x="100" y="207" fill="#a78bfa" fontSize="13" fontWeight="bold" textAnchor="middle">v</text>
+        
+        <circle cx="200" cy="200" r="20" fill="rgba(167,139,250,0.2)" stroke="#a78bfa" strokeWidth="2" />
+        <text x="200" y="207" fill="#a78bfa" fontSize="13" fontWeight="bold" textAnchor="middle">w</text>
+
+        {/* קשתות */}
+        <line x1="100" y1="100" x2="200" y2="100" stroke="#64f6c8" strokeWidth="2" />
+        <line x1="95" y1="115" x2="145" y2="145" stroke="#64f6c8" strokeWidth="2" />
+        <line x1="155" y1="145" x2="205" y2="115" stroke="#64f6c8" strokeWidth="2" />
+        <line x1="120" y1="195" x2="180" y2="195" stroke="#64f6c8" strokeWidth="2" />
+        <line x1="140" y1="175" x2="110" y2="185" stroke="#64f6c8" strokeWidth="2" />
+        <line x1="160" y1="175" x2="190" y2="185" stroke="#64f6c8" strokeWidth="2" />
+
+        {/* חץ רדוקציה */}
+        <text x="350" y="175" fill="#fbbf24" fontSize="16" fontWeight="bold" textAnchor="middle">⟹</text>
+        <text x="350" y="195" fill="#fbbf24" fontSize="11" textAnchor="middle">רדוקציה</text>
+
+        {/* גרף חדש - מימין */}
+        <text x="550" y="25" fill="#a78bfa" fontSize="14" fontWeight="bold" textAnchor="middle">גרף חדש G'</text>
+        <text x="550" y="45" fill="#a0aec0" fontSize="11" textAnchor="middle">(HAM-CYCLE?)</text>
+        
+        <circle cx="480" cy="100" r="20" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="2" />
+        <text x="480" y="107" fill="#64f6c8" fontSize="13" fontWeight="bold" textAnchor="middle">s</text>
+        
+        <circle cx="620" cy="100" r="20" fill="rgba(239,68,68,0.3)" stroke="#ef4444" strokeWidth="2" />
+        <text x="620" y="107" fill="#ef4444" fontSize="13" fontWeight="bold" textAnchor="middle">t</text>
+        
+        <circle cx="550" cy="160" r="20" fill="rgba(167,139,250,0.2)" stroke="#a78bfa" strokeWidth="2" />
+        <text x="550" y="167" fill="#a78bfa" fontSize="13" fontWeight="bold" textAnchor="middle">u</text>
+        
+        <circle cx="500" cy="200" r="20" fill="rgba(167,139,250,0.2)" stroke="#a78bfa" strokeWidth="2" />
+        <text x="500" y="207" fill="#a78bfa" fontSize="13" fontWeight="bold" textAnchor="middle">v</text>
+        
+        <circle cx="600" cy="200" r="20" fill="rgba(167,139,250,0.2)" stroke="#a78bfa" strokeWidth="2" />
+        <text x="600" y="207" fill="#a78bfa" fontSize="13" fontWeight="bold" textAnchor="middle">w</text>
+        
+        {/* קודקוד חדש */}
+        <circle cx="550" cy="270" r="20" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="3" />
+        <text x="550" y="277" fill="#fbbf24" fontSize="13" fontWeight="bold" textAnchor="middle">x</text>
+        <text x="550" y="305" fill="#fbbf24" fontSize="10" textAnchor="middle">קודקוד חדש!</text>
+
+        {/* כל הקשתות המקוריות */}
+        <line x1="500" y1="100" x2="600" y2="100" stroke="#64f6c8" strokeWidth="2" />
+        <line x1="495" y1="115" x2="545" y2="145" stroke="#64f6c8" strokeWidth="2" />
+        <line x1="555" y1="145" x2="605" y2="115" stroke="#64f6c8" strokeWidth="2" />
+        <line x1="520" y1="195" x2="580" y2="195" stroke="#64f6c8" strokeWidth="2" />
+        <line x1="540" y1="175" x2="510" y2="185" stroke="#64f6c8" strokeWidth="2" />
+        <line x1="560" y1="175" x2="590" y2="185" stroke="#64f6c8" strokeWidth="2" />
+        
+        {/* קשתות חדשות מ-x */}
+        <line x1="540" y1="255" x2="490" y2="115" stroke="#fbbf24" strokeWidth="2" strokeDasharray="4,2" />
+        <line x1="560" y1="255" x2="610" y2="115" stroke="#fbbf24" strokeWidth="2" strokeDasharray="4,2" />
+      </svg>
+    </div>
+
+    <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(251,191,36,0.1)', borderRadius: '8px' }}>
+      <h5 style={{ color: '#fbbf24', marginBottom: '0.5rem' }}>אלגוריתם הרדוקציה</h5>
+      <ol style={{ color: '#a0aec0', paddingRight: '1.5rem', lineHeight: '1.8' }}>
+        <li>העתק את כל הגרף G (קודקודים + קשתות)</li>
+        <li>הוסף קודקוד חדש x</li>
+        <li>חבר x ל-s (קודקוד ההתחלה)</li>
+        <li>חבר x ל-t (קודקוד הסיום)</li>
+      </ol>
+    </div>
+  </figure>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--explain">
+      <p className="conceptCard__label">כיוון →</p>
+      <h3 className="conceptCard__title">אם יש HAM-PATH בG</h3>
+      <p className="conceptCard__body">
+        נתון: מסלול המילטוני P מ-s ל-t ב-G<br/><br/>
+        <strong>נבנה HAM-CYCLE ב-G':</strong><br/>
+        1. התחל ב-x<br/>
+        2. לך ל-s דרך הקשת החדשה<br/>
+        3. עבור את כל P (מ-s ל-t)<br/>
+        4. חזור ל-x דרך הקשת החדשה<br/><br/>
+        זה מעגל המילטוני! ✓
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">כיוון ←</p>
+      <h3 className="conceptCard__title">אם יש HAM-CYCLE ב-G'</h3>
+      <p className="conceptCard__body">
+        נתון: מעגל המילטוני C ב-G'<br/><br/>
+        <strong>נבנה HAM-PATH ב-G:</strong><br/>
+        C חייב לעבור ב-x (כל קודקוד!)<br/>
+        C מגיע ל-x מ-s או מ-t<br/>
+        C עוזב את x ל-t או ל-s<br/>
+        המסלול ביניהם הוא HAM-PATH ב-G! ✓
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">ניתוח</p>
+      <h3 className="conceptCard__title">סיבוכיות הרדוקציה</h3>
+      <p className="conceptCard__body">
+        <strong>זמן:</strong><br/>
+        • העתקת G: O(V + E)<br/>
+        • הוספת קודקוד: O(1)<br/>
+        • הוספת 2 קשתות: O(1)<br/>
+        <strong>סה"כ: O(V + E)</strong> - פולינומי! ✓<br/><br/>
+        <strong>מסקנה:</strong><br/>
+        HAM-PATH ≤ₚ HAM-CYCLE<br/>
+        אם HAM-PATH קשה, גם HAM-CYCLE קשה!
+      </p>
+    </article>
+  </div>
+
+  <div style={{ marginTop: '2rem', padding: '1rem', background: 'rgba(100,246,200,0.1)', borderRadius: '12px', borderRight: '4px solid #64f6c8' }}>
+    <h4 style={{ color: '#64f6c8', margin: '0 0 0.5rem 0' }}>✓ נכונות</h4>
+    <p style={{ color: '#a0aec0', margin: 0, lineHeight: '1.8' }}>
+      הוכחנו ששני הכיוונים:<br/>
+      • יש HAM-PATH ב-G ⟹ יש HAM-CYCLE ב-G'<br/>
+      • יש HAM-CYCLE ב-G' ⟹ יש HAM-PATH ב-G<br/><br/>
+      לכן: <strong>G יש HAM-PATH ⟺ G' יש HAM-CYCLE</strong><br/>
+      זו בדיוק ההגדרה של רדוקציה נכונה!
+    </p>
+  </div>
+</section>
+
+<section id="reduction-types" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">סוגי רדוקציות</p>
+    <h2>תכונות של רדוקציות פולינומיות</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        רדוקציות פולינומיות מקיימות מספר תכונות מתמטיות חשובות שעוזרות לנו להבין יחסים בין בעיות.
+        נסקור שלוש תכונות עיקריות: אי-סימטריה, דו-כיווניות, וטרנזיטיביות.
+      </p>
+    </article>
+  </div>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--explain">
+      <p className="conceptCard__label">תכונה 1</p>
+      <h3 className="conceptCard__title">חד-כיוונית (לא סימטרית)</h3>
+      <p className="conceptCard__body">
+        <strong>A ≤ₚ B לא גורר B ≤ₚ A</strong><br/><br/>
+        רדוקציה היא יחס <strong>לא סימטרי</strong>!<br/><br/>
+        <strong>דוגמה:</strong><br/>
+        • כל בעיה ב-P מתרדצת ל-SAT<br/>
+        • אבל SAT לא מתרדצת לבעיות ב-P<br/>
+        (אלא אם כן P = NP)<br/><br/>
+        <strong>אינטואיציה:</strong><br/>
+        אם A ≤ₚ B, זה אומר ש-B קשה יותר,<br/>
+        לא שהן שוות בקושי!
+      </p>
+    </article>
+
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">תכונה 2</p>
+      <h3 className="conceptCard__title">דו-כיווניות (שקילות)</h3>
+      <p className="conceptCard__body">
+        <strong>A ≤ₚ B וגם B ≤ₚ A</strong><br/><br/>
+        לפעמים יש רדוקציות <strong>בשני הכיוונים</strong>!<br/><br/>
+        <strong>דוגמה:</strong><br/>
+        • HAM-PATH ≤ₚ HAM-CYCLE<br/>
+        • HAM-CYCLE ≤ₚ HAM-PATH<br/>
+        (ניתן להוכיח גם בכיוון ההפוך)<br/><br/>
+        <strong>משמעות:</strong><br/>
+        שתי הבעיות <strong>שקולות בקושי</strong>!<br/>
+        אם אחת ב-P, גם השנייה ב-P<br/>
+        אם אחת NP-Complete, גם השנייה
+      </p>
+    </article>
+
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">תכונה 3</p>
+      <h3 className="conceptCard__title">טרנזיטיביות</h3>
+      <p className="conceptCard__body">
+        <strong>אם A ≤ₚ B וגם B ≤ₚ C, אז A ≤ₚ C</strong><br/><br/>
+        זו התכונה <strong>החשובה ביותר</strong>!<br/><br/>
+        <strong>הוכחה:</strong><br/>
+        • יש f: A → B בזמן O(nᵏ)<br/>
+        • יש g: B → C בזמן O(nᵐ)<br/>
+        • הרכבה h = g ∘ f: A → C<br/>
+        • זמן: O(nᵏ) + O(nᵏᵐ) = פולינומי! ✓<br/><br/>
+        <strong>שימוש:</strong><br/>
+        כך בונים "שרשראות" של הוכחות NP-Completeness!
+      </p>
+    </article>
+  </div>
+
+  <figure style={{ margin: '2rem 0', padding: '1.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '16px' }}>
+    <h4 style={{ textAlign: 'center', color: '#a78bfa', marginBottom: '1rem' }}>טרנזיטיביות בפעולה</h4>
+    
+    <svg viewBox="0 0 600 200" style={{ width: '100%' }}>
+      <defs>
+        <marker id="transArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#fbbf24" />
+        </marker>
+      </defs>
+
+      {/* בעיה A */}
+      <rect x="50" y="70" width="100" height="60" rx="8" fill="rgba(100,246,200,0.2)" stroke="#64f6c8" strokeWidth="2" />
+      <text x="100" y="95" fill="#64f6c8" fontSize="14" fontWeight="bold" textAnchor="middle">A</text>
+      <text x="100" y="115" fill="#a0aec0" fontSize="10" textAnchor="middle">(3-SAT)</text>
+
+      {/* חץ ראשון */}
+      <line x1="150" y1="100" x2="220" y2="100" stroke="#fbbf24" strokeWidth="3" markerEnd="url(#transArrow)" />
+      <text x="185" y="90" fill="#fbbf24" fontSize="11" textAnchor="middle">A ≤ₚ B</text>
+
+      {/* בעיה B */}
+      <rect x="225" y="70" width="100" height="60" rx="8" fill="rgba(167,139,250,0.2)" stroke="#a78bfa" strokeWidth="2" />
+      <text x="275" y="95" fill="#a78bfa" fontSize="14" fontWeight="bold" textAnchor="middle">B</text>
+      <text x="275" y="115" fill="#a0aec0" fontSize="10" textAnchor="middle">(CLIQUE)</text>
+
+      {/* חץ שני */}
+      <line x1="325" y1="100" x2="395" y2="100" stroke="#fbbf24" strokeWidth="3" markerEnd="url(#transArrow)" />
+      <text x="360" y="90" fill="#fbbf24" fontSize="11" textAnchor="middle">B ≤ₚ C</text>
+
+      {/* בעיה C */}
+      <rect x="400" y="70" width="100" height="60" rx="8" fill="rgba(239,68,68,0.2)" stroke="#ef4444" strokeWidth="2" />
+      <text x="450" y="95" fill="#ef4444" fontSize="14" fontWeight="bold" textAnchor="middle">C</text>
+      <text x="450" y="115" fill="#a0aec0" fontSize="10" textAnchor="middle">(V-COVER)</text>
+
+      {/* חץ ישיר */}
+      <path d="M 100 130 Q 275 170 450 130" 
+            stroke="#10b981" strokeWidth="3" fill="none" 
+            strokeDasharray="6,3" markerEnd="url(#transArrow)" />
+      <text x="275" y="185" fill="#10b981" fontSize="13" fontWeight="bold" textAnchor="middle">⟹ A ≤ₚ C</text>
+    </svg>
+
+    <p style={{ textAlign: 'center', color: '#a0aec0', fontSize: '0.9rem', marginTop: '1rem' }}>
+      אם 3-SAT מתרדצת ל-CLIQUE, ו-CLIQUE מתרדצת ל-VERTEX-COVER,<br/>
+      אז 3-SAT מתרדצת ל-VERTEX-COVER (ללא צורך בבנייה ישירה!)
+    </p>
+  </figure>
+
+  <div style={{ marginTop: '2rem', padding: '1rem', background: 'rgba(167,139,250,0.1)', borderRadius: '12px', borderRight: '4px solid #a78bfa' }}>
+    <h4 style={{ color: '#a78bfa', margin: '0 0 0.5rem 0' }}>🔗 שרשרת ההוכחות</h4>
+    <p style={{ color: '#a0aec0', margin: 0, lineHeight: '1.8' }}>
+      <strong>בזכות טרנזיטיביות</strong> אפשר לבנות שרשראות ארוכות:<br/><br/>
+      SAT ≤ₚ 3-SAT ≤ₚ CLIQUE ≤ₚ VERTEX-COVER ≤ₚ HAM-CYCLE ≤ₚ TSP<br/><br/>
+      כל בעיה בשרשרת היא NP-Complete!<br/>
+      אם נוכיח ש-SAT היא NPC (משפט קוק-לוין), אוטומטית כל השאר גם!
+    </p>
+  </div>
+</section>
+
+<section id="summary" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">סיכום</p>
+    <h2>סיכום רדוקציות פולינומיות</h2>
+  </header>
+  
+  <div style={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
+    
+    <div style={{ padding: '1.5rem', background: 'rgba(251,191,36,0.1)', borderRadius: '12px', borderRight: '4px solid #fbbf24' }}>
+      <h4 style={{ color: '#fbbf24', marginBottom: '0.5rem' }}>🎯 הגדרה</h4>
+      <ul style={{ color: '#a0aec0', margin: 0, paddingRight: '1.2rem' }}>
+        <li>A ≤ₚ B: יש המרה פולינומית f</li>
+        <li>x ∈ A ⟺ f(x) ∈ B</li>
+        <li>f רצה בזמן O(nᵏ)</li>
+        <li>B לפחות קשה כמו A</li>
+      </ul>
+    </div>
+
+    <div style={{ padding: '1.5rem', background: 'rgba(100,246,200,0.1)', borderRadius: '12px', borderRight: '4px solid #64f6c8' }}>
+      <h4 style={{ color: '#64f6c8', marginBottom: '0.5rem' }}>✅ שימושים</h4>
+      <ul style={{ color: '#a0aec0', margin: 0, paddingRight: '1.2rem' }}>
+        <li>הוכחת NP-Completeness</li>
+        <li>השוואת קושי בעיות</li>
+        <li>שימוש חוזר באלגוריתמים</li>
+        <li>הבנת מבנה מחלקות סיבוכיות</li>
+      </ul>
+    </div>
+
+    <div style={{ padding: '1.5rem', background: 'rgba(167,139,250,0.1)', borderRadius: '12px', borderRight: '4px solid #a78bfa' }}>
+      <h4 style={{ color: '#a78bfa', marginBottom: '0.5rem' }}>📐 תכונות</h4>
+      <ul style={{ color: '#a0aec0', margin: 0, paddingRight: '1.2rem' }}>
+        <li><strong>לא סימטרית:</strong> A ≤ₚ B ⇏ B ≤ₚ A</li>
+        <li><strong>דו-כיוונית:</strong> לפעמים A ≤ₚ B וגם B ≤ₚ A</li>
+        <li><strong>טרנזיטיבית:</strong> A ≤ₚ B, B ≤ₚ C ⟹ A ≤ₚ C</li>
+        <li>טרנזיטיביות = כלי הכי חזק!</li>
+      </ul>
+    </div>
+
+    <div style={{ padding: '1.5rem', background: 'rgba(239,68,68,0.1)', borderRadius: '12px', borderRight: '4px solid #ef4444' }}>
+      <h4 style={{ color: '#ef4444', marginBottom: '0.5rem' }}>🔍 דוגמאות</h4>
+      <ul style={{ color: '#a0aec0', margin: 0, paddingRight: '1.2rem' }}>
+        <li>HAM-PATH ≤ₚ HAM-CYCLE</li>
+        <li>3-SAT ≤ₚ CLIQUE</li>
+        <li>CLIQUE ≤ₚ VERTEX-COVER</li>
+        <li>Independent-Set ≤ₚ CLIQUE</li>
+      </ul>
+    </div>
+
+    <div style={{ padding: '1.5rem', background: 'rgba(236,72,153,0.1)', borderRadius: '12px', borderRight: '4px solid #ec4899' }}>
+      <h4 style={{ color: '#ec4899', marginBottom: '0.5rem' }}>💡 נקודות מפתח</h4>
+      <ul style={{ color: '#a0aec0', margin: 0, paddingRight: '1.2rem' }}>
+        <li>A ≤ₚ B אומר ש-<strong>B קשה יותר</strong></li>
+        <li>כיוון הרדוקציה חשוב!</li>
+        <li>שמירת נכונות בשני הכיוונים</li>
+        <li>טרנזיטיביות יוצרת שרשראות</li>
+      </ul>
+    </div>
+
+    <div style={{ padding: '1.5rem', background: 'rgba(139,92,246,0.1)', borderRadius: '12px', borderRight: '4px solid #8b5cf6' }}>
+      <h4 style={{ color: '#8b5cf6', marginBottom: '0.5rem' }}>🎓 למה ללמוד?</h4>
+      <ul style={{ color: '#a0aec0', margin: 0, paddingRight: '1.2rem' }}>
+        <li>בסיס לכל תורת ה-NP</li>
+        <li>הוכחות אלגנטיות של קושי</li>
+        <li>הבנה עמוקה של בעיות</li>
+        <li>כלי חשוב במחקר ובפיתוח</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <figure style={{ margin: '2rem 0', padding: '1.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '16px' }}>
+    <h4 style={{ textAlign: 'center', color: '#64f6c8', marginBottom: '1rem' }}>מפת רדוקציות קלאסיות</h4>
+    <svg viewBox="0 0 600 300" style={{ width: '100%' }}>
+      <defs>
+        <marker id="summaryArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#fbbf24" />
+        </marker>
+      </defs>
+
+      {/* SAT */}
+      <circle cx="300" cy="50" r="35" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="3" />
+      <text x="300" y="55" fill="#fbbf24" fontSize="14" fontWeight="bold" textAnchor="middle">SAT</text>
+
+      {/* 3-SAT */}
+      <circle cx="200" cy="130" r="30" fill="rgba(100,246,200,0.2)" stroke="#64f6c8" strokeWidth="2" />
+      <text x="200" y="135" fill="#64f6c8" fontSize="12" fontWeight="bold" textAnchor="middle">3-SAT</text>
+
+      {/* CLIQUE */}
+      <circle cx="400" cy="130" r="30" fill="rgba(167,139,250,0.2)" stroke="#a78bfa" strokeWidth="2" />
+      <text x="400" y="132" fill="#a78bfa" fontSize="11" fontWeight="bold" textAnchor="middle">CLIQUE</text>
+
+      {/* VERTEX-COVER */}
+      <circle cx="150" cy="220" r="35" fill="rgba(239,68,68,0.2)" stroke="#ef4444" strokeWidth="2" />
+      <text x="150" y="218" fill="#ef4444" fontSize="10" fontWeight="bold" textAnchor="middle">VERTEX</text>
+      <text x="150" y="232" fill="#ef4444" fontSize="10" fontWeight="bold" textAnchor="middle">COVER</text>
+
+      {/* HAM-CYCLE */}
+      <circle cx="300" cy="220" r="35" fill="rgba(236,72,153,0.2)" stroke="#ec4899" strokeWidth="2" />
+      <text x="300" y="218" fill="#ec4899" fontSize="10" fontWeight="bold" textAnchor="middle">HAM</text>
+      <text x="300" y="232" fill="#ec4899" fontSize="10" fontWeight="bold" textAnchor="middle">CYCLE</text>
+
+      {/* TSP */}
+      <circle cx="450" cy="220" r="30" fill="rgba(139,92,246,0.2)" stroke="#8b5cf6" strokeWidth="2" />
+      <text x="450" y="225" fill="#8b5cf6" fontSize="12" fontWeight="bold" textAnchor="middle">TSP</text>
+
+      {/* חיצים */}
+      <line x1="285" y1="80" x2="215" y2="105" stroke="#fbbf24" strokeWidth="2" markerEnd="url(#summaryArrow)" />
+      <line x1="315" y1="80" x2="385" y2="105" stroke="#fbbf24" strokeWidth="2" markerEnd="url(#summaryArrow)" />
+      <line x1="190" y1="160" x2="165" y2="185" stroke="#fbbf24" strokeWidth="2" markerEnd="url(#summaryArrow)" />
+      <line x1="210" y1="160" x2="285" y2="190" stroke="#fbbf24" strokeWidth="2" markerEnd="url(#summaryArrow)" />
+      <line x1="390" y1="160" x2="315" y2="190" stroke="#fbbf24" strokeWidth="2" markerEnd="url(#summaryArrow)" />
+      <line x1="410" y1="160" x2="440" y2="190" stroke="#fbbf24" strokeWidth="2" markerEnd="url(#summaryArrow)" />
+    </svg>
+    <p style={{ textAlign: 'center', color: '#a0aec0', fontSize: '0.85rem', marginTop: '0.5rem' }}>
+      כל חץ מייצג רדוקציה פולינומית. כל הבעיות הן NP-Complete!
+    </p>
+  </figure>
+
+</section>
+

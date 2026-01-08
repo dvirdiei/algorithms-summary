@@ -298,8 +298,102 @@ const sidebars = {
         },
       ],
     },
+    {
+      type: 'category',
+      label: '🔗 רדוקציות',
+      collapsed: true,
+      link: {
+        type: 'doc',
+        id: 'reductions',
+      },
+      items: [
+        {
+          type: 'link',
+          label: '• רדוקציה פולינומית',
+          href: '/docs/reductions#polynomial-reduction'
+        },
+        {
+          type: 'link',
+          label: '• דוגמה: HAM-PATH לְ HAM-CYCLE',
+          href: '/docs/reductions#hamiltonian-example'
+        },
+        {
+          type: 'link',
+          label: '• תכונות רדוקציות',
+          href: '/docs/reductions#reduction-types'
+        },
+        {
+          type: 'link',
+          label: '• סיכום',
+          href: '/docs/reductions#summary'
+        },
+      ],
+    },
+    {
+      type: 'category',
+      label: '🎯 בעיות NP-Complete',
+      collapsed: true,
+      link: {
+        type: 'doc',
+        id: 'np-complete-problems',
+      },
+      items: [
+        {
+          type: 'link',
+          label: '• SAT',
+          href: '/docs/np-complete-problems#sat'
+        },
+        {
+          type: 'link',
+          label: '• 3-SAT',
+          href: '/docs/np-complete-problems#3sat'
+        },
+        {
+          type: 'link',
+          label: '• Clique',
+          href: '/docs/np-complete-problems#clique'
+        },
+        {
+          type: 'link',
+          label: '• Vertex Cover',
+          href: '/docs/np-complete-problems#vertex-cover'
+        },
+        {
+          type: 'link',
+          label: '• Hamiltonian Cycle',
+          href: '/docs/np-complete-problems#hamiltonian'
+        },
+        {
+          type: 'link',
+          label: '• TSP',
+          href: '/docs/np-complete-problems#tsp'
+        },
+        {
+          type: 'link',
+          label: '• Subset Sum',
+          href: '/docs/np-complete-problems#subset-sum'
+        },
+        {
+          type: 'link',
+          label: '• Partition',
+          href: '/docs/np-complete-problems#partition'
+        },
+        {
+          type: 'link',
+          label: '• Integer Knapsack',
+          href: '/docs/np-complete-problems#knapsack'
+        },
+        {
+          type: 'link',
+          label: '• Bin Packing',
+          href: '/docs/np-complete-problems#bin-packing'
+        },
+      ],
+    },
     
   ],
 };
 
 export default sidebars;
+
+

@@ -45,6 +45,13 @@ const FeatureList = [
     icon: '🌊',
     accent: '#38bdf8',
   },
+  {
+    title: 'תורת הסיבוכיות',
+    summary: 'מחלקות P ו-NP, השאלה הפתוחה P=NP?, בעיות הכרעה מול אופטימיזציה ו-NP-Complete.',
+    to: '/docs/complexity-theory',
+    icon: '🧠',
+    accent: '#f97316',
+  },
 ];
 
 function Feature({title, summary, to, icon, accent}) {

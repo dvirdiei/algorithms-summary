@@ -1,0 +1,1072 @@
+---
+id: np-complete-problems
+title: בעיות NP-Complete קלאסיות
+description: מדריך מקיף לבעיות NP-Complete הקלאסיות ורדוקציות ביניהן
+sidebar_label: בעיות NP-Complete
+---
+
+<div className="greedyDoc container">
+  <p className="greedyDoc__badge">NP-Complete Problems</p>
+  <h1>בעיות NP-Complete קלאסיות</h1>
+  <p className="greedyDoc__lead">
+    אוסף מקיף של בעיות NP-Complete הקלאסיות ביותר בתורת החישוביות.
+    נלמד את כל בעיה בנפרד, נבין את ההגדרה הפורמלית שלה, ונראה את הרדוקציות
+    שמוכיחות את ה-NP-Completeness שלה. כל בעיה מוצגת עם דוגמה ויזואלית מפורטת.
+  </p>
+  <ul className="greedyDoc__tags">
+    <li>SAT</li>
+    <li>3-SAT</li>
+    <li>Clique</li>
+    <li>Vertex Cover</li>
+    <li>Hamiltonian</li>
+    <li>TSP</li>
+    <li>Subset Sum</li>
+    <li>Partition</li>
+    <li>Knapsack</li>
+    <li>Bin Packing</li>
+  </ul>
+</div>
+
+<figure className="conceptStory container" aria-label="שרשרת הרדוקציות">
+  <div className="conceptStory__canvas">
+    <svg viewBox="0 0 700 320" role="img">
+      <defs>
+        <linearGradient id="npcBg" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#1a1a2e" />
+          <stop offset="100%" stopColor="#0f1419" />
+        </linearGradient>
+        <marker id="npcArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 10 3, 0 6" fill="#fbbf24" />
+        </marker>
+      </defs>
+
+      <rect width="700" height="320" fill="url(#npcBg)" rx="16" />
+      
+      <text x="350" y="30" fill="#fbbf24" fontSize="18" fontWeight="bold" textAnchor="middle">
+        שרשרת הרדוקציות הקלאסית
+      </text>
+
+      {/* SAT */}
+      <circle cx="350" cy="70" r="35" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="3" />
+      <text x="350" y="75" fill="#fbbf24" fontSize="13" fontWeight="bold" textAnchor="middle">SAT</text>
+      
+      {/* חץ ל-3-SAT */}
+      <line x1="350" y1="105" x2="350" y2="135" stroke="#fbbf24" strokeWidth="3" markerEnd="url(#npcArrow)" />
+      
+      {/* 3-SAT */}
+      <circle cx="350" cy="160" r="35" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="3" />
+      <text x="350" y="165" fill="#64f6c8" fontSize="13" fontWeight="bold" textAnchor="middle">3-SAT</text>
+
+      {/* חצים מ-3-SAT */}
+      <line x1="320" y1="185" x2="150" y2="225" stroke="#a78bfa" strokeWidth="2" markerEnd="url(#npcArrow)" />
+      <line x1="380" y1="185" x2="550" y2="225" stroke="#ef4444" strokeWidth="2" markerEnd="url(#npcArrow)" />
+
+      {/* Clique */}
+      <circle cx="130" cy="250" r="30" fill="rgba(167,139,250,0.2)" stroke="#a78bfa" strokeWidth="2" />
+      <text x="130" y="255" fill="#a78bfa" fontSize="11" fontWeight="bold" textAnchor="middle">Clique</text>
+
+      {/* Vertex Cover */}
+      <circle cx="570" cy="250" r="30" fill="rgba(239,68,68,0.2)" stroke="#ef4444" strokeWidth="2" />
+      <text x="570" y="248" fill="#ef4444" fontSize="9" fontWeight="bold" textAnchor="middle">Vertex</text>
+      <text x="570" y="260" fill="#ef4444" fontSize="9" fontWeight="bold" textAnchor="middle">Cover</text>
+
+      {/* Hamiltonian */}
+      <circle cx="260" cy="250" r="30" fill="rgba(236,72,153,0.2)" stroke="#ec4899" strokeWidth="2" />
+      <text x="260" y="248" fill="#ec4899" fontSize="9" fontWeight="bold" textAnchor="middle">Hamilton</text>
+      <text x="260" y="260" fill="#ec4899" fontSize="9" fontWeight="bold" textAnchor="middle">Cycle</text>
+
+      {/* TSP */}
+      <circle cx="440" cy="250" r="30" fill="rgba(139,92,246,0.2)" stroke="#8b5cf6" strokeWidth="2" />
+      <text x="440" y="255" fill="#8b5cf6" fontSize="11" fontWeight="bold" textAnchor="middle">TSP</text>
+
+      {/* Subset Sum */}
+      <circle cx="350" cy="250" r="30" fill="rgba(34,197,94,0.2)" stroke="#22c55e" strokeWidth="2" />
+      <text x="350" y="248" fill="#22c55e" fontSize="9" fontWeight="bold" textAnchor="middle">Subset</text>
+      <text x="350" y="260" fill="#22c55e" fontSize="9" fontWeight="bold" textAnchor="middle">Sum</text>
+
+      {/* חיצי המשך */}
+      <line x1="350" y1="195" x2="270" y2="225" stroke="#ec4899" strokeWidth="2" markerEnd="url(#npcArrow)" />
+      <line x1="350" y1="195" x2="350" y2="218" stroke="#22c55e" strokeWidth="2" markerEnd="url(#npcArrow)" />
+      <line x1="350" y1="195" x2="430" y2="225" stroke="#8b5cf6" strokeWidth="2" markerEnd="url(#npcArrow)" />
+
+      <text x="350" y="305" fill="#a0aec0" fontSize="12" textAnchor="middle">
+        כל חץ = רדוקציה פולינומית
+      </text>
+    </svg>
+  </div>
+  <figcaption className="conceptStory__caption">
+    <h4>המפה של NP-Completeness</h4>
+    <p>
+      כל בעיה בשרשרת הזו היא NP-Complete. אם נמצא פתרון פולינומי לאחת מהן,
+      אוטומטית כולן יהיו פתירות בזמן פולינומי (P = NP)!
+    </p>
+  </figcaption>
+</figure>
+
+<section className="conceptGrid container">
+  <article className="conceptCard conceptCard--explain">
+    <p className="conceptCard__label">מה נלמד?</p>
+    <h3 className="conceptCard__title">10 בעיות קלאסיות</h3>
+    <p className="conceptCard__body">
+      כל בעיה תוצג עם:<br/>
+      • הגדרה פורמלית מדויקת<br/>
+      • דוגמה ויזואלית ברורה<br/>
+      • רדוקציה המוכיחה NP-Completeness<br/>
+      • ניתוח סיבוכיות
+    </p>
+  </article>
+  <article className="conceptCard conceptCard--algorithm">
+    <p className="conceptCard__label">שיטת העבודה</p>
+    <h3 className="conceptCard__title">שרשרת הוכחות</h3>
+    <p className="conceptCard__body">
+      נתחיל מ-SAT (משפט קוק-לוין)<br/>
+      נבנה שרשרת של רדוקציות:<br/>
+      SAT → 3-SAT → Clique → ...<br/>
+      כל בעיה יורשת NP-Completeness!
+    </p>
+  </article>
+  <article className="conceptCard conceptCard--solution">
+    <p className="conceptCard__label">למה זה חשוב?</p>
+    <h3 className="conceptCard__title">יישומים מעשיים</h3>
+    <p className="conceptCard__body">
+      הבעיות האלה מופיעות בכל מקום!<br/>
+      • תזמון משימות (Scheduling)<br/>
+      • אופטימיזציה לוגיסטית (TSP)<br/>
+      • קריפטוגרפיה (Subset Sum)
+    </p>
+  </article>
+</section>
+
+<section id="sat" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">בעיה 1</p>
+    <h2>SAT - Boolean Satisfiability</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>SAT</strong> היא הבעיה הראשונה שהוכחה כ-NP-Complete (משפט קוק-לוין, 1971).
+        זו בעיה בסיסית בלוגיקה בוליאנית שמהווה את הבסיס לכל שרשרת ההוכחות של NP-Completeness.
+      </p>
+    </article>
+  </div>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--explain">
+      <p className="conceptCard__label">הגדרה</p>
+      <h3 className="conceptCard__title">בעיית SAT</h3>
+      <p className="conceptCard__body">
+        <strong>קלט:</strong> נוסחה בוליאנית φ ב-CNF<br/>
+        (Conjunctive Normal Form)<br/><br/>
+        <strong>שאלה:</strong> האם קיים השמה של ערכי אמת<br/>
+        למשתנים כך שהנוסחה מתקיימת?<br/><br/>
+        <strong>CNF:</strong> פסוקים (clauses) בAND,<br/>
+        כל clause הוא OR של ליטרלים
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">דוגמה</p>
+      <h3 className="conceptCard__title">נוסחה ב-CNF</h3>
+      <p className="conceptCard__body">
+        φ = (x₁ ∨ ¬x₂ ∨ x₃) ∧ (¬x₁ ∨ x₂) ∧ (x₂ ∨ ¬x₃)<br/><br/>
+        <strong>פסוק 1:</strong> x₁ ∨ ¬x₂ ∨ x₃<br/>
+        <strong>פסוק 2:</strong> ¬x₁ ∨ x₂<br/>
+        <strong>פסוק 3:</strong> x₂ ∨ ¬x₃<br/><br/>
+        <strong>פתרון:</strong><br/>
+        x₁=True, x₂=True, x₃=False<br/>
+        מקיים את כל הפסוקים! ✓
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">סיבוכיות</p>
+      <h3 className="conceptCard__title">למה NP-Complete?</h3>
+      <p className="conceptCard__body">
+        <strong>ב-NP:</strong> קל לאמת פתרון<br/>
+        נציב את ההשמה בנוסחה ונבדוק<br/>
+        זמן: O(n) - פולינומי! ✓<br/><br/>
+        <strong>NP-Hard:</strong><br/>
+        משפט קוק-לוין (1971)<br/>
+        כל בעיה ב-NP ניתנת לרדוקציה ל-SAT<br/>
+        זו התוצאה המקורית!
+      </p>
+    </article>
+  </div>
+
+  <figure style={{ margin: '2rem 0', padding: '1.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '16px' }}>
+    <h4 style={{ textAlign: 'center', color: '#fbbf24', marginBottom: '1rem' }}>דוגמה ויזואלית - SAT</h4>
+    
+    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <svg viewBox="0 0 600 300" style={{ width: '100%' }}>
+        <defs>
+          <marker id="satArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#fbbf24" />
+          </marker>
+        </defs>
+
+        {/* כותרת */}
+        <text x="300" y="25" fill="#fbbf24" fontSize="14" fontWeight="bold" textAnchor="middle">
+          φ = (x₁ ∨ ¬x₂ ∨ x₃) ∧ (¬x₁ ∨ x₂) ∧ (x₂ ∨ ¬x₃)
+        </text>
+
+        {/* פסוק 1 */}
+        <rect x="50" y="60" width="150" height="60" rx="8" fill="rgba(100,246,200,0.2)" stroke="#64f6c8" strokeWidth="2" />
+        <text x="125" y="85" fill="#64f6c8" fontSize="12" fontWeight="bold" textAnchor="middle">Clause 1</text>
+        <text x="125" y="105" fill="#a0aec0" fontSize="11" textAnchor="middle">x₁ ∨ ¬x₂ ∨ x₃</text>
+
+        {/* פסוק 2 */}
+        <rect x="225" y="60" width="150" height="60" rx="8" fill="rgba(167,139,250,0.2)" stroke="#a78bfa" strokeWidth="2" />
+        <text x="300" y="85" fill="#a78bfa" fontSize="12" fontWeight="bold" textAnchor="middle">Clause 2</text>
+        <text x="300" y="105" fill="#a0aec0" fontSize="11" textAnchor="middle">¬x₁ ∨ x₂</text>
+
+        {/* פסוק 3 */}
+        <rect x="400" y="60" width="150" height="60" rx="8" fill="rgba(236,72,153,0.2)" stroke="#ec4899" strokeWidth="2" />
+        <text x="475" y="85" fill="#ec4899" fontSize="12" fontWeight="bold" textAnchor="middle">Clause 3</text>
+        <text x="475" y="105" fill="#a0aec0" fontSize="11" textAnchor="middle">x₂ ∨ ¬x₃</text>
+
+        {/* AND symbols */}
+        <text x="207" y="95" fill="#fbbf24" fontSize="16" fontWeight="bold" textAnchor="middle">∧</text>
+        <text x="382" y="95" fill="#fbbf24" fontSize="16" fontWeight="bold" textAnchor="middle">∧</text>
+
+        {/* השמה */}
+        <rect x="150" y="160" width="300" height="40" rx="8" fill="rgba(251,191,36,0.2)" stroke="#fbbf24" strokeWidth="2" />
+        <text x="300" y="185" fill="#fbbf24" fontSize="13" fontWeight="bold" textAnchor="middle">
+          השמה: x₁=T, x₂=T, x₃=F
+        </text>
+
+        {/* תוצאות */}
+        <rect x="50" y="230" width="150" height="40" rx="8" fill="rgba(34,197,94,0.3)" stroke="#22c55e" strokeWidth="2" />
+        <text x="125" y="255" fill="#22c55e" fontSize="12" textAnchor="middle">T ∨ F ∨ F = T ✓</text>
+
+        <rect x="225" y="230" width="150" height="40" rx="8" fill="rgba(34,197,94,0.3)" stroke="#22c55e" strokeWidth="2" />
+        <text x="300" y="255" fill="#22c55e" fontSize="12" textAnchor="middle">F ∨ T = T ✓</text>
+
+        <rect x="400" y="230" width="150" height="40" rx="8" fill="rgba(34,197,94,0.3)" stroke="#22c55e" strokeWidth="2" />
+        <text x="475" y="255" fill="#22c55e" fontSize="12" textAnchor="middle">T ∨ T = T ✓</text>
+
+        {/* חצים */}
+        <line x1="125" y1="120" x2="125" y2="160" stroke="#64f6c8" strokeWidth="2" markerEnd="url(#satArrow)" />
+        <line x1="300" y1="120" x2="300" y2="160" stroke="#a78bfa" strokeWidth="2" markerEnd="url(#satArrow)" />
+        <line x1="475" y1="120" x2="475" y2="160" stroke="#ec4899" strokeWidth="2" markerEnd="url(#satArrow)" />
+        
+        <line x1="200" y1="200" x2="125" y2="225" stroke="#22c55e" strokeWidth="2" markerEnd="url(#satArrow)" />
+        <line x1="300" y1="200" x2="300" y2="225" stroke="#22c55e" strokeWidth="2" markerEnd="url(#satArrow)" />
+        <line x1="400" y1="200" x2="475" y2="225" stroke="#22c55e" strokeWidth="2" markerEnd="url(#satArrow)" />
+      </svg>
+    </div>
+
+    <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(34,197,94,0.1)', borderRadius: '8px' }}>
+      <h5 style={{ color: '#22c55e', marginBottom: '0.5rem', textAlign: 'center' }}>✓ הנוסחה SATISFIABLE</h5>
+      <p style={{ color: '#a0aec0', textAlign: 'center', margin: 0 }}>
+        כל שלושת הפסוקים מתקיימים עם ההשמה x₁=True, x₂=True, x₃=False
+      </p>
+    </div>
+  </figure>
+
+  <div style={{ marginTop: '2rem', padding: '1rem', background: 'rgba(251,191,36,0.1)', borderRadius: '12px', borderRight: '4px solid #fbbf24' }}>
+    <h4 style={{ color: '#fbbf24', margin: '0 0 0.5rem 0' }}>🎯 משפט קוק-לוין (Cook-Levin Theorem)</h4>
+    <p style={{ color: '#a0aec0', margin: 0, lineHeight: '1.8' }}>
+      <strong>תוצאה:</strong> SAT היא NP-Complete.<br/><br/>
+      <strong>הוכחה (רעיון):</strong> ניקח כל בעיה L ב-NP. יש לה Verifier פולינומי V(x,c).<br/>
+      נבנה נוסחה בוליאנית φ(x) שמדמה את ריצת V על x:<br/>
+      • משתנים: מצבי המחשב בכל צעד של V<br/>
+      • פסוקים: כללי המעבר בין מצבים (טבלת האמת של V)<br/>
+      • גודל: פולינומי במספר הצעדים של V<br/><br/>
+      התוצאה: x ∈ L ⟺ φ(x) satisfiable<br/>
+      זו רדוקציה פולינומית מ-L ל-SAT!
+    </p>
+  </div>
+</section>
+
+<section id="3sat" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">בעיה 2</p>
+    <h2>3-SAT - 3-CNF Satisfiability</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>3-SAT</strong> היא גרסה מוגבלת של SAT שבה כל clause מכיל בדיוק 3 ליטרלים.
+        למרות המגבלה, הבעיה נותרת NP-Complete! זו בעיה נוחה מאוד לרדוקציות.
+      </p>
+    </article>
+  </div>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--explain">
+      <p className="conceptCard__label">הגדרה</p>
+      <h3 className="conceptCard__title">בעיית 3-SAT</h3>
+      <p className="conceptCard__body">
+        <strong>קלט:</strong> נוסחה בוליאנית φ ב-3-CNF<br/><br/>
+        <strong>3-CNF:</strong> כל clause מכיל<br/>
+        <strong>בדיוק 3 ליטרלים</strong><br/><br/>
+        <strong>שאלה:</strong> האם קיים השמה<br/>
+        שמקיימת את הנוסחה?
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">דוגמה</p>
+      <h3 className="conceptCard__title">נוסחה ב-3-CNF</h3>
+      <p className="conceptCard__body">
+        φ = (x₁ ∨ x₂ ∨ x₃) ∧<br/>
+        {"    "}(¬x₁ ∨ x₂ ∨ ¬x₄) ∧<br/>
+        {"    "}(x₃ ∨ ¬x₄ ∨ x₁)<br/><br/>
+        כל clause יש לו 3 ליטרלים מדויקים!<br/><br/>
+        <strong>פתרון:</strong><br/>
+        x₁=T, x₂=T, x₃=T, x₄=F
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">למה חשוב?</p>
+      <h3 className="conceptCard__title">בסיס לרדוקציות</h3>
+      <p className="conceptCard__body">
+        3-SAT פשוטה יותר מ-SAT כללי<br/>
+        אבל עדיין NP-Complete!<br/><br/>
+        המבנה הקבוע (3 ליטרלים)<br/>
+        מקל על רדוקציות לבעיות גרפים<br/><br/>
+        <strong>רוב ההוכחות</strong> מתחילות מ-3-SAT
+      </p>
+    </article>
+  </div>
+
+  <figure style={{ margin: '2rem 0', padding: '1.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '16px' }}>
+    <h4 style={{ textAlign: 'center', color: '#64f6c8', marginBottom: '1rem' }}>רדוקציה: SAT ≤ₚ 3-SAT</h4>
+    
+    <div style={{ padding: '1rem', background: 'rgba(100,246,200,0.1)', borderRadius: '8px', marginBottom: '1rem' }}>
+      <h5 style={{ color: '#64f6c8', marginBottom: '0.5rem' }}>הרעיון</h5>
+      <p style={{ color: '#a0aec0', margin: 0, lineHeight: '1.8' }}>
+        ניקח clause כלשהו מ-SAT ונמיר אותו ל-clauses של 3-SAT.<br/>
+        נטפל בכל מקרה לפי מספר הליטרלים.
+      </p>
+    </div>
+
+    <div style={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
+      
+      <div style={{ padding: '1rem', background: 'rgba(34,197,94,0.1)', borderRadius: '8px' }}>
+        <h6 style={{ color: '#22c55e', marginBottom: '0.5rem' }}>מקרה 1: Clause עם 1 ליטרל</h6>
+        <p style={{ color: '#a0aec0', fontSize: '0.9rem', margin: 0 }}>
+          <strong>קלט:</strong> (x₁)<br/><br/>
+          <strong>פתרון:</strong> נוסיף משתנים דמה y₁, y₂<br/>
+          נוציא: (x₁ ∨ y₁ ∨ y₂) ∧<br/>
+          {"       "}(x₁ ∨ y₁ ∨ ¬y₂) ∧<br/>
+          {"       "}(x₁ ∨ ¬y₁ ∨ y₂) ∧<br/>
+          {"       "}(x₁ ∨ ¬y₁ ∨ ¬y₂)<br/><br/>
+          כל 4 הclauses מתקיימים ⟺ x₁=True
+        </p>
+      </div>
+
+      <div style={{ padding: '1rem', background: 'rgba(167,139,250,0.1)', borderRadius: '8px' }}>
+        <h6 style={{ color: '#a78bfa', marginBottom: '0.5rem' }}>מקרה 2: Clause עם 2 ליטרלים</h6>
+        <p style={{ color: '#a0aec0', fontSize: '0.9rem', margin: 0 }}>
+          <strong>קלט:</strong> (x₁ ∨ x₂)<br/><br/>
+          <strong>פתרון:</strong> נוסיף משתנה דמה y<br/>
+          נוציא: (x₁ ∨ x₂ ∨ y) ∧<br/>
+          {"       "}(x₁ ∨ x₂ ∨ ¬y)<br/><br/>
+          שני Clauses מכסים את כל האפשרויות:<br/>
+          אם y=T, הראשון מתקיים ⟺ x₁∨x₂<br/>
+          אם y=F, השני מתקיים ⟺ x₁∨x₂
+        </p>
+      </div>
+
+      <div style={{ padding: '1rem', background: 'rgba(251,191,36,0.1)', borderRadius: '8px' }}>
+        <h6 style={{ color: '#fbbf24', marginBottom: '0.5rem' }}>מקרה 3: Clause עם 3 ליטרלים</h6>
+        <p style={{ color: '#a0aec0', fontSize: '0.9rem', margin: 0 }}>
+          <strong>קלט:</strong> (x₁ ∨ x₂ ∨ x₃)<br/><br/>
+          <strong>פתרון:</strong> לא צריך שינוי!<br/>
+          נוציא: (x₁ ∨ x₂ ∨ x₃)<br/><br/>
+          זה כבר 3-CNF ✓
+        </p>
+      </div>
+
+      <div style={{ padding: '1rem', background: 'rgba(239,68,68,0.1)', borderRadius: '8px' }}>
+        <h6 style={{ color: '#ef4444', marginBottom: '0.5rem' }}>מקרה 4: Clause עם k>3 ליטרלים</h6>
+        <p style={{ color: '#a0aec0', fontSize: '0.9rem', margin: 0 }}>
+          <strong>קלט:</strong> (x₁ ∨ x₂ ∨ x₃ ∨ x₄ ∨ x₅)<br/><br/>
+          <strong>פתרון:</strong> נפצל עם משתנים דמה y₁, y₂<br/>
+          נוציא: (x₁ ∨ x₂ ∨ y₁) ∧<br/>
+          {"       "}(¬y₁ ∨ x₃ ∨ y₂) ∧<br/>
+          {"       "}(¬y₂ ∨ x₄ ∨ x₅)<br/><br/>
+          שרשרת של clauses עם 3 ליטרלים!
+        </p>
+      </div>
+    </div>
+
+    <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(251,191,36,0.1)', borderRadius: '8px' }}>
+      <h5 style={{ color: '#fbbf24', marginBottom: '0.5rem' }}>✓ נכונות ו התוצאה</h5>
+      <p style={{ color: '#a0aec0', margin: 0, lineHeight: '1.8' }}>
+        • כל המרה משמרת satisfiability: φ satisfiable ⟺ φ' satisfiable<br/>
+        • גודל הנוסחה נותר פולינומי: O(mk) עבור m clauses בגודל ממוצע k<br/>
+        • זמן: O(n) לעבור על כל ה-clauses<br/><br/>
+        <strong>מסקנה:</strong> SAT ≤ₚ 3-SAT, ולכן 3-SAT היא NP-Complete!
+      </p>
+    </div>
+  </figure>
+</section>
+
+<section id="clique" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">בעיה 3</p>
+    <h2>Clique - קליקה</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>Clique</strong> היא קבוצה של קודקודים בגרף שכל שניים מהם מחוברים בקשת.
+        זו בעיה קלאסית בתורת הגרפים עם יישומים רבים ברשתות חברתיות, ביולוגיה חישובית ועוד.
+      </p>
+    </article>
+  </div>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--explain">
+      <p className="conceptCard__label">הגדרה</p>
+      <h3 className="conceptCard__title">בעיית Clique</h3>
+      <p className="conceptCard__body">
+        <strong>קלט:</strong> גרף G=(V,E) ומספר k<br/><br/>
+        <strong>שאלה:</strong> האם קיימת קבוצה<br/>
+        של k קודקודים כך שכל זוג<br/>
+        מחובר בקשת?<br/><br/>
+        <strong>קליקה:</strong> תת-גרף שלם<br/>
+        (complete subgraph)
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">דוגמה</p>
+      <h3 className="conceptCard__title">קליקה בגרף</h3>
+      <p className="conceptCard__body">
+        גרף עם 5 קודקודים<br/>
+        k = 3<br/><br/>
+        <strong>קליקה:</strong> &#123;v₁, v₂, v₃&#125;<br/>
+        כל זוג מחובר:<br/>
+        • (v₁,v₂) ✓<br/>
+        • (v₁,v₃) ✓<br/>
+        • (v₂,v₃) ✓<br/><br/>
+        יש קליקה בגודל 3!
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">למה קשה?</p>
+      <h3 className="conceptCard__title">מספר אקספוננציאלי</h3>
+      <p className="conceptCard__body">
+        יש (ⁿₖ) קבוצות אפשריות<br/>
+        לבדוק כל אחת: O(k²) זמן<br/><br/>
+        <strong>Brute force:</strong><br/>
+        O(nᵏ · k²) - אקספוננציאלי!<br/><br/>
+        אין אלגוריתם ידוע פולינומי<br/>
+        (אלא אם P=NP)
+      </p>
+    </article>
+  </div>
+
+  <figure style={{ margin: '2rem 0', padding: '1.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '16px' }}>
+    <h4 style={{ textAlign: 'center', color: '#a78bfa', marginBottom: '1rem' }}>רדוקציה: 3-SAT ≤ₚ Clique</h4>
+    
+    <div style={{ padding: '1rem', background: 'rgba(167,139,250,0.1)', borderRadius: '8px', marginBottom: '1rem' }}>
+      <h5 style={{ color: '#a78bfa', marginBottom: '0.5rem' }}>הרעיון המרכזי</h5>
+      <p style={{ color: '#a0aec0', margin: 0, lineHeight: '1.8' }}>
+        ניקח נוסחת 3-SAT ונבנה גרף שבו קליקה בגודל k (מספר ה-clauses)<br/>
+        מייצגת השמה שמקיימת את הנוסחה!
+      </p>
+    </div>
+
+    <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+      <svg viewBox="0 0 800 400" style={{ width: '100%' }}>
+        <defs>
+          <marker id="cliqueArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#a78bfa" />
+          </marker>
+        </defs>
+
+        {/* נוסחה */}
+        <text x="400" y="25" fill="#64f6c8" fontSize="13" fontWeight="bold" textAnchor="middle">
+          φ = (x₁ ∨ x₂ ∨ x₃) ∧ (¬x₁ ∨ ¬x₂ ∨ x₄) ∧ (¬x₃ ∨ x₄ ∨ ¬x₁)
+        </text>
+
+        {/* Clause 1 */}
+        <rect x="50" y="55" width="120" height="80" rx="8" fill="rgba(100,246,200,0.1)" stroke="#64f6c8" strokeWidth="2" />
+        <text x="110" y="75" fill="#64f6c8" fontSize="11" fontWeight="bold" textAnchor="middle">C1</text>
+        <circle cx="80" cy="105" r="12" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="2" />
+        <text x="80" y="110" fill="#64f6c8" fontSize="9" textAnchor="middle">x₁</text>
+        <circle cx="110" cy="105" r="12" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="2" />
+        <text x="110" y="110" fill="#64f6c8" fontSize="9" textAnchor="middle">x₂</text>
+        <circle cx="140" cy="105" r="12" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="2" />
+        <text x="140" y="110" fill="#64f6c8" fontSize="9" textAnchor="middle">x₃</text>
+
+        {/* Clause 2 */}
+        <rect x="300" y="55" width="140" height="80" rx="8" fill="rgba(251,191,36,0.1)" stroke="#fbbf24" strokeWidth="2" />
+        <text x="370" y="75" fill="#fbbf24" fontSize="11" fontWeight="bold" textAnchor="middle">C2</text>
+        <circle cx="325" cy="105" r="12" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="2" />
+        <text x="325" y="110" fill="#fbbf24" fontSize="9" textAnchor="middle">¬x₁</text>
+        <circle cx="370" cy="105" r="12" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="2" />
+        <text x="370" y="110" fill="#fbbf24" fontSize="9" textAnchor="middle">¬x₂</text>
+        <circle cx="415" cy="105" r="12" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="2" />
+        <text x="415" y="110" fill="#fbbf24" fontSize="9" textAnchor="middle">x₄</text>
+
+        {/* Clause 3 */}
+        <rect x="570" y="55" width="140" height="80" rx="8" fill="rgba(236,72,153,0.1)" stroke="#ec4899" strokeWidth="2" />
+        <text x="640" y="75" fill="#ec4899" fontSize="11" fontWeight="bold" textAnchor="middle">C3</text>
+        <circle cx="595" cy="105" r="12" fill="rgba(236,72,153,0.3)" stroke="#ec4899" strokeWidth="2" />
+        <text x="595" y="110" fill="#ec4899" fontSize="9" textAnchor="middle">¬x₃</text>
+        <circle cx="640" cy="105" r="12" fill="rgba(236,72,153,0.3)" stroke="#ec4899" strokeWidth="2" />
+        <text x="640" y="110" fill="#ec4899" fontSize="9" textAnchor="middle">x₄</text>
+        <circle cx="685" cy="105" r="12" fill="rgba(236,72,153,0.3)" stroke="#ec4899" strokeWidth="2" />
+        <text x="685" y="110" fill="#ec4899" fontSize="9" textAnchor="middle">¬x₁</text>
+
+        {/* חץ */}
+        <text x="400" y="165" fill="#a78bfa" fontSize="16" fontWeight="bold" textAnchor="middle">⬇ בניית הגרף</text>
+
+        {/* הגרף */}
+        <text x="400" y="200" fill="#a78bfa" fontSize="12" fontWeight="bold" textAnchor="middle">
+          גרף Clique: כל ליטרל = קודקוד, קשתות בין לא-סותרים
+        </text>
+
+        {/* קודקודי C1 */}
+        <circle cx="150" cy="280" r="18" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="2" />
+        <text x="150" y="285" fill="#64f6c8" fontSize="10" textAnchor="middle">x₁</text>
+        
+        <circle cx="250" cy="250" r="18" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="2" />
+        <text x="250" y="255" fill="#64f6c8" fontSize="10" textAnchor="middle">x₂</text>
+        
+        <circle cx="200" cy="350" r="18" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="2" />
+        <text x="200" y="355" fill="#64f6c8" fontSize="10" textAnchor="middle">x₃</text>
+
+        {/* קודקודי C2 */}
+        <circle cx="400" cy="240" r="18" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="2" />
+        <text x="400" y="245" fill="#fbbf24" fontSize="10" textAnchor="middle">¬x₁</text>
+        
+        <circle cx="350" cy="320" r="18" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="2" />
+        <text x="350" y="325" fill="#fbbf24" fontSize="10" textAnchor="middle">¬x₂</text>
+        
+        <circle cx="450" cy="340" r="18" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="2" />
+        <text x="450" y="345" fill="#fbbf24" fontSize="10" textAnchor="middle">x₄</text>
+
+        {/* קודקודי C3 */}
+        <circle cx="600" cy="280" r="18" fill="rgba(236,72,153,0.3)" stroke="#ec4899" strokeWidth="2" />
+        <text x="600" y="285" fill="#ec4899" fontSize="10" textAnchor="middle">¬x₃</text>
+        
+        <circle cx="650" cy="340" r="18" fill="rgba(236,72,153,0.3)" stroke="#ec4899" strokeWidth="2" />
+        <text x="650" y="345" fill="#ec4899" fontSize="10" textAnchor="middle">x₄</text>
+        
+        <circle cx="550" cy="350" r="18" fill="rgba(236,72,153,0.3)" stroke="#ec4899" strokeWidth="2" />
+        <text x="550" y="355" fill="#ec4899" fontSize="10" textAnchor="middle">¬x₁</text>
+
+        {/* קשתות הקליקה - דוגמה */}
+        <line x1="250" y1="250" x2="450" y2="340" stroke="#22c55e" strokeWidth="3" opacity="0.7" />
+        <line x1="250" y1="250" x2="650" y2="340" stroke="#22c55e" strokeWidth="3" opacity="0.7" />
+        <line x1="450" y1="340" x2="650" y2="340" stroke="#22c55e" strokeWidth="3" opacity="0.7" />
+
+        {/* סימון הקליקה */}
+        <ellipse cx="450" cy="310" rx="150" ry="80" fill="none" stroke="#22c55e" strokeWidth="3" strokeDasharray="6,3" />
+        <text x="450" y="240" fill="#22c55e" fontSize="12" fontWeight="bold" textAnchor="middle">
+          Clique בגודל 3!
+        </text>
+      </svg>
+    </div>
+
+    <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(167,139,250,0.1)', borderRadius: '8px' }}>
+      <h5 style={{ color: '#a78bfa', marginBottom: '0.5rem' }}>אלגוריתם הבנייה</h5>
+      <ol style={{ color: '#a0aec0', paddingRight: '1.5rem', lineHeight: '1.8' }}>
+        <li>לכל clause Cᵢ ולכל ליטרל ℓ ב-Cᵢ, צור קודקוד (i, ℓ)</li>
+        <li>חבר שני קודקודים (i, ℓ₁) ו-(j, ℓ₂) אם: i ≠ j (מclauses שונים) וגם ℓ₁ ≠ ¬ℓ₂ (לא סותרים)</li>
+        <li>קבע k = מספר ה-clauses</li>
+      </ol>
+    </div>
+
+    <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(34,197,94,0.1)', borderRadius: '8px' }}>
+      <h5 style={{ color: '#22c55e', marginBottom: '0.5rem' }}>✓ נכונות</h5>
+      <p style={{ color: '#a0aec0', margin: 0, lineHeight: '1.8' }}>
+        <strong>⟹:</strong> אם φ satisfiable, יש השמה שמקיימת כל clause.<br/>
+        בחר ליטרל אמיתי אחד מכל clause - זו קליקה בגודל k!<br/>
+        (לא סותרים כי כולם אמיתיים באותה השמה)<br/><br/>
+        <strong>⟸:</strong> אם יש קליקה בגודל k, היא מכילה קודקוד אחד מכל clause.<br/>
+        הליטרלים לא סותרים, אז אפשר להשים True לכולם - φ מתקיימת!<br/><br/>
+        <strong>זמן:</strong> O(m²) עבור m clauses (לבנות את הגרף) - פולינומי ✓
+      </p>
+    </div>
+  </figure>
+</section>
+
+<section id="vertex-cover" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">בעיה 4</p>
+    <h2>Vertex Cover - כיסוי קודקודים</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>Vertex Cover</strong> היא קבוצה של קודקודים שכל קשת בגרף נוגעת לפחות באחד מהם.
+        זו בעיה קלאסית באופטימיזציה עם יישומים ברשתות, ביולוגיה ועיבוד תמונה.
+      </p>
+    </article>
+  </div>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--explain">
+      <p className="conceptCard__label">הגדרה</p>
+      <h3 className="conceptCard__title">בעיית Vertex Cover</h3>
+      <p className="conceptCard__body">
+        <strong>קלט:</strong> גרף G=(V,E) ומספר k<br/><br/>
+        <strong>שאלה:</strong> האם קיימת קבוצה<br/>
+        S ⊆ V עם |S| ≤ k כך שכל<br/>
+        קשת (u,v) ∈ E מקיימת:<br/>
+        u ∈ S או v ∈ S?<br/><br/>
+        <strong>כיסוי:</strong> הקודקודים "מכסים"<br/>
+        את כל הקשתות
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">דוגמה</p>
+      <h3 className="conceptCard__title">כיסוי קודקודים</h3>
+      <p className="conceptCard__body">
+        גרף: 5 קודקודים, 6 קשתות<br/>
+        k = 2<br/><br/>
+        <strong>כיסוי:</strong> &#123;v₁, v₃&#125;<br/><br/>
+        כל קשת נוגעת ב-v₁ או ב-v₃:<br/>
+        • (v₁,v₂) - נוגעת ב-v₁ ✓<br/>
+        • (v₁,v₄) - נוגעת ב-v₁ ✓<br/>
+        • (v₃,v₅) - נוגעת ב-v₃ ✓
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">קשר ל-Clique</p>
+      <h3 className="conceptCard__title">משלים של Independent Set</h3>
+      <p className="conceptCard__body">
+        <strong>תכונה חשובה:</strong><br/>
+        S הוא vertex cover ⟺<br/>
+        V \ S הוא independent set!<br/><br/>
+        <strong>למה?</strong><br/>
+        אם S מכסה את כל הקשתות,<br/>
+        אז V\S לא מכיל קשתות פנימיות<br/>
+        (קבוצה עצמאית!)
+      </p>
+    </article>
+  </div>
+
+  <div style={{ marginTop: '2rem', padding: '1rem', background: 'rgba(239,68,68,0.1)', borderRadius: '12px', borderRight: '4px solid #ef4444' }}>
+    <h4 style={{ color: '#ef4444', margin: '0 0 0.5rem 0' }}>רדוקציה: Clique ≤ₚ Vertex Cover</h4>
+    <p style={{ color: '#a0aec0', margin: 0, lineHeight: '1.8' }}>
+      <strong>רעיון:</strong> קליקה בגרף G ⟺ Independent Set בגרף המשלים Ḡ ⟺ Vertex Cover קטן ב-Ḡ!<br/><br/>
+      <strong>בנייה:</strong><br/>
+      1. בנה את הגרף המשלים Ḡ = (V, Ē) כאשר Ē = &#123;(u,v) : (u,v) ∉ E&#125;<br/>
+      2. קבע k' = |V| - k<br/>
+      3. שאל: האם יש vertex cover בגודל k' ב-Ḡ?<br/><br/>
+      <strong>נכונות:</strong> G יש clique בגודל k ⟺ Ḡ יש vertex cover בגודל |V|-k ✓<br/>
+      <strong>זמן:</strong> O(V²) - בניית גרף משלים - פולינומי!
+    </p>
+  </div>
+</section>
+
+<section id="hamiltonian" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">בעיה 5</p>
+    <h2>Hamiltonian Cycle - מעגל המילטוני</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>Hamiltonian Cycle</strong> הוא מסלול סגור שעובר בכל קודקוד בגרף בדיוק פעם אחת.
+        נקרא על שם המתמטיקאי ויליאם המילטון, והיא בעיה מרכזית ברדוקציות NP-Complete.
+      </p>
+    </article>
+  </div>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--explain">
+      <p className="conceptCard__label">הגדרה</p>
+      <h3 className="conceptCard__title">בעיית Hamiltonian Cycle</h3>
+      <p className="conceptCard__body">
+        <strong>קלט:</strong> גרף G = (V, E)<br/><br/>
+        <strong>שאלה:</strong> האם קיים מעגל<br/>
+        שעובר בכל קודקוד בדיוק פעם<br/>
+        אחת וחוזר לנקודת ההתחלה?<br/><br/>
+        <strong>מעגל המילטוני:</strong><br/>
+        v₁ → v₂ → ... → vₙ → v₁<br/>
+        כל vᵢ שונה, כולם ב-V
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">דוגמה</p>
+      <h3 className="conceptCard__title">מעגל המילטוני</h3>
+      <p className="conceptCard__body">
+        גרף עם 5 קודקודים<br/><br/>
+        <strong>מעגל:</strong><br/>
+        v₁ → v₂ → v₃ → v₄ → v₅ → v₁<br/><br/>
+        כל קודקוד מבוקר בדיוק פעם אחת ✓<br/>
+        חוזרים לנקודת ההתחלה ✓<br/><br/>
+        זה מעגל המילטוני!
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">למה קשה?</p>
+      <h3 className="conceptCard__title">n! אפשרויות</h3>
+      <p className="conceptCard__body">
+        יש n! תמורות אפשריות<br/>
+        של הקודקודים<br/><br/>
+        לבדוק כל אחת: O(n) זמן<br/><br/>
+        <strong>Brute force:</strong><br/>
+        O(n! · n) - אקספוננציאלי!<br/><br/>
+        אין אלגוריתם פולינומי ידוע
+      </p>
+    </article>
+  </div>
+</section>
+
+<section id="tsp" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">בעיה 6</p>
+    <h2>TSP - Traveling Salesman Problem</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>TSP</strong> היא אחת הבעיות המפורסמות ביותר באופטימיזציה.
+        סוכן נוסע צריך לבקר בכל הערים ולחזור הביתה, תוך מזעור המרחק הכולל.
+      </p>
+    </article>
+  </div>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--explain">
+      <p className="conceptCard__label">הגדרה</p>
+      <h3 className="conceptCard__title">בעיית TSP</h3>
+      <p className="conceptCard__body">
+        <strong>קלט:</strong> גרף משוקלל G=(V,E,w)<br/>
+        ומספר B (תקציב)<br/><br/>
+        <strong>שאלה:</strong> האם קיים מעגל<br/>
+        המילטוני שסכום המשקלים שלו<br/>
+        ≤ B?<br/><br/>
+        <strong>TSP:</strong> מסלול קצר ביותר<br/>
+        שמבקר בכל הקודקודים
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">דוגמה</p>
+      <h3 className="conceptCard__title">סוכן נוסע</h3>
+      <p className="conceptCard__body">
+        4 ערים: A, B, C, D<br/>
+        משקלים: w(A,B)=10, w(B,C)=15...<br/>
+        B = 50<br/><br/>
+        <strong>מסלול:</strong><br/>
+        A → B → C → D → A<br/>
+        עלות: 10+15+12+8 = 45 ≤ 50 ✓<br/><br/>
+        יש מסלול בתקציב!
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">יישומים</p>
+      <h3 className="conceptCard__title">בעולם האמיתי</h3>
+      <p className="conceptCard__body">
+        • ניתוב משלוחים<br/>
+        • תכנון מסלולי טיסה<br/>
+        • ייצור שבבים (PCB drilling)<br/>
+        • רובוטיקה<br/>
+        • DNA sequencing<br/><br/>
+        אחת הבעיות המעשיות ביותר!
+      </p>
+    </article>
+  </div>
+
+  <div style={{ marginTop: '2rem', padding: '1rem', background: 'rgba(139,92,246,0.1)', borderRadius: '12px', borderRight: '4px solid #8b5cf6' }}>
+    <h4 style={{ color: '#8b5cf6', margin: '0 0 0.5rem 0' }}>רדוקציה: Hamiltonian Cycle ≤ₚ TSP</h4>
+    <p style={{ color: '#a0aec0', margin: 0, lineHeight: '1.8' }}>
+      <strong>רעיון:</strong> המילטוני הוא TSP עם משקלים 0 ו-∞<br/><br/>
+      <strong>בנייה:</strong><br/>
+      1. בנה גרף שלם Kₙ על אותם קודקודים V<br/>
+      2. הגדר משקלים: w(u,v) = 1 אם (u,v) ∈ E, אחרת w(u,v) = 2<br/>
+      3. קבע B = n<br/>
+      4. שאל: האם יש TSP ≤ n?<br/><br/>
+      <strong>נכונות:</strong> יש Hamiltonian ⟺ יש TSP במשקל n (רק קשתות מ-E) ✓<br/>
+      <strong>זמן:</strong> O(n²) - פולינומי!
+    </p>
+  </div>
+</section>
+
+<section id="subset-sum" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">בעיה 7</p>
+    <h2>Subset Sum - בעיית הסכום החלקי</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>Subset Sum</strong> היא בעיה קלאסית בתכנות דינמי וקריפטוגרפיה.
+        נתונה קבוצת מספרים ומספר מטרה - האם אפשר לבחור תת-קבוצה שסכומה שווה למטרה?
+      </p>
+    </article>
+  </div>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--explain">
+      <p className="conceptCard__label">הגדרה</p>
+      <h3 className="conceptCard__title">בעיית Subset Sum</h3>
+      <p className="conceptCard__body">
+        <strong>קלט:</strong> קבוצת מספרים<br/>
+        S = {"{"} a₁, a₂, ..., aₙ {"}"}<br/>
+        ומספר מטרה t<br/><br/>
+        <strong>שאלה:</strong> האם קיימת<br/>
+        תת-קבוצה S' ⊆ S כך ש:<br/>
+        Σ(aᵢ ∈ S') aᵢ = t?
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">דוגמה</p>
+      <h3 className="conceptCard__title">סכום חלקי</h3>
+      <p className="conceptCard__body">
+        S = {"{"} 3, 7, 1, 8, 4 {"}"}<br/>
+        t = 12<br/><br/>
+        <strong>פתרון:</strong><br/>
+        S' = {"{"} 3, 1, 8 {"}"}<br/>
+        3 + 1 + 8 = 12 ✓<br/><br/>
+        יש תת-קבוצה שסכומה 12!
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">למה קשה?</p>
+      <h3 className="conceptCard__title">2ⁿ תת-קבוצות</h3>
+      <p className="conceptCard__body">
+        יש 2ⁿ תת-קבוצות אפשריות<br/><br/>
+        לבדוק כל אחת: O(n) זמן<br/><br/>
+        <strong>Brute force:</strong><br/>
+        O(2ⁿ · n) - אקספוננציאלי!<br/><br/>
+        יש פתרון פסאודו-פולינומי<br/>
+        בDP: O(nt)
+      </p>
+    </article>
+  </div>
+
+  <div style={{ marginTop: '2rem', padding: '1rem', background: 'rgba(34,197,94,0.1)', borderRadius: '12px', borderRight: '4px solid #22c55e' }}>
+    <h4 style={{ color: '#22c55e', margin: '0 0 0.5rem 0' }}>רדוקציה: 3-SAT ≤ₚ Subset Sum</h4>
+    <p style={{ color: '#a0aec0', margin: 0, lineHeight: '1.8' }}>
+      <strong>רעיון:</strong> נמיר כל clause ומשתנה למספרים עשרוניים ייחודיים<br/><br/>
+      <strong>בנייה מפושטת:</strong> לכל משתנה xᵢ נבנה 2 מספרים (xᵢ ו-¬xᵢ).<br/>
+      לכל clause Cⱼ נבנה מספר נוסף. המספרים מקודדים בבסיס עשרוני כך ש:<br/>
+      • כל עמודה מייצגת משתנה או clause<br/>
+      • הסכום המטרה מאלץ השמה אמת תקינה<br/><br/>
+      <strong>נכונות:</strong> φ satisfiable ⟺ יש subset sum = t ✓<br/>
+      <strong>זמן:</strong> O(m·n) - פולינומי!
+    </p>
+  </div>
+</section>
+
+<section id="partition" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">בעיה 8</p>
+    <h2>Partition - בעיית החלוקה</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>Partition</strong> היא מקרה פרט של Subset Sum: לחלק קבוצת מספרים לשתי קבוצות
+        עם סכום שווה. בעיה זו מופיעה בבעיות תזמון ואיזון עומסים.
+      </p>
+    </article>
+  </div>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--explain">
+      <p className="conceptCard__label">הגדרה</p>
+      <h3 className="conceptCard__title">בעיית Partition</h3>
+      <p className="conceptCard__body">
+        <strong>קלט:</strong> קבוצת מספרים<br/>
+        S = {"{"} a₁, a₂, ..., aₙ {"}"}<br/><br/>
+        <strong>שאלה:</strong> האם אפשר<br/>
+        לחלק ל-S₁ ו-S₂ כך ש:<br/>
+        Σ(aᵢ ∈ S₁) aᵢ = Σ(aⱼ ∈ S₂) aⱼ?
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">דוגמה</p>
+      <h3 className="conceptCard__title">חלוקה שווה</h3>
+      <p className="conceptCard__body">
+        S = {"{"} 1, 5, 11, 5 {"}"}<br/>
+        סכום כולל: 22<br/><br/>
+        <strong>חלוקה:</strong><br/>
+        S₁ = {"{"} 1, 5, 5 {"}"} → סכום 11<br/>
+        S₂ = {"{"} 11 {"}"} → סכום 11<br/><br/>
+        חלוקה שווה! ✓
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">קשר ל-Subset Sum</p>
+      <h3 className="conceptCard__title">מקרה פרט</h3>
+      <p className="conceptCard__body">
+        Partition היא Subset Sum<br/>
+        עם t = (Σ aᵢ) / 2<br/><br/>
+        <strong>למה?</strong><br/>
+        אם S₁ + S₂ = סה"כ<br/>
+        וגם S₁ = S₂<br/>
+        אז S₁ = סה"כ/2!<br/><br/>
+        לכן Partition ≤ₚ Subset Sum
+      </p>
+    </article>
+  </div>
+
+  <div style={{ marginTop: '2rem', padding: '1rem', background: 'rgba(236,72,153,0.1)', borderRadius: '12px', borderRight: '4px solid #ec4899' }}>
+    <h4 style={{ color: '#ec4899', margin: '0 0 0.5rem 0' }}>רדוקציה: Subset Sum ≤ₚ Partition</h4>
+    <p style={{ color: '#a0aec0', margin: 0, lineHeight: '1.8' }}>
+      <strong>בנייה:</strong> קלט (S, t) ל-Subset Sum → בנה instance של Partition:<br/><br/>
+      1. חשב סכום = Σ(aᵢ ∈ S) aᵢ<br/>
+      2. הוסף שני מספרים חדשים:<br/>
+      {"   "}• x = סכום - 2t<br/>
+      {"   "}• y = סכום<br/>
+      3. S' = S ∪ {"{"} x, y {"}"}<br/><br/>
+      <strong>נכונות:</strong> יש subset sum = t ⟺ אפשר לחלק את S' לחצאים שווים!<br/>
+      חצי אחד יכיל את S' עם סכום t, והשני את y עם סכום+x<br/>
+      <strong>זמן:</strong> O(n) - פולינומי!
+    </p>
+  </div>
+</section>
+
+<section id="knapsack" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">בעיה 9</p>
+    <h2>Integer Knapsack - תרמיל הגב בשלמים</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>Integer Knapsack</strong> (0-1 Knapsack) היא גרסת ההכרעה של בעיית תרמיל הגב הקלאסית.
+        בניגוד לגרסה השברית שפתרנו בחמדנות, כאן אי אפשר לקחת חלקים מפריטים.
+      </p>
+    </article>
+  </div>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--explain">
+      <p className="conceptCard__label">הגדרה</p>
+      <h3 className="conceptCard__title">בעיית 0-1 Knapsack</h3>
+      <p className="conceptCard__body">
+        <strong>קלט:</strong><br/>
+        • n פריטים, כל אחד עם משקל wᵢ וערך vᵢ<br/>
+        • קיבולת W<br/>
+        • מטרה V<br/><br/>
+        <strong>שאלה:</strong> האם אפשר לבחור<br/>
+        תת-קבוצה עם סך משקל ≤ W<br/>
+        וסך ערך ≥ V?
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">דוגמה</p>
+      <h3 className="conceptCard__title">תרמיל 0-1</h3>
+      <p className="conceptCard__body">
+        פריטים:<br/>
+        • (w₁=2, v₁=12)<br/>
+        • (w₂=1, v₂=10)<br/>
+        • (w₃=3, v₃=20)<br/><br/>
+        W=5, V=32<br/><br/>
+        <strong>בחירה:</strong> פריטים 1,2,3<br/>
+        משקל: 2+1+3=6 > 5 ✗<br/>
+        אבל 1,3: 2+3=5, ערך=32 ✓
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">הבדל מחמדנות</p>
+      <h3 className="conceptCard__title">למה לא חמדני?</h3>
+      <p className="conceptCard__body">
+        בגרסה השברית:<br/>
+        ניקח חלקים לפי יחס v/w<br/>
+        <strong>→ פולינומי! ✓</strong><br/><br/>
+        בגרסת 0-1:<br/>
+        חייבים לקחת שלם או כלום<br/>
+        <strong>→ NP-Complete! ✗</strong><br/><br/>
+        הבדל קטן, השלכה גדולה!
+      </p>
+    </article>
+  </div>
+
+  <div style={{ marginTop: '2rem', padding: '1rem', background: 'rgba(139,92,246,0.1)', borderRadius: '12px', borderRight: '4px solid #8b5cf6' }}>
+    <h4 style={{ color: '#8b5cf6', margin: '0 0 0.5rem 0' }}>רדוקציה: Subset Sum ≤ₚ Knapsack</h4>
+    <p style={{ color: '#a0aec0', margin: 0, lineHeight: '1.8' }}>
+      <strong>בנייה:</strong> קלט (S, t) ל-Subset Sum → instance של Knapsack:<br/><br/>
+      1. לכל איבר aᵢ ∈ S, צור פריט עם wᵢ = vᵢ = aᵢ<br/>
+      2. קבע W = V = t<br/>
+      3. שאל: האם אפשר למלא תרמיל בקיבולת t בערך t?<br/><br/>
+      <strong>נכונות:</strong><br/>
+      יש subset sum = t ⟺ יש knapsack עם משקל=ערך=t<br/>
+      (כי wᵢ = vᵢ לכל פריט!)<br/><br/>
+      <strong>זמן:</strong> O(n) - פולינומי! ✓
+    </p>
+  </div>
+</section>
+
+<section id="bin-packing" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">בעיה 10</p>
+    <h2>Bin Packing - בעיית אריזה לקופסאות</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>Bin Packing</strong> היא בעיה קלאסית באופטימיזציה: נתונים פריטים בגדלים שונים,
+        וצריך לארוז אותם למספר מינימלי של קופסאות בנפח קבוע. מופיעה בלוגיסטיקה, ניהול זיכרון ועוד.
+      </p>
+    </article>
+  </div>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--explain">
+      <p className="conceptCard__label">הגדרה</p>
+      <h3 className="conceptCard__title">בעיית Bin Packing</h3>
+      <p className="conceptCard__body">
+        <strong>קלט:</strong><br/>
+        • n פריטים בגדלים s₁, s₂, ..., sₙ<br/>
+        • קיבולת קופסה B<br/>
+        • מספר קופסאות k<br/><br/>
+        <strong>שאלה:</strong> האם אפשר<br/>
+        לארוז את כל הפריטים<br/>
+        ל-k קופסאות או פחות?
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--algorithm">
+      <p className="conceptCard__label">דוגמה</p>
+      <h3 className="conceptCard__title">אריזה</h3>
+      <p className="conceptCard__body">
+        פריטים: {"{"}2, 5, 4, 7, 1, 3, 8{"}"}<br/>
+        B = 10 (קיבולת קופסה)<br/>
+        k = 3<br/><br/>
+        <strong>אריזה:</strong><br/>
+        • Bin 1: {"{"}8, 2{"}"} → 10<br/>
+        • Bin 2: {"{"}7, 3{"}"} → 10<br/>
+        • Bin 3: {"{"}5, 4, 1{"}"} → 10<br/><br/>
+        3 קופסאות מספיקות! ✓
+      </p>
+    </article>
+    <article className="conceptCard conceptCard--solution">
+      <p className="conceptCard__label">אלגוריתמים קירוביים</p>
+      <h3 className="conceptCard__title">First Fit, Best Fit</h3>
+      <p className="conceptCard__body">
+        אין אלגוריתם פולינומי מדויק<br/>
+        (אלא אם P=NP)<br/><br/>
+        <strong>אבל</strong> יש אלגוריתמים חמדניים:<br/>
+        • First Fit: O(n log n)<br/>
+        • Best Fit: O(n log n)<br/><br/>
+        עם ערבויות קירוב טובות!
+      </p>
+    </article>
+  </div>
+
+  <div style={{ marginTop: '2rem', padding: '1rem', background: 'rgba(251,191,36,0.1)', borderRadius: '12px', borderRight: '4px solid #fbbf24' }}>
+    <h4 style={{ color: '#fbbf24', margin: '0 0 0.5rem 0' }}>רדוקציה: Partition ≤ₚ Bin Packing</h4>
+    <p style={{ color: '#a0aec0', margin: 0, lineHeight: '1.8' }}>
+      <strong>בנייה:</strong> קלט S = {"{"} a₁, ..., aₙ {"}"} ל-Partition → instance של Bin Packing:<br/><br/>
+      1. הפריטים: s₁ = a₁, s₂ = a₂, ..., sₙ = aₙ<br/>
+      2. קיבולת: B = (Σ aᵢ) / 2<br/>
+      3. מספר קופסאות: k = 2<br/>
+      4. שאל: האם אפשר לארוז ב-2 קופסאות?<br/><br/>
+      <strong>נכונות:</strong><br/>
+      אפשר לחלק ל-2 קבוצות שוות ⟺ אפשר לארוז ב-2 קופסאות מלאות<br/>
+      (כל קופסה תכיל בדיוק סכום/2)<br/><br/>
+      <strong>זמן:</strong> O(n) - פולינומי! ✓
+    </p>
+  </div>
+</section>
+
