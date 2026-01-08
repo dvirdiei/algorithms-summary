@@ -52,6 +52,20 @@ const FeatureList = [
     icon: '🧠',
     accent: '#f97316',
   },
+  {
+    title: 'רדוקציות פולינומיות',
+    summary: 'כלי מרכזי להשוואת קושי בעיות - רדוקציה A ≤ₚ B, טרנזיטיביות והוכחות NP-Completeness.',
+    to: '/docs/reductions',
+    icon: '🔗',
+    accent: '#fbbf24',
+  },
+  {
+    title: 'בעיות NP-Complete קלאסיות',
+    summary: 'SAT, 3-SAT, Clique, Vertex Cover, TSP, Subset Sum ועוד - עם רדוקציות גרפיות מפורטות.',
+    to: '/docs/np-complete-problems',
+    icon: '🎯',
+    accent: '#22c55e',
+  },
 ];
 
 function Feature({title, summary, to, icon, accent}) {
