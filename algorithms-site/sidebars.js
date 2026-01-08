@@ -247,6 +247,57 @@ const sidebars = {
         },
       ],
     },
+    {
+      type: 'category',
+      label: '🧠 תורת הסיבוכיות',
+      collapsed: true,
+      link: {
+        type: 'doc',
+        id: 'complexity-theory',
+      },
+      items: [
+        {
+          type: 'link',
+          label: '• מחלקת P',
+          href: '/docs/complexity-theory#class-p'
+        },
+        {
+          type: 'link',
+          label: '• מחלקת CO-P',
+          href: '/docs/complexity-theory#class-co-p'
+        },
+        {
+          type: 'link',
+          label: '• מחלקת NP',
+          href: '/docs/complexity-theory#class-np'
+        },
+        {
+          type: 'link',
+          label: '• מחלקת CO-NP',
+          href: '/docs/complexity-theory#class-co-np'
+        },
+        {
+          type: 'link',
+          label: '• NP-Complete',
+          href: '/docs/complexity-theory#np-complete'
+        },
+        {
+          type: 'link',
+          label: '• P = NP?',
+          href: '/docs/complexity-theory#p-vs-np'
+        },
+        {
+          type: 'link',
+          label: '• הכרעה vs אופטימיזציה',
+          href: '/docs/complexity-theory#decision-vs-optimization'
+        },
+        {
+          type: 'link',
+          label: '• סיכום',
+          href: '/docs/complexity-theory#summary'
+        },
+      ],
+    },
     
   ],
 };
