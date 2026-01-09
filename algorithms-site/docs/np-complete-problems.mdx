@@ -157,12 +157,13 @@ sidebar_label: בעיות NP-Complete
       <p className="conceptCard__label">הגדרה</p>
       <h3 className="conceptCard__title">בעיית SAT</h3>
       <p className="conceptCard__body">
-        <strong>קלט:</strong> נוסחה בוליאנית φ ב-CNF<br/>
-        (Conjunctive Normal Form)<br/><br/>
-        <strong>שאלה:</strong> האם קיים השמה של ערכי אמת<br/>
-        למשתנים כך שהנוסחה מתקיימת?<br/><br/>
-        <strong>CNF:</strong> פסוקים (clauses) בAND,<br/>
-        כל clause הוא OR של ליטרלים
+        <strong>מה הבעיה?</strong><br/>
+        נתונה משוואה לוגית עם משתנים שיכולים להיות אמת או שקר.<br/>
+        האם אפשר למצוא ערכים למשתנים שגורמים למשוואה להיות אמת?<br/><br/>
+        <strong>צורת המשוואה (CNF):</strong><br/>
+        המשוואה מורכבת מחלקים שמחוברים ב-AND (∧).<br/>
+        כל חלק הוא כמה משתנים שמחוברים ב-OR (∨).<br/>
+        משתנה יכול להופיע רגיל (x) או מהופך (¬x).
       </p>
     </article>
     <article className="conceptCard conceptCard--algorithm">
@@ -229,10 +230,8 @@ sidebar_label: בעיות NP-Complete
         <text x="382" y="95" fill="#fbbf24" fontSize="16" fontWeight="bold" textAnchor="middle">∧</text>
 
         {/* השמה */}
-        <rect x="150" y="160" width="300" height="40" rx="8" fill="rgba(251,191,36,0.2)" stroke="#fbbf24" strokeWidth="2" />
-        <text x="300" y="185" fill="#fbbf24" fontSize="13" fontWeight="bold" textAnchor="middle">
-          השמה: x₁=T, x₂=T, x₃=F
-        </text>
+        <rect x="150" y="160" width="300" height="45" rx="8" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="3" />
+        <text x="300" y="188" fill="#fbbf24" fontSize="16" fontWeight="bold" textAnchor="middle"> השמה: x₁=T, x₂=T, x₃=F</text>
 
         {/* תוצאות */}
         <rect x="50" y="230" width="150" height="40" rx="8" fill="rgba(34,197,94,0.3)" stroke="#22c55e" strokeWidth="2" />
@@ -356,9 +355,7 @@ sidebar_label: בעיות NP-Complete
         {/* Clause ארוך */}
         <text x="210" y="120" fill="#fff" fontSize="13" textAnchor="middle" fontWeight="bold">Clause עם 5 ליטרלים:</text>
         <rect x="70" y="135" width="280" height="50" fill="rgba(239,68,68,0.2)" stroke="#ef4444" strokeWidth="2" rx="6" />
-        <text x="210" y="165" fill="#ef4444" fontSize="14" textAnchor="middle" fontFamily="monospace">
-          (x₁ ∨ x₂ ∨ x₃ ∨ x₄ ∨ x₅)
-        </text>
+        <text x="210" y="165" fill="#ef4444" fontSize="14" textAnchor="middle" fontFamily="monospace">(x₁ ∨ x₂ ∨ x₃ ∨ x₄ ∨ x₅)</text>
 
         {/* פירוק */}
         <text x="210" y="220" fill="#a0aec0" fontSize="12" textAnchor="middle">נוסיף משתנים דמה y₁, y₂</text>
@@ -376,19 +373,13 @@ sidebar_label: בעיות NP-Complete
         <text x="690" y="120" fill="#fff" fontSize="13" textAnchor="middle" fontWeight="bold">שלושה 3-clauses:</text>
         
         <rect x="550" y="135" width="280" height="35" fill="rgba(34,197,94,0.2)" stroke="#22c55e" strokeWidth="2" rx="6" />
-        <text x="690" y="158" fill="#22c55e" fontSize="13" textAnchor="middle" fontFamily="monospace">
-          (x₁ ∨ x₂ ∨ y₁)
-        </text>
+        <text x="690" y="158" fill="#22c55e" fontSize="13" textAnchor="middle" fontFamily="monospace">(x₁ ∨ x₂ ∨ y₁)</text>
 
         <rect x="550" y="180" width="280" height="35" fill="rgba(167,139,250,0.2)" stroke="#a78bfa" strokeWidth="2" rx="6" />
-        <text x="690" y="203" fill="#a78bfa" fontSize="13" textAnchor="middle" fontFamily="monospace">
-          (¬y₁ ∨ x₃ ∨ y₂)
-        </text>
+        <text x="690" y="203" fill="#a78bfa" fontSize="13" textAnchor="middle" fontFamily="monospace">(¬y₁ ∨ x₃ ∨ y₂)</text>
 
         <rect x="550" y="225" width="280" height="35" fill="rgba(236,72,153,0.2)" stroke="#ec4899" strokeWidth="2" rx="6" />
-        <text x="690" y="248" fill="#ec4899" fontSize="13" textAnchor="middle" fontFamily="monospace">
-          (¬y₂ ∨ x₄ ∨ x₅)
-        </text>
+        <text x="690" y="248" fill="#ec4899" fontSize="13" textAnchor="middle" fontFamily="monospace">(¬y₂ ∨ x₄ ∨ x₅)</text>
 
         {/* הסבר שקילות */}
         <rect x="550" y="275" width="280" height="55" fill="rgba(251,191,36,0.1)" stroke="#fbbf24" strokeWidth="1" rx="6" strokeDasharray="4,2" />
@@ -397,9 +388,7 @@ sidebar_label: בעיות NP-Complete
         <text x="690" y="323" fill="#a0aec0" fontSize="10" textAnchor="middle">כל 3 ה-clauses החדשים מתקיימים</text>
 
         {/* הסבר נוסף */}
-        <text x="450" y="375" fill="#64f6c8" fontSize="11" textAnchor="middle">
-          כל clause ארוך (k ליטרלים) → (k-2) clauses של 3-SAT עם (k-3) משתנים דמה
-        </text>
+        <text x="450" y="375" fill="#64f6c8" fontSize="11" textAnchor="middle"> כל clause ארוך (k ליטרלים) → (k-2) clauses של 3-SAT עם (k-3) משתנים דמה</text>
       </svg>
     </div>
     
@@ -533,126 +522,234 @@ sidebar_label: בעיות NP-Complete
   <figure style={{ margin: '2rem 0', padding: '1.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '16px' }}>
     <h4 style={{ textAlign: 'center', color: '#a78bfa', marginBottom: '1rem' }}>רדוקציה: 3-SAT ≤ₚ Clique</h4>
     
-    <div style={{ padding: '1rem', background: 'rgba(167,139,250,0.1)', borderRadius: '8px', marginBottom: '1rem' }}>
-      <h5 style={{ color: '#a78bfa', marginBottom: '0.5rem' }}>הרעיון המרכזי</h5>
-      <p style={{ color: '#a0aec0', margin: 0, lineHeight: '1.8' }}>
-        ניקח נוסחת 3-SAT ונבנה גרף שבו קליקה בגודל k (מספר ה-clauses)<br/>
-        מייצגת השמה שמקיימת את הנוסחה!
+    <div style={{ padding: '1rem', background: 'rgba(100,200,255,0.15)', borderRadius: '12px', marginBottom: '1.5rem', border: '2px solid rgba(100,200,255,0.3)' }}>
+      <h5 style={{ color: '#64c8ff', marginBottom: '0.8rem', fontSize: '1.1rem' }}>💡 מה בעצם אנחנו עושים?</h5>
+      <p style={{ color: '#e0e0e0', margin: 0, lineHeight: '1.9', fontSize: '1rem' }}>
+        <strong>המטרה:</strong> להוכיח ש-Clique היא NP-Complete.<br/><br/>
+        
+        <strong>איך עושים את זה?</strong><br/>
+        אנחנו לוקחים בעיה שכבר יודעים שהיא NP-Complete (3-SAT) ומראים איך להמיר אותה לבעיית Clique.<br/>
+        אם נצליח להמיר - זה מוכיח ש-Clique לפחות קשה כמו 3-SAT, ולכן גם היא NP-Complete!<br/><br/>
+        
+        <strong>התהליך בפשטות:</strong><br/>
+        🔹 <strong>קלט:</strong> נוסחת 3-SAT (משוואה לוגית)<br/>
+        🔹 <strong>המרה:</strong> בונים גרף שמייצג את הנוסחה<br/>
+        🔹 <strong>פלט:</strong> שאלה - האם יש קליקה בגודל מסוים בגרף?<br/><br/>
+        
+        <strong>הקסם:</strong> הנוסחה המקורית פתירה ⟺ הגרף החדש יש בו קליקה!<br/>
+        זה אומר שאם היינו יודעים לפתור Clique מהר, היינו יכולים לפתור גם 3-SAT מהר.
       </p>
     </div>
 
-    <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-      <svg viewBox="0 0 800 400" style={{ width: '100%' }}>
-        <defs>
-          <marker id="cliqueArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-            <polygon points="0 0, 8 3, 0 6" fill="#a78bfa" />
-          </marker>
-        </defs>
-
-        {/* נוסחה */}
-        <text x="400" y="25" fill="#64f6c8" fontSize="13" fontWeight="bold" textAnchor="middle">
-          φ = (x₁ ∨ x₂ ∨ x₃) ∧ (¬x₁ ∨ ¬x₂ ∨ x₄) ∧ (¬x₃ ∨ x₄ ∨ ¬x₁)
-        </text>
-
-        {/* Clause 1 */}
-        <rect x="50" y="55" width="120" height="80" rx="8" fill="rgba(100,246,200,0.1)" stroke="#64f6c8" strokeWidth="2" />
-        <text x="110" y="75" fill="#64f6c8" fontSize="11" fontWeight="bold" textAnchor="middle">C1</text>
-        <circle cx="80" cy="105" r="12" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="2" />
-        <text x="80" y="110" fill="#64f6c8" fontSize="9" textAnchor="middle">x₁</text>
-        <circle cx="110" cy="105" r="12" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="2" />
-        <text x="110" y="110" fill="#64f6c8" fontSize="9" textAnchor="middle">x₂</text>
-        <circle cx="140" cy="105" r="12" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="2" />
-        <text x="140" y="110" fill="#64f6c8" fontSize="9" textAnchor="middle">x₃</text>
-
-        {/* Clause 2 */}
-        <rect x="300" y="55" width="140" height="80" rx="8" fill="rgba(251,191,36,0.1)" stroke="#fbbf24" strokeWidth="2" />
-        <text x="370" y="75" fill="#fbbf24" fontSize="11" fontWeight="bold" textAnchor="middle">C2</text>
-        <circle cx="325" cy="105" r="12" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="2" />
-        <text x="325" y="110" fill="#fbbf24" fontSize="9" textAnchor="middle">¬x₁</text>
-        <circle cx="370" cy="105" r="12" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="2" />
-        <text x="370" y="110" fill="#fbbf24" fontSize="9" textAnchor="middle">¬x₂</text>
-        <circle cx="415" cy="105" r="12" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="2" />
-        <text x="415" y="110" fill="#fbbf24" fontSize="9" textAnchor="middle">x₄</text>
-
-        {/* Clause 3 */}
-        <rect x="570" y="55" width="140" height="80" rx="8" fill="rgba(236,72,153,0.1)" stroke="#ec4899" strokeWidth="2" />
-        <text x="640" y="75" fill="#ec4899" fontSize="11" fontWeight="bold" textAnchor="middle">C3</text>
-        <circle cx="595" cy="105" r="12" fill="rgba(236,72,153,0.3)" stroke="#ec4899" strokeWidth="2" />
-        <text x="595" y="110" fill="#ec4899" fontSize="9" textAnchor="middle">¬x₃</text>
-        <circle cx="640" cy="105" r="12" fill="rgba(236,72,153,0.3)" stroke="#ec4899" strokeWidth="2" />
-        <text x="640" y="110" fill="#ec4899" fontSize="9" textAnchor="middle">x₄</text>
-        <circle cx="685" cy="105" r="12" fill="rgba(236,72,153,0.3)" stroke="#ec4899" strokeWidth="2" />
-        <text x="685" y="110" fill="#ec4899" fontSize="9" textAnchor="middle">¬x₁</text>
-
-        {/* חץ */}
-        <text x="400" y="165" fill="#a78bfa" fontSize="16" fontWeight="bold" textAnchor="middle">⬇ בניית הגרף</text>
-
-        {/* הגרף */}
-        <text x="400" y="200" fill="#a78bfa" fontSize="12" fontWeight="bold" textAnchor="middle">
-          גרף Clique: כל ליטרל = קודקוד, קשתות בין לא-סותרים
-        </text>
-
-        {/* קודקודי C1 */}
-        <circle cx="150" cy="280" r="18" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="2" />
-        <text x="150" y="285" fill="#64f6c8" fontSize="10" textAnchor="middle">x₁</text>
+    <div style={{ padding: '1rem', background: 'rgba(167,139,250,0.1)', borderRadius: '8px', marginBottom: '1rem' }}>
+      <h5 style={{ color: '#a78bfa', marginBottom: '0.5rem' }}>🎯 הרעיון המרכזי</h5>
+      <p style={{ color: '#a0aec0', margin: 0, lineHeight: '1.8' }}>
+        ניקח נוסחת 3-SAT ונבנה גרף שבו קליקה בגודל k (מספר ה-clauses)<br/>
+        מייצגת השמה שמקיימת את הנוסחה!<br/><br/>
         
-        <circle cx="250" cy="250" r="18" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="2" />
-        <text x="250" y="255" fill="#64f6c8" fontSize="10" textAnchor="middle">x₂</text>
-        
-        <circle cx="200" cy="350" r="18" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="2" />
-        <text x="200" y="355" fill="#64f6c8" fontSize="10" textAnchor="middle">x₃</text>
+        <strong>במילים פשוטות:</strong> כל ליטרל בנוסחה הופך לצומת בגרף.<br/>
+        מחברים צמתים רק אם הם מייצגים בחירות שיכולות "לחיות ביחד" (לא סותרות).
+      </p>
+    </div>
 
-        {/* קודקודי C2 */}
-        <circle cx="400" cy="240" r="18" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="2" />
-        <text x="400" y="245" fill="#fbbf24" fontSize="10" textAnchor="middle">¬x₁</text>
-        
-        <circle cx="350" cy="320" r="18" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="2" />
-        <text x="350" y="325" fill="#fbbf24" fontSize="10" textAnchor="middle">¬x₂</text>
-        
-        <circle cx="450" cy="340" r="18" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="2" />
-        <text x="450" y="345" fill="#fbbf24" fontSize="10" textAnchor="middle">x₄</text>
+    <div style={{ display: 'grid', gap: '2rem', marginBottom: '2rem' }}>
+      {/* שלב 1: יצירת הצמתים */}
+      <div>
+        <h5 style={{ color: '#a78bfa', marginBottom: '1rem', textAlign: 'center' }}>שלב 1: יצירת צמתים (Create Nodes)</h5>
+        <svg viewBox="0 0 900 280" style={{ width: '100%', maxWidth: '900px', margin: '0 auto', display: 'block' }}>
+          <defs>
+            <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#1a1a2e" />
+              <stop offset="100%" stopColor="#0f1419" />
+            </linearGradient>
+          </defs>
 
-        {/* קודקודי C3 */}
-        <circle cx="600" cy="280" r="18" fill="rgba(236,72,153,0.3)" stroke="#ec4899" strokeWidth="2" />
-        <text x="600" y="285" fill="#ec4899" fontSize="10" textAnchor="middle">¬x₃</text>
-        
-        <circle cx="650" cy="340" r="18" fill="rgba(236,72,153,0.3)" stroke="#ec4899" strokeWidth="2" />
-        <text x="650" y="345" fill="#ec4899" fontSize="10" textAnchor="middle">x₄</text>
-        
-        <circle cx="550" cy="350" r="18" fill="rgba(236,72,153,0.3)" stroke="#ec4899" strokeWidth="2" />
-        <text x="550" y="355" fill="#ec4899" fontSize="10" textAnchor="middle">¬x₁</text>
+          <rect width="900" height="280" fill="url(#bgGrad)" rx="12" />
 
-        {/* קשתות הקליקה - דוגמה */}
-        <line x1="250" y1="250" x2="450" y2="340" stroke="#22c55e" strokeWidth="3" opacity="0.7" />
-        <line x1="250" y1="250" x2="650" y2="340" stroke="#22c55e" strokeWidth="3" opacity="0.7" />
-        <line x1="450" y1="340" x2="650" y2="340" stroke="#22c55e" strokeWidth="3" opacity="0.7" />
+          {/* כותרת */}
+          <text x="450" y="30" fill="#64f6c8" fontSize="15" fontWeight="bold" textAnchor="middle">
+            (x₁ ∨ x₂ ∨ x₄) ∧ (¬x₁ ∨ x₂ ∨ x₄) ∧ (x₁ ∨ x₂ ∨ x₃) ∧ (x₂ ∨ x₃ ∨ x₄)
+          </text>
 
-        {/* סימון הקליקה */}
-        <ellipse cx="450" cy="310" rx="150" ry="80" fill="none" stroke="#22c55e" strokeWidth="3" strokeDasharray="6,3" />
-        <text x="450" y="240" fill="#22c55e" fontSize="12" fontWeight="bold" textAnchor="middle">
-          Clique בגודל 3!
-        </text>
-      </svg>
+          <text x="90" y="70" fill="#ec4899" fontSize="14" fontWeight="bold" textAnchor="start">Create Nodes:</text>
+
+          {/* Clause 1 */}
+          <rect x="100" y="90" width="120" height="170" rx="8" fill="rgba(100,246,200,0.15)" stroke="#64f6c8" strokeWidth="2.5" />
+          <text x="160" y="115" fill="#64f6c8" fontSize="13" fontWeight="bold" textAnchor="middle">Clause 1</text>
+          
+          <circle cx="160" cy="145" r="16" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="2" />
+          <text x="160" y="151" fill="#fff" fontSize="12" textAnchor="middle" fontWeight="bold">x₁</text>
+          
+          <circle cx="160" cy="190" r="16" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="2" />
+          <text x="160" y="196" fill="#fff" fontSize="12" textAnchor="middle" fontWeight="bold">x₂</text>
+          
+          <circle cx="160" cy="235" r="16" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="2" />
+          <text x="160" y="241" fill="#fff" fontSize="12" textAnchor="middle" fontWeight="bold">x₄</text>
+
+          {/* Clause 2 */}
+          <rect x="280" y="90" width="120" height="170" rx="8" fill="rgba(251,191,36,0.15)" stroke="#fbbf24" strokeWidth="2.5" />
+          <text x="340" y="115" fill="#fbbf24" fontSize="13" fontWeight="bold" textAnchor="middle">Clause 2</text>
+          
+          <circle cx="340" cy="145" r="16" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="2" />
+          <text x="340" y="151" fill="#fff" fontSize="12" textAnchor="middle" fontWeight="bold">¬x₁</text>
+          
+          <circle cx="340" cy="190" r="16" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="2" />
+          <text x="340" y="196" fill="#fff" fontSize="12" textAnchor="middle" fontWeight="bold">x₂</text>
+          
+          <circle cx="340" cy="235" r="16" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="2" />
+          <text x="340" y="241" fill="#fff" fontSize="12" textAnchor="middle" fontWeight="bold">x₄</text>
+
+          {/* Clause 3 */}
+          <rect x="460" y="90" width="120" height="170" rx="8" fill="rgba(167,139,250,0.15)" stroke="#a78bfa" strokeWidth="2.5" />
+          <text x="520" y="115" fill="#a78bfa" fontSize="13" fontWeight="bold" textAnchor="middle">Clause 3</text>
+          
+          <circle cx="520" cy="145" r="16" fill="rgba(167,139,250,0.3)" stroke="#a78bfa" strokeWidth="2" />
+          <text x="520" y="151" fill="#fff" fontSize="12" textAnchor="middle" fontWeight="bold">x₁</text>
+          
+          <circle cx="520" cy="190" r="16" fill="rgba(167,139,250,0.3)" stroke="#a78bfa" strokeWidth="2" />
+          <text x="520" y="196" fill="#fff" fontSize="12" textAnchor="middle" fontWeight="bold">x₂</text>
+          
+          <circle cx="520" cy="235" r="16" fill="rgba(167,139,250,0.3)" stroke="#a78bfa" strokeWidth="2" />
+          <text x="520" y="241" fill="#fff" fontSize="12" textAnchor="middle" fontWeight="bold">x₃</text>
+
+          {/* Clause 4 */}
+          <rect x="640" y="90" width="120" height="170" rx="8" fill="rgba(236,72,153,0.15)" stroke="#ec4899" strokeWidth="2.5" />
+          <text x="700" y="115" fill="#ec4899" fontSize="13" fontWeight="bold" textAnchor="middle">Clause 4</text>
+          
+          <circle cx="700" cy="145" r="16" fill="rgba(236,72,153,0.3)" stroke="#ec4899" strokeWidth="2" />
+          <text x="700" y="151" fill="#fff" fontSize="12" textAnchor="middle" fontWeight="bold">x₂</text>
+          
+          <circle cx="700" cy="190" r="16" fill="rgba(236,72,153,0.3)" stroke="#ec4899" strokeWidth="2" />
+          <text x="700" y="196" fill="#fff" fontSize="12" textAnchor="middle" fontWeight="bold">x₃</text>
+          
+          <circle cx="700" cy="235" r="16" fill="rgba(236,72,153,0.3)" stroke="#ec4899" strokeWidth="2" />
+          <text x="700" y="241" fill="#fff" fontSize="12" textAnchor="middle" fontWeight="bold">x₄</text>
+
+          {/* תיאור */}
+          <text x="825" y="180" fill="#a0aec0" fontSize="11" textAnchor="middle" transform="rotate(90 825 180)">
+            כל ליטרל = צומת
+          </text>
+        </svg>
+      </div>
+
+      {/* שלב 2: הוספת קשתות */}
+      <div>
+        <h5 style={{ color: '#22c55e', marginBottom: '1rem', textAlign: 'center' }}>שלב 2: הוספת קשתות (Add Edges)</h5>
+        <svg viewBox="0 0 900 350" style={{ width: '100%', maxWidth: '900px', margin: '0 auto', display: 'block' }}>
+          <rect width="900" height="350" fill="url(#bgGrad)" rx="12" />
+
+          {/* כותרת */}
+          <text x="450" y="30" fill="#64f6c8" fontSize="15" fontWeight="bold" textAnchor="middle">
+            (x₁ ∨ x₂ ∨ x₄) ∧ (¬x₁ ∨ x₂ ∨ x₄) ∧ (x₁ ∨ x₂ ∨ x₃) ∧ (x₂ ∨ x₃ ∨ x₄)
+          </text>
+
+          {/* Clause 1 */}
+          <rect x="80" y="70" width="100" height="200" rx="8" fill="rgba(100,246,200,0.1)" stroke="#64f6c8" strokeWidth="2" />
+          <text x="130" y="90" fill="#64f6c8" fontSize="12" fontWeight="bold" textAnchor="middle">Clause 1</text>
+          <circle cx="130" cy="120" r="14" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="2" />
+          <text x="130" y="125" fill="#fff" fontSize="11" textAnchor="middle" fontWeight="bold">x₁</text>
+          <circle cx="130" cy="170" r="14" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="2" />
+          <text x="130" y="175" fill="#fff" fontSize="11" textAnchor="middle" fontWeight="bold">x₂</text>
+          <circle cx="130" cy="220" r="14" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="2" />
+          <text x="130" y="225" fill="#fff" fontSize="11" textAnchor="middle" fontWeight="bold">x₄</text>
+
+          {/* Clause 2 */}
+          <rect x="280" y="70" width="100" height="200" rx="8" fill="rgba(251,191,36,0.1)" stroke="#fbbf24" strokeWidth="2" />
+          <text x="330" y="90" fill="#fbbf24" fontSize="12" fontWeight="bold" textAnchor="middle">Clause 2</text>
+          <circle cx="330" cy="120" r="14" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="2" />
+          <text x="330" y="125" fill="#fff" fontSize="11" textAnchor="middle" fontWeight="bold">¬x₁</text>
+          <circle cx="330" cy="170" r="14" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="2" />
+          <text x="330" y="175" fill="#fff" fontSize="11" textAnchor="middle" fontWeight="bold">x₂</text>
+          <circle cx="330" cy="220" r="14" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="2" />
+          <text x="330" y="225" fill="#fff" fontSize="11" textAnchor="middle" fontWeight="bold">x₄</text>
+
+          {/* Clause 3 */}
+          <rect x="520" y="70" width="100" height="200" rx="8" fill="rgba(167,139,250,0.1)" stroke="#a78bfa" strokeWidth="2" />
+          <text x="570" y="90" fill="#a78bfa" fontSize="12" fontWeight="bold" textAnchor="middle">Clause 3</text>
+          <circle cx="570" cy="120" r="14" fill="rgba(167,139,250,0.3)" stroke="#a78bfa" strokeWidth="2" />
+          <text x="570" y="125" fill="#fff" fontSize="11" textAnchor="middle" fontWeight="bold">x₁</text>
+          <circle cx="570" cy="170" r="14" fill="rgba(167,139,250,0.3)" stroke="#a78bfa" strokeWidth="2" />
+          <text x="570" y="175" fill="#fff" fontSize="11" textAnchor="middle" fontWeight="bold">x₂</text>
+          <circle cx="570" cy="220" r="14" fill="rgba(167,139,250,0.3)" stroke="#a78bfa" strokeWidth="2" />
+          <text x="570" y="225" fill="#fff" fontSize="11" textAnchor="middle" fontWeight="bold">x₃</text>
+
+          {/* Clause 4 */}
+          <rect x="720" y="70" width="100" height="200" rx="8" fill="rgba(236,72,153,0.1)" stroke="#ec4899" strokeWidth="2" />
+          <text x="770" y="90" fill="#ec4899" fontSize="12" fontWeight="bold" textAnchor="middle">Clause 4</text>
+          <circle cx="770" cy="120" r="14" fill="rgba(236,72,153,0.3)" stroke="#ec4899" strokeWidth="2" />
+          <text x="770" y="125" fill="#fff" fontSize="11" textAnchor="middle" fontWeight="bold">x₂</text>
+          <circle cx="770" cy="170" r="14" fill="rgba(236,72,153,0.3)" stroke="#ec4899" strokeWidth="2" />
+          <text x="770" y="175" fill="#fff" fontSize="11" textAnchor="middle" fontWeight="bold">x₃</text>
+          <circle cx="770" cy="220" r="14" fill="rgba(236,72,153,0.3)" stroke="#ec4899" strokeWidth="2" />
+          <text x="770" y="225" fill="#fff" fontSize="11" textAnchor="middle" fontWeight="bold">x₄</text>
+
+          {/* קשתות - דוגמאות */}
+          {/* מ-C1 ל-C2 */}
+          <line x1="144" y1="170" x2="316" y2="170" stroke="#555" strokeWidth="1.5" opacity="0.4" />
+          <line x1="144" y1="170" x2="316" y2="220" stroke="#555" strokeWidth="1.5" opacity="0.4" />
+          <line x1="144" y1="120" x2="316" y2="170" stroke="#555" strokeWidth="1.5" opacity="0.4" />
+          
+          {/* מ-C1 ל-C3 */}
+          <line x1="144" y1="120" x2="556" y2="120" stroke="#555" strokeWidth="1.5" opacity="0.4" />
+          <line x1="144" y1="120" x2="556" y2="170" stroke="#555" strokeWidth="1.5" opacity="0.4" />
+          <line x1="144" y1="170" x2="556" y2="170" stroke="#555" strokeWidth="1.5" opacity="0.4" />
+          <line x1="144" y1="220" x2="556" y2="170" stroke="#555" strokeWidth="1.5" opacity="0.4" />
+          
+          {/* מ-C1 ל-C4 */}
+          <line x1="144" y1="170" x2="756" y2="120" stroke="#555" strokeWidth="1.5" opacity="0.4" />
+          <line x1="144" y1="170" x2="756" y2="220" stroke="#555" strokeWidth="1.5" opacity="0.4" />
+          
+          {/* מ-C2 ל-C3 */}
+          <line x1="344" y1="170" x2="556" y2="170" stroke="#555" strokeWidth="1.5" opacity="0.4" />
+          <line x1="344" y1="220" x2="556" y2="220" stroke="#555" strokeWidth="1.5" opacity="0.4" />
+          
+          {/* מ-C2 ל-C4 */}
+          <line x1="344" y1="170" x2="756" y2="120" stroke="#555" strokeWidth="1.5" opacity="0.4" />
+          <line x1="344" y1="170" x2="756" y2="170" stroke="#555" strokeWidth="1.5" opacity="0.4" />
+          
+          {/* מ-C3 ל-C4 */}
+          <line x1="584" y1="170" x2="756" y2="120" stroke="#555" strokeWidth="1.5" opacity="0.4" />
+          <line x1="584" y1="170" x2="756" y2="170" stroke="#555" strokeWidth="1.5" opacity="0.4" />
+          <line x1="584" y1="220" x2="756" y2="170" stroke="#555" strokeWidth="1.5" opacity="0.4" />
+
+          {/* הסבר */}
+          <text x="450" y="310" fill="#22c55e" fontSize="13" textAnchor="middle" fontWeight="bold">
+            מחברים ליטרל ℓ לכל ליטרל ב-Clauses אחרים, מלבד המשלים ¬ℓ
+          </text>
+          <text x="450" y="330" fill="#a0aec0" fontSize="11" textAnchor="middle">
+            (קשתות רק בין צמתים מ-Clauses שונים שהליטרלים שלהם לא סותרים)
+          </text>
+        </svg>
+      </div>
     </div>
 
     <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(167,139,250,0.1)', borderRadius: '8px' }}>
-      <h5 style={{ color: '#a78bfa', marginBottom: '0.5rem' }}>אלגוריתם הבנייה</h5>
-      <ol style={{ color: '#a0aec0', paddingRight: '1.5rem', lineHeight: '1.8' }}>
-        <li>לכל clause Cᵢ ולכל ליטרל ℓ ב-Cᵢ, צור קודקוד (i, ℓ)</li>
-        <li>חבר שני קודקודים (i, ℓ₁) ו-(j, ℓ₂) אם: i ≠ j (מclauses שונים) וגם ℓ₁ ≠ ¬ℓ₂ (לא סותרים)</li>
-        <li>קבע k = מספר ה-clauses</li>
+      <h5 style={{ color: '#a78bfa', marginBottom: '0.5rem' }}>🔧 אלגוריתם הבנייה</h5>
+      <ol style={{ color: '#a0aec0', paddingRight: '1.5rem', lineHeight: '1.8', marginBottom: 0 }}>
+        <li><strong>יצירת צמתים:</strong> לכל clause Cᵢ ולכל ליטרל ℓ ב-Cᵢ, צור קודקוד (i, ℓ)</li>
+        <li><strong>הוספת קשתות:</strong> חבר שני קודקודים (i, ℓ₁) ו-(j, ℓ₂) אם ורק אם:</li>
+          <ul style={{ marginTop: '0.5rem' }}>
+            <li>i ≠ j (הם מ-clauses שונים)</li>
+            <li>ℓ₁ ≠ ¬ℓ₂ (הליטרלים לא סותרים)</li>
+          </ul>
+        
+        <li><strong>קביעת גודל הקליקה:</strong> k = מספר ה-clauses</li>
       </ol>
     </div>
 
+
     <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(34,197,94,0.1)', borderRadius: '8px' }}>
-      <h5 style={{ color: '#22c55e', marginBottom: '0.5rem' }}>✓ נכונות</h5>
+      <h5 style={{ color: '#22c55e', marginBottom: '0.5rem' }}>✓ נכונות הרדוקציה</h5>
       <p style={{ color: '#a0aec0', margin: 0, lineHeight: '1.8' }}>
-        <strong>⟹:</strong> אם φ satisfiable, יש השמה שמקיימת כל clause.<br/>
-        בחר ליטרל אמיתי אחד מכל clause - זו קליקה בגודל k!<br/>
-        (לא סותרים כי כולם אמיתיים באותה השמה)<br/><br/>
-        <strong>⟸:</strong> אם יש קליקה בגודל k, היא מכילה קודקוד אחד מכל clause.<br/>
-        הליטרלים לא סותרים, אז אפשר להשים True לכולם - φ מתקיימת!<br/><br/>
-        <strong>זמן:</strong> O(m²) עבור m clauses (לבנות את הגרף) - פולינומי ✓
+        <strong>⟹ (אם φ satisfiable):</strong><br/>
+        יש השמה שמקיימת כל clause. בחר ליטרל אמיתי אחד מכל clause.<br/>
+        הליטרלים שנבחרו לא סותרים (כולם אמיתיים באותה השמה) → זו קליקה בגודל k!<br/><br/>
+        
+        <strong>⟸ (אם יש קליקה בגודל k):</strong><br/>
+        הקליקה מכילה קודקוד אחד מכל clause (כי k = מספר ה-clauses).<br/>
+        הליטרלים בקליקה לא סותרים → אפשר להשים True לכולם → φ מתקיימת!<br/><br/>
+        
+        <strong>⏱ סיבוכיות:</strong> O(m² · k) עבור m clauses - פולינומי ✓
       </p>
     </div>
   </figure>
