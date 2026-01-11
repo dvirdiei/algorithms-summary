@@ -1,0 +1,1304 @@
+---
+id: approximation-algorithms
+title: אלגוריתמים קירוביים
+description: מדריך מקיף לאלגוריתמים קירוביים לבעיות NP-Hard
+sidebar_label: אלגוריתמים קירוביים
+---
+
+<div className="greedyDoc container">
+  <p className="greedyDoc__badge">Approximation Algorithms</p>
+  <h1>אלגוריתמים קירוביים</h1>
+  <p className="greedyDoc__lead">
+    אלגוריתמים קירוביים מספקים פתרונות יעילים לבעיות NP-Hard עם ערבות על איכות הפתרון.
+    במקום לחפש את הפתרון האופטימלי (שעלול לקחת זמן אקספוננציאלי), אנחנו מוצאים פתרון 
+    "קרוב מספיק" בזמן פולינומי עם הוכחה מתמטית על מידת הקירוב.
+  </p>
+  <ul className="greedyDoc__tags">
+    <li>Approximation Ratio</li>
+    <li>Vertex Cover</li>
+    <li>Bin Packing</li>
+    <li>TSP</li>
+    <li>Max Cut</li>
+    <li>Heuristics</li>
+  </ul>
+</div>
+
+<figure className="conceptStory container" aria-label="מפת אלגוריתמים קירוביים">
+  <div className="conceptStory__canvas">
+    <svg viewBox="0 0 700 400" role="img">
+      <defs>
+        <linearGradient id="approxBg" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="rgba(34,197,94,0.12)" />
+          <stop offset="100%" stopColor="rgba(5,150,105,0.18)" />
+        </linearGradient>
+        <marker id="approxArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 10 3, 0 6" fill="#22c55e" />
+        </marker>
+      </defs>
+
+      <rect width="700" height="400" fill="url(#approxBg)" rx="16" />
+      
+      <text x="350" y="35" fill="#22c55e" fontSize="20" fontWeight="bold" textAnchor="middle">
+        מפת חסמי הקירוב
+      </text>
+      <text x="350" y="58" fill="#a0aec0" fontSize="12" textAnchor="middle">
+        ככל שחסם הקירוב קרוב יותר ל-1, כך הפתרון טוב יותר
+      </text>
+
+      {/* Vertex Cover - 2-approximation */}
+      <rect x="50" y="90" width="140" height="120" fill="rgba(34,197,94,0.1)" stroke="#22c55e" strokeWidth="2" rx="8" />
+      <text x="120" y="115" fill="#22c55e" fontSize="14" fontWeight="bold" textAnchor="middle">Vertex Cover</text>
+      <circle cx="120" cy="155" r="25" fill="rgba(34,197,94,0.3)" stroke="#22c55e" strokeWidth="3" />
+      <text x="120" y="163" fill="#fff" fontSize="18" fontWeight="bold" textAnchor="middle">2</text>
+      <text x="120" y="195" fill="#a0aec0" fontSize="11" textAnchor="middle">2-approximation</text>
+
+      {/* TSP Triangle - 2-approximation */}
+      <rect x="220" y="90" width="140" height="120" fill="rgba(139,92,246,0.1)" stroke="#8b5cf6" strokeWidth="2" rx="8" />
+      <text x="290" y="108" fill="#8b5cf6" fontSize="13" fontWeight="bold" textAnchor="middle">TSP</text>
+      <text x="290" y="124" fill="#8b5cf6" fontSize="10" textAnchor="middle">(Triangle Ineq.)</text>
+      <circle cx="290" cy="155" r="25" fill="rgba(139,92,246,0.3)" stroke="#8b5cf6" strokeWidth="3" />
+      <text x="290" y="163" fill="#fff" fontSize="18" fontWeight="bold" textAnchor="middle">2</text>
+      <text x="290" y="195" fill="#a0aec0" fontSize="11" textAnchor="middle">2-approximation</text>
+
+      {/* Bin Packing - various */}
+      <rect x="390" y="90" width="140" height="120" fill="rgba(236,72,153,0.1)" stroke="#ec4899" strokeWidth="2" rx="8" />
+      <text x="460" y="115" fill="#ec4899" fontSize="14" fontWeight="bold" textAnchor="middle">Bin Packing</text>
+      <text x="460" y="145" fill="#fbbf24" fontSize="11" textAnchor="middle">Next Fit: 2</text>
+      <text x="460" y="165" fill="#64f6c8" fontSize="11" textAnchor="middle">First Fit: 1.7</text>
+      <text x="460" y="185" fill="#22c55e" fontSize="11" textAnchor="middle">FFD: 11/9</text>
+      <text x="460" y="200" fill="#a0aec0" fontSize="9" textAnchor="middle">(≈1.22)</text>
+
+      {/* Max Cut - 2-approximation */}
+      <rect x="560" y="90" width="120" height="120" fill="rgba(251,191,36,0.1)" stroke="#fbbf24" strokeWidth="2" rx="8" />
+      <text x="620" y="115" fill="#fbbf24" fontSize="14" fontWeight="bold" textAnchor="middle">Max Cut</text>
+      <circle cx="620" cy="155" r="25" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="3" />
+      <text x="620" y="163" fill="#fff" fontSize="18" fontWeight="bold" textAnchor="middle">2</text>
+      <text x="620" y="195" fill="#a0aec0" fontSize="11" textAnchor="middle">2-approximation</text>
+
+      {/* הסבר על חסמים */}
+      <rect x="50" y="240" width="630" height="140" fill="rgba(100,246,200,0.05)" stroke="#64f6c8" strokeWidth="1" rx="8" />
+      <text x="365" y="265" fill="#64f6c8" fontSize="14" fontWeight="bold" textAnchor="middle">מה זה אומר?</text>
+      
+      <text x="70" y="295" fill="#a0aec0" fontSize="12" textAnchor="start">
+        • 2-approximation: הפתרון לכל היותר פי 2 יותר גרוע מהאופטימלי
+      </text>
+      <text x="70" y="320" fill="#a0aec0" fontSize="12" textAnchor="start">
+        • אם OPT = מספר הקופסאות האופטימלי, אז האלגוריתם משתמש ב-≤ 2·OPT קופסאות
+      </text>
+      <text x="70" y="345" fill="#a0aec0" fontSize="12" textAnchor="start">
+        • בעיות מינימיזציה: ALG ≤ α·OPT | בעיות מקסימיזציה: ALG ≥ OPT/α
+      </text>
+      <text x="70" y="370" fill="#22c55e" fontSize="12" fontWeight="bold" textAnchor="start">
+        → ערבות מתמטית שהפתרון לא יהיה גרוע מדי, גם במקרה הגרוע ביותר!
+      </text>
+    </svg>
+  </div>
+  <figcaption className="conceptStory__caption">
+    <h4>חסמי קירוב לבעיות שונות</h4>
+    <p>
+      כל אלגוריתם קירובי מבטיח שהפתרון לא יהיה גרוע מדי. החסם אומר לנו בדיוק כמה
+      "רע" הפתרון יכול להיות במקרה הגרוע ביותר.
+    </p>
+  </figcaption>
+</figure>
+
+<section id="definitions" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">מושגי יסוד</p>
+    <h2>הגדרות ומושגים בסיסיים</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        כאשר אנחנו מתמודדים עם בעיות NP-Hard, אנחנו לעיתים קרובות מוכנים לוותר 
+        על האופטימליות המושלמת בתמורה לזמן ריצה סביר. אלגוריתמים קירוביים מספקים 
+        את הפתרון: פתרון "קרוב מספיק" לאופטימלי, עם ערבויות מתמטיות.
+      </p>
+    </article>
+  </div>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--explain">
+      <p className="conceptCard__label">הגדרה</p>
+      <h3 className="conceptCard__title">פתרון מקורב (Approximate Solution)</h3>
+      <p className="conceptCard__body">
+        <strong>פתרון מקורב</strong> הוא פתרון שאינו בהכרח אופטימלי, אך קרוב אליו 
+        במידה מדידה וניתנת להוכחה.<br/><br/>
+        
+        לדוגמה: במקום למצוא את כיסוי הקודקודים המינימלי בגודל 5 (שדורש זמן אקספוננציאלי),
+        נמצא כיסוי בגודל 8 בזמן פולינומי - פתרון שאמנם לא מושלם, אך שימושי מאוד בפועל.<br/><br/>
+        
+        <strong>יתרונות:</strong><br/>
+        • זמן ריצה פולינומי (יעיל!)<br/>
+        • ערבות על איכות הפתרון<br/>
+        • שימושי בתעשייה למערכות אמיתיות
+      </p>
+    </article>
+
+    <article className="conceptCard conceptCard--function" style={{ background: 'rgba(5, 138, 239, 0.76)' }}>
+      <p className="conceptCard__label">מושג</p>
+      <h3 className="conceptCard__title">חסם היחס (Approximation Ratio)</h3>
+      <p className="conceptCard__body">
+        <strong>חסם היחס α</strong> מודד כמה "רע" יכול להיות הפתרון שלנו ביחס לאופטימלי.<br/><br/>
+        
+        <strong>בעיות מינימיזציה:</strong> ALG(I) ≤ α · OPT(I)<br/>
+        (הפתרון שלנו לא יותר מ-α פעמים האופטימלי)<br/><br/>
+        
+        <strong>בעיות מקסימיזציה:</strong> ALG(I) ≥ OPT(I) / α<br/>
+        (הפתרון שלנו לפחות 1/α מהאופטימלי)<br/><br/>
+        
+        <strong>דוגמאות:</strong><br/>
+        • α = 2: הפתרון לכל היותר פי 2 גרוע מהאופטימלי<br/>
+        • α = 1.5: הפתרון לכל היותר פי 1.5 גרוע מהאופטימלי<br/>
+        • α = 1: הפתרון אופטימלי! (לא תמיד אפשרי ב-P)<br/><br/>
+        
+        ככל ש-α קטן יותר (קרוב ל-1), כך האלגוריתם טוב יותר.
+      </p>
+    </article>
+
+    <article className="conceptCard conceptCard--operation" style={{ background: 'rgba(36, 251, 143, 0.54)' }}>
+      <p className="conceptCard__label">מושג</p>
+      <h3 className="conceptCard__title">היוריסטיקה (Heuristic)</h3>
+      <p className="conceptCard__body">
+        <strong>היוריסטיקה</strong> היא שיטה אינטואיטיבית למציאת פתרון טוב, 
+        ללא הוכחה פורמלית על איכות הפתרון.<br/><br/>
+        
+        <strong>ההבדל בין היוריסטיקה לאלגוריתם קירובי:</strong><br/>
+        • <strong>היוריסטיקה:</strong> אין ערבות מתמטית, עובד טוב "בפועל"<br/>
+        • <strong>אלגוריתם קירובי:</strong> יש הוכחה מתמטית על חסם הקירוב<br/><br/>
+        
+        <strong>דוגמאות להיוריסטיקות:</strong><br/>
+        • Greedy: תמיד בחר את הפריט ה"טוב ביותר" הבא<br/>
+        • Local Search: שפר פתרון קיים בצעדים קטנים<br/>
+        • Randomized: הכנס אקראיות לבחירות<br/><br/>
+        
+        <strong>למה להשתמש בהיוריסטיקה?</strong><br/>
+        • פשוטה ליישום<br/>
+        • מהירה מאוד<br/>
+        • לעיתים טובה יותר מאלגוריתם קירובי בפועל<br/>
+        • אין צורך בהוכחות מורכבות
+      </p>
+    </article>
+  </div>
+</section>
+
+<section id="vertex-cover-approx" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">אלגוריתם 1</p>
+    <h2>אלגוריתם קירוב לכיסוי קודקודים (Vertex Cover)</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>Vertex Cover</strong> היא בעיה NP-Complete: מצא את הקבוצה המינימלית של 
+        קודקודים שכל קשת בגרף נוגעת לפחות באחד מהם. האלגוריתם הקירובי הפשוט והיפה ביותר 
+        מבוסס על בחירת קשתות - ומבטיח פתרון שלכל היותר פי 2 גדול מהאופטימלי!
+      </p>
+    </article>
+  </div>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--explain" style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.08) 0%, rgba(16,185,129,0.12) 100%)' }}>
+      <p className="conceptCard__label">הבעיה</p>
+      <h3 className="conceptCard__title">Vertex Cover - הגדרה</h3>
+      <p className="conceptCard__body">
+        <strong>קלט:</strong> גרף לא מכוון G = (V, E)<br/><br/>
+        
+        <strong>פלט:</strong> קבוצה C ⊆ V כך שכל קשת (u,v) ∈ E מקיימת u ∈ C או v ∈ C<br/><br/>
+        
+        <strong>מטרה:</strong> מינימיזציה של |C|<br/><br/>
+        
+        <strong>דוגמה:</strong><br/>
+        גרף עם 6 קודקודים: {"{v₁, v₂, v₃, v₄, v₅, v₆}"}<br/>
+        קשתות: {"{(v₁,v₂), (v₂,v₃), (v₃,v₄), (v₄,v₅), (v₅,v₆), (v₆,v₁)}"}<br/>
+        כיסוי מינימלי: {"{v₁, v₃, v₅}"} או {"{v₂, v₄, v₆}"} - גודל 3
+      </p>
+    </article>
+
+    <article className="conceptCard conceptCard--function" style={{ background: 'linear-gradient(135deg, rgba(59, 131, 246, 0.65) 0%, rgba(99,102,241,0.12) 100%)' }}>
+      <p className="conceptCard__label">אלגוריתם</p>
+      <h3 className="conceptCard__title">2-Approximation Algorithm</h3>
+      <p className="conceptCard__body">
+        <strong>רעיון:</strong> בחר קשתות באופן חמדני והוסף את שני הקצוות שלהן<br/><br/>
+        
+        <strong>פסאודו-קוד:</strong><br/>
+        <code style={{display: 'block', background: 'linear-gradient(135deg, rgba(30,58,138,0.4) 0%, rgba(68, 56, 202, 0.77) 100%)', padding: '0.5rem', borderRadius: '8px', marginTop: '0.5rem', border: '1px solid rgba(59,130,246,0.3)'}}>
+          C = ∅<br/>
+          E' = E (עותק של הקשתות)<br/>
+          while E' ≠ ∅:<br/>
+          {"    "}בחר קשת (u,v) ∈ E' שרירותית<br/>
+          {"    "}C = C ∪ {"{u, v}"}<br/>
+          {"    "}הסר מ-E' את כל הקשתות הנוגעות ב-u או ב-v<br/>
+          return C
+        </code><br/>
+        
+        <strong>זמן ריצה:</strong> O(V + E) - לינארי!<br/><br/>
+        
+        <strong>חסם קירוב:</strong> 2-approximation<br/>
+        |C| ≤ 2 · OPT
+      </p>
+    </article>
+
+    <article className="conceptCard conceptCard--operation"style={{ background: 'linear-gradient(135deg, rgba(78, 246, 59, 0.65) 0%, rgba(99,102,241,0.12) 100%)' }}>
+      <p className="conceptCard__label">הוכחה</p>
+      <h3 className="conceptCard__title">למה זה עובד?</h3>
+      <p className="conceptCard__body">
+        <strong>טענה:</strong> האלגוריתם מחזיר vertex cover C כך ש-|C| ≤ 2·OPT<br/><br/>
+        
+        <strong>הוכחה:</strong><br/>
+        1. נסמן ב-A את קבוצת הקשתות שבחרנו (זוגות שהוספנו ל-C)<br/>
+        2. שים לב: הקשתות ב-A זרות (אין קשתות שחולקות קודקוד)<br/>
+        3. <strong>מסקנה:</strong> כל vertex cover חייב לכסות כל קשת ב-A<br/>
+        4. כיוון שהקשתות ב-A זרות, כל vertex cover חייב לכלול לפחות קודקוד אחד מכל קשת<br/>
+        5. לכן: OPT ≥ |A|<br/>
+        6. האלגוריתם שלנו הוסיף 2 קודקודים לכל קשת ב-A<br/>
+        7. לכן: |C| = 2·|A| ≤ 2·OPT ✓<br/><br/>
+        
+        <strong>מסקנה:</strong> הפתרון שלנו לכל היותר פי 2 גדול מהאופטימלי!
+      </p>
+    </article>
+  </div>
+
+  {/* הדגמה גרפית */}
+  <div style={{ marginTop: '3rem', padding: '2rem', background: 'rgba(34,197,94,0.1)', borderRadius: '12px', border: '2px solid #22c55e' }}>
+    <h3 style={{ color: '#22c55e', marginBottom: '1.5rem', textAlign: 'center' }}>הדגמה: Vertex Cover Approximation</h3>
+    
+    <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+      <svg viewBox="0 0 1100 850" style={{ width: '100%' }}>
+        <defs>
+          <marker id="vcCover" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+            <circle cx="4" cy="4" r="3" fill="#22c55e" />
+          </marker>
+        </defs>
+
+        {/* רקע */}
+        <rect width="1100" height="850" fill="rgba(15,20,25,0.5)" rx="12" />
+        
+        {/* כותרת */}
+        <text x="550" y="35" fill="#22c55e" fontSize="18" fontWeight="bold" textAnchor="middle">
+          אלגוריתם קירוב לכיסוי קודקודים - דוגמה צעד אחרי צעד
+        </text>
+
+        {/* ========== גרף מקורי ========== */}
+        <rect x="50" y="60" width="480" height="350" fill="rgba(100,246,200,0.05)" stroke="#64f6c8" strokeWidth="2" rx="8" />
+        <text x="290" y="90" fill="#64f6c8" fontSize="15" fontWeight="bold" textAnchor="middle">שלב 0: גרף מקורי</text>
+
+        {/* קודקודים */}
+        <circle cx="150" cy="150" r="28" fill="rgba(100,246,200,0.2)" stroke="#64f6c8" strokeWidth="3" />
+        <text x="150" y="158" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">v₁</text>
+
+        <circle cx="430" cy="150" r="28" fill="rgba(100,246,200,0.2)" stroke="#64f6c8" strokeWidth="3" />
+        <text x="430" y="158" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">v₂</text>
+
+        <circle cx="150" cy="280" r="28" fill="rgba(100,246,200,0.2)" stroke="#64f6c8" strokeWidth="3" />
+        <text x="150" y="288" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">v₃</text>
+
+        <circle cx="290" cy="280" r="28" fill="rgba(100,246,200,0.2)" stroke="#64f6c8" strokeWidth="3" />
+        <text x="290" y="288" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">v₄</text>
+
+        <circle cx="430" cy="280" r="28" fill="rgba(100,246,200,0.2)" stroke="#64f6c8" strokeWidth="3" />
+        <text x="430" y="288" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">v₅</text>
+
+        <circle cx="290" cy="360" r="28" fill="rgba(100,246,200,0.2)" stroke="#64f6c8" strokeWidth="3" />
+        <text x="290" y="368" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">v₆</text>
+
+        {/* קשתות */}
+        <line x1="175" y1="160" x2="405" y2="160" stroke="#a0aec0" strokeWidth="3" />
+        <line x1="165" y1="175" x2="165" y2="255" stroke="#a0aec0" strokeWidth="3" />
+        <line x1="175" y1="295" x2="265" y2="295" stroke="#a0aec0" strokeWidth="3" />
+        <line x1="315" y1="295" x2="405" y2="295" stroke="#a0aec0" strokeWidth="3" />
+        <line x1="290" y1="305" x2="290" y2="335" stroke="#a0aec0" strokeWidth="3" />
+        <line x1="425" y1="175" x2="425" y2="255" stroke="#a0aec0" strokeWidth="3" />
+
+        <text x="290" y="400" fill="#a0aec0" fontSize="11" textAnchor="middle">6 קודקודים, 6 קשתות</text>
+
+        {/* ========== צעד 1 ========== */}
+        <rect x="570" y="60" width="480" height="350" fill="rgba(251,191,36,0.05)" stroke="#fbbf24" strokeWidth="2" rx="8" />
+        <text x="810" y="90" fill="#fbbf24" fontSize="15" fontWeight="bold" textAnchor="middle">שלב 1: בחר קשת (v₁,v₂)</text>
+
+        {/* קודקודים - v1, v2 נבחרו */}
+        <circle cx="670" cy="150" r="28" fill="rgba(34,197,94,0.4)" stroke="#c5a522" strokeWidth="4" />
+        <text x="670" y="158" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">v₁</text>
+
+        <circle cx="950" cy="150" r="28" fill="rgba(34,197,94,0.4)" stroke="#c5a522" strokeWidth="4" />
+        <text x="950" y="158" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">v₂</text>
+
+        <circle cx="670" cy="280" r="28" fill="rgba(100,246,200,0.2)" stroke="#64f6c8" strokeWidth="3" />
+        <text x="670" y="288" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">v₃</text>
+
+        <circle cx="810" cy="280" r="28" fill="rgba(100,246,200,0.2)" stroke="#64f6c8" strokeWidth="3" />
+        <text x="810" y="288" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">v₄</text>
+
+        <circle cx="950" cy="280" r="28" fill="rgba(100,246,200,0.2)" stroke="#64f6c8" strokeWidth="3" />
+        <text x="950" y="288" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">v₅</text>
+
+        <circle cx="810" cy="360" r="28" fill="rgba(100,246,200,0.2)" stroke="#64f6c8" strokeWidth="3" />
+        <text x="810" y="368" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">v₆</text>
+
+        {/* קשתות - הקשת הנבחרת ירוקה, הקשתות שהוסרו אפורות */}
+        <line x1="695" y1="160" x2="925" y2="160" stroke="#c5a522" strokeWidth="5" />
+        <line x1="685" y1="175" x2="685" y2="255" stroke="#4a5568" strokeWidth="3" opacity="0.3" strokeDasharray="5,5" />
+        <line x1="945" y1="175" x2="945" y2="255" stroke="#4a5568" strokeWidth="3" opacity="0.3" strokeDasharray="5,5" />
+        
+        <line x1="695" y1="295" x2="785" y2="295" stroke="#a0aec0" strokeWidth="3" />
+        <line x1="835" y1="295" x2="925" y2="295" stroke="#a0aec0" strokeWidth="3" />
+        <line x1="810" y1="305" x2="810" y2="335" stroke="#a0aec0" strokeWidth="3" />
+
+        <text x="810" y="400" fill="#22c55e" fontSize="11" fontWeight="bold" textAnchor="middle">C = {"{v₁, v₂}"} | הוסרו 3 קשתות</text>
+
+        {/* ========== צעד 2 - פתרון סופי ========== */}
+        <rect x="50" y="450" width="480" height="350" fill="rgba(34,197,94,0.08)" stroke="#22c55e" strokeWidth="3" rx="8" />
+        <text x="290" y="480" fill="#22c55e" fontSize="16" fontWeight="bold" textAnchor="middle">שלב 2: בחר קשת (v₃,v₄) - סיום!</text>
+
+        {/* קודקודים */}
+        <circle cx="150" cy="540" r="28" fill="rgba(34,197,94,0.4)" stroke="#c5a522" strokeWidth="4" />
+        <text x="150" y="548" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">v₁</text>
+
+        <circle cx="430" cy="540" r="28" fill="rgba(34,197,94,0.4)" stroke="#c5a522" strokeWidth="4" />
+        <text x="430" y="548" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">v₂</text>
+
+        <circle cx="150" cy="670" r="28" fill="rgba(34,197,94,0.4)" stroke="#c5a522" strokeWidth="4" />
+        <text x="150" y="678" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">v₃</text>
+
+        <circle cx="290" cy="670" r="28" fill="rgba(34,197,94,0.4)" stroke="#c5a522" strokeWidth="4" />
+        <text x="290" y="678" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">v₄</text>
+
+        <circle cx="430" cy="670" r="28" fill="rgba(100,246,200,0.2)" stroke="#64f6c8" strokeWidth="3" />
+        <text x="430" y="678" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">v₅</text>
+
+        <circle cx="290" cy="750" r="28" fill="rgba(100,246,200,0.2)" stroke="#64f6c8" strokeWidth="3" />
+        <text x="290" y="758" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">v₆</text>
+
+        {/* קשתות */}
+        <line x1="175" y1="550" x2="405" y2="550" stroke="#4a5568" strokeWidth="3" opacity="0.3" strokeDasharray="5,5" />
+        <line x1="165" y1="565" x2="165" y2="645" stroke="#4a5568" strokeWidth="3" opacity="0.3" strokeDasharray="5,5" />
+        <line x1="425" y1="565" x2="425" y2="645" stroke="#4a5568" strokeWidth="3" opacity="0.3" strokeDasharray="5,5" />
+        
+        <line x1="175" y1="685" x2="265" y2="685" stroke="#c5a522" strokeWidth="5" />
+        <line x1="305" y1="695" x2="305" y2="725" stroke="#4a5568" strokeWidth="3" opacity="0.3" strokeDasharray="5,5" />
+        <line x1="315" y1="685" x2="405" y2="685" stroke="#4a5568" strokeWidth="3" opacity="0.3" strokeDasharray="5,5" />
+
+        <text x="290" y="790" fill="#c5a522" fontSize="13" fontWeight="bold" textAnchor="middle">✓ C = {"{v₁, v₂, v₃, v₄}"} | גודל = 4 (כל הקשתות מכוסות!)</text>
+        <text x="290" y="810" fill="#fbbf24" fontSize="11" textAnchor="middle">OPT = 2 ({"{v₁, v₄}"}), |C| = 4 = 2·OPT ✓</text>
+
+
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section id="bin-packing-approx" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">אלגוריתם 2</p>
+    <h2>אלגוריתמי קירוב לאריזת קופסאות (Bin Packing)</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>Bin Packing</strong> היא בעיה קלאסית: ארוז n פריטים בגדלים שונים למספר מינימלי 
+        של קופסאות בקיבולת 1. הבעיה NP-Hard, אבל יש לנו מספר אלגוריתמי קירוב פשוטים 
+        עם חסמים שונים. נראה 3 אלגוריתמים: Next Fit, First Fit, ו-First Fit Decreasing.
+      </p>
+    </article>
+    <p>
+        <strong> **לא ההיתי בתרגול הזה אז הבאתי את שלושת השיטות למרות שרק first במצגת </strong> 
+      </p>
+  </div>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--explain" style={{ background: 'linear-gradient(135deg, rgba(236,72,153,0.08) 0%, rgba(219,39,119,0.12) 100%)' }}>
+      <p className="conceptCard__label">הבעיה</p>
+      <h3 className="conceptCard__title">Bin Packing - הגדרה</h3>
+      <p className="conceptCard__body">
+        <strong>קלט:</strong> <br/>
+        • n פריטים עם גדלים s₁, s₂, ..., sₙ כאשר 0 {"<"} sᵢ ≤ 1<br/>
+        • קיבולת קופסה: 1<br/><br/>
+        
+        <strong>פלט:</strong> ארוז את כל הפריטים למספר מינימלי של קופסאות<br/><br/>
+        
+        <strong>אילוץ:</strong> סכום גדלי הפריטים בכל קופסה ≤ 1<br/><br/>
+        
+        <strong>מטרה:</strong> מינימיזציה של מספר הקופסאות<br/><br/>
+        
+        <strong>דוגמה:</strong><br/>
+        פריטים: [0.5, 0.7, 0.3, 0.9, 0.6, 0.8, 0.2]<br/>
+        OPT = 4 קופסאות<br/>
+        (0.7+0.3), (0.9), (0.6+0.2), (0.8+0.5) = 4
+      </p>
+    </article>
+
+    <article className="conceptCard conceptCard--function" style={{ background: 'linear-gradient(135deg, rgba(251,191,36,0.08) 0%, rgba(245,158,11,0.12) 100%)' }}>
+      <p className="conceptCard__label">אלגוריתם 1</p>
+      <h3 className="conceptCard__title">Next Fit (NF)</h3>
+      <p className="conceptCard__body">
+        <strong>רעיון:</strong> נסה להכניס פריט לקופסה הנוכחית. אם לא נכנס, פתח קופסה חדשה.<br/><br/>
+        
+        <strong>פסאודו-קוד:</strong><br/>
+        <code style={{display: 'block', background: 'linear-gradient(135deg, rgba(180,83,9,0.3) 0%, rgba(217,119,6,0.25) 100%)', padding: '0.5rem', borderRadius: '8px', marginTop: '0.5rem', border: '1px solid rgba(251,191,36,0.3)'}}>
+          B₁ = קופסה ריקה, j = 1<br/>
+          for i = 1 to n:<br/>
+          {"    "}if sᵢ נכנס ל-Bⱼ:<br/>
+          {"        "}הכנס sᵢ ל-Bⱼ<br/>
+          {"    "}else:<br/>
+          {"        "}j = j + 1<br/>
+          {"        "}Bⱼ = קופסה חדשה עם sᵢ<br/>
+          return j
+        </code><br/>
+        
+        <strong>זמן ריצה:</strong> O(n)<br/>
+        <strong>חסם קירוב:</strong> 2-approximation<br/>
+        NF(I) ≤ 2·OPT(I)<br/><br/>
+        
+        <strong>חיסרון:</strong> פשוט מדי, לא חוזר אחורה
+      </p>
+    </article>
+
+    <article className="conceptCard conceptCard--function" style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.08) 0%, rgba(16,185,129,0.12) 100%)' }}>
+      <p className="conceptCard__label">אלגוריתם 2</p>
+      <h3 className="conceptCard__title">First Fit (FF)</h3>
+      <p className="conceptCard__body">
+        <strong>רעיון:</strong> נסה להכניס פריט לקופסה הפתוחה הראשונה שיש בה מקום.<br/><br/>
+        
+        <strong>פסאודו-קוד:</strong><br/>
+        <code style={{display: 'block', background: 'linear-gradient(135deg, rgba(5,150,105,0.3) 0%, rgba(16,185,129,0.25) 100%)', padding: '0.5rem', borderRadius: '8px', marginTop: '0.5rem', border: '1px solid rgba(34,197,94,0.3)'}}>
+          bins = []<br/>
+          for i = 1 to n:<br/>
+          {"    "}placed = false<br/>
+          {"    "}for each bin in bins:<br/>
+          {"        "}if sᵢ נכנס ל-bin:<br/>
+          {"            "}הכנס sᵢ ל-bin<br/>
+          {"            "}placed = true, break<br/>
+          {"    "}if not placed:<br/>
+          {"        "}צור קופסה חדשה עם sᵢ<br/>
+          return |bins|
+        </code><br/>
+        
+        <strong>זמן ריצה:</strong> O(n²) או O(n log n) עם מבני נתונים<br/>
+        <strong>חסם קירוב:</strong> 1.7-approximation<br/>
+        FF(I) ≤ 1.7·OPT(I)<br/><br/>
+        
+        <strong>יתרון:</strong> טוב יותר מ-NF, עדיין פשוט
+      </p>
+    </article>
+
+    <article className="conceptCard conceptCard--function" style={{ background: 'linear-gradient(135deg, rgba(236,72,153,0.08) 0%, rgba(219,39,119,0.12) 100%)' }}>
+      <p className="conceptCard__label">אלגוריתם 3</p>
+      <h3 className="conceptCard__title">First Fit Decreasing (FFD)</h3>
+      <p className="conceptCard__body">
+        <strong>רעיון:</strong> מיין את הפריטים יורד, ואז הפעל First Fit<br/><br/>
+        
+        <strong>פסאודו-קוד:</strong><br/>
+        <code style={{display: 'block', background: 'linear-gradient(135deg, rgba(219,39,119,0.25) 0%, rgba(236,72,153,0.2) 100%)', padding: '0.5rem', borderRadius: '8px', marginTop: '0.5rem', border: '1px solid rgba(236,72,153,0.3)'}}>
+          מיין את הפריטים: s₁ ≥ s₂ ≥ ... ≥ sₙ<br/>
+          הפעל First Fit על הרשימה הממוינת
+        </code><br/>
+        
+        <strong>זמן ריצה:</strong> O(n log n)<br/>
+        <strong>חסם קירוב:</strong> 11/9-approximation (≈1.22)<br/>
+        FFD(I) ≤ (11/9)·OPT(I) + 6/9<br/><br/>
+        
+        <strong>יתרון:</strong> הטוב ביותר! קרוב מאוד לאופטימלי בפועל<br/>
+        <strong>אינטואיציה:</strong> פריטים גדולים קשה יותר למקם, כדאי למקם אותם בהתחלה
+      </p>
+    </article>
+  </div>
+
+  {/* הדגמה גרפית */}
+  <div style={{ marginTop: '3rem', padding: '2rem', background: 'rgba(236,72,153,0.1)', borderRadius: '12px', border: '2px solid #ec4899' }}>
+    <h3 style={{ color: '#ec4899', marginBottom: '1.5rem', textAlign: 'center' }}>השוואה: Next Fit vs First Fit vs FFD</h3>
+    
+    <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+      <svg viewBox="0 0 1100 700" style={{ width: '100%' }}>
+        <rect width="1100" height="700" fill="rgba(15,20,25,0.5)" rx="12" />
+        
+        <text x="550" y="35" fill="#ec4899" fontSize="18" fontWeight="bold" textAnchor="middle">
+          דוגמה: פריטים [0.5, 0.7, 0.3, 0.9, 0.6, 0.8, 0.2]
+        </text>
+
+        {/* ========== Next Fit ========== */}
+        <rect x="50" y="60" width="300" height="590" fill="rgba(251,191,36,0.05)" stroke="#fbbf24" strokeWidth="2" rx="8" />
+        <text x="200" y="90" fill="#fbbf24" fontSize="15" fontWeight="bold" textAnchor="middle">Next Fit</text>
+        
+        {/* קופסה 1 */}
+        <rect x="90" y="110" width="70" height="120" fill="rgba(100,246,200,0.1)" stroke="#64f6c8" strokeWidth="2" rx="4" />
+        <text x="125" y="103" fill="#64f6c8" fontSize="11" textAnchor="middle">Bin 1</text>
+        <rect x="95" y="170" width="60" height="54" fill="#8b5cf6" />
+        <text x="125" y="200" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">0.5</text>
+
+        {/* קופסה 2 */}
+        <rect x="180" y="110" width="70" height="120" fill="rgba(100,246,200,0.1)" stroke="#64f6c8" strokeWidth="2" rx="4" />
+        <text x="215" y="103" fill="#64f6c8" fontSize="11" textAnchor="middle">Bin 2</text>
+        <rect x="185" y="154" width="60" height="76" fill="#ec4899" />
+        <text x="215" y="195" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">0.7</text>
+
+        {/* קופסה 3 */}
+        <rect x="270" y="110" width="70" height="120" fill="rgba(100,246,200,0.1)" stroke="#64f6c8" strokeWidth="2" rx="4" />
+        <text x="305" y="103" fill="#64f6c8" fontSize="11" textAnchor="middle">Bin 3</text>
+        <rect x="275" y="197" width="60" height="33" fill="#22c55e" />
+        <text x="305" y="216" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">0.3</text>
+
+        {/* קופסה 4 */}
+        <rect x="90" y="250" width="70" height="120" fill="rgba(100,246,200,0.1)" stroke="#64f6c8" strokeWidth="2" rx="4" />
+        <text x="125" y="243" fill="#64f6c8" fontSize="11" textAnchor="middle">Bin 4</text>
+        <rect x="95" y="262" width="60" height="108" fill="#fbbf24" />
+        <text x="125" y="320" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">0.9</text>
+
+        {/* קופסה 5 */}
+        <rect x="180" y="250" width="70" height="120" fill="rgba(100,246,200,0.1)" stroke="#64f6c8" strokeWidth="2" rx="4" />
+        <text x="215" y="243" fill="#64f6c8" fontSize="11" textAnchor="middle">Bin 5</text>
+        <rect x="185" y="298" width="60" height="72" fill="#64f6c8" />
+        <text x="215" y="337" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">0.6</text>
+
+        {/* קופסה 6 */}
+        <rect x="270" y="250" width="70" height="120" fill="rgba(100,246,200,0.1)" stroke="#64f6c8" strokeWidth="2" rx="4" />
+        <text x="305" y="243" fill="#64f6c8" fontSize="11" textAnchor="middle">Bin 6</text>
+        <rect x="275" y="274" width="60" height="96" fill="#ef4444" />
+        <text x="305" y="325" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">0.8</text>
+
+        {/* קופסה 7 */}
+        <rect x="90" y="390" width="70" height="120" fill="rgba(100,246,200,0.1)" stroke="#64f6c8" strokeWidth="2" rx="4" />
+        <text x="125" y="383" fill="#64f6c8" fontSize="11" textAnchor="middle">Bin 7</text>
+        <rect x="95" y="486" width="60" height="24" fill="#a78bfa" />
+        <text x="125" y="500" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">0.2</text>
+
+        <text x="200" y="540" fill="#fbbf24" fontSize="13" fontWeight="bold" textAnchor="middle">7 קופסאות</text>
+        <text x="200" y="560" fill="#ef4444" fontSize="11" textAnchor="middle">✗ גרוע מדי!</text>
+
+        {/* ========== First Fit ========== */}
+        <rect x="380" y="60" width="300" height="590" fill="rgba(100,246,200,0.05)" stroke="#64f6c8" strokeWidth="2" rx="8" />
+        <text x="530" y="90" fill="#64f6c8" fontSize="15" fontWeight="bold" textAnchor="middle">First Fit</text>
+        
+        {/* קופסה 1 */}
+        <rect x="420" y="110" width="70" height="120" fill="rgba(100,246,200,0.1)" stroke="#64f6c8" strokeWidth="2" rx="4" />
+        <text x="455" y="103" fill="#64f6c8" fontSize="11" textAnchor="middle">Bin 1</text>
+        <rect x="425" y="170" width="60" height="54" fill="#8b5cf6" />
+        <text x="455" y="200" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">0.5</text>
+        <rect x="425" y="137" width="60" height="33" fill="#22c55e" />
+        <text x="455" y="156" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">0.3</text>
+
+        {/* קופסה 2 */}
+        <rect x="510" y="110" width="70" height="120" fill="rgba(100,246,200,0.1)" stroke="#64f6c8" strokeWidth="2" rx="4" />
+        <text x="545" y="103" fill="#64f6c8" fontSize="11" textAnchor="middle">Bin 2</text>
+        <rect x="515" y="154" width="60" height="76" fill="#ec4899" />
+        <text x="545" y="195" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">0.7</text>
+        <rect x="515" y="130" width="60" height="24" fill="#a78bfa" />
+        <text x="545" y="144" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">0.2</text>
+
+        {/* קופסה 3 */}
+        <rect x="600" y="110" width="70" height="120" fill="rgba(100,246,200,0.1)" stroke="#64f6c8" strokeWidth="2" rx="4" />
+        <text x="635" y="103" fill="#64f6c8" fontSize="11" textAnchor="middle">Bin 3</text>
+        <rect x="605" y="122" width="60" height="108" fill="#fbbf24" />
+        <text x="635" y="180" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">0.9</text>
+
+        {/* קופסה 4 */}
+        <rect x="420" y="250" width="70" height="120" fill="rgba(100,246,200,0.1)" stroke="#64f6c8" strokeWidth="2" rx="4" />
+        <text x="455" y="243" fill="#64f6c8" fontSize="11" textAnchor="middle">Bin 4</text>
+        <rect x="425" y="298" width="60" height="72" fill="#64f6c8" />
+        <text x="455" y="337" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">0.6</text>
+
+        {/* קופסה 5 */}
+        <rect x="510" y="250" width="70" height="120" fill="rgba(100,246,200,0.1)" stroke="#64f6c8" strokeWidth="2" rx="4" />
+        <text x="545" y="243" fill="#64f6c8" fontSize="11" textAnchor="middle">Bin 5</text>
+        <rect x="515" y="274" width="60" height="96" fill="#ef4444" />
+        <text x="545" y="325" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">0.8</text>
+
+        <text x="530" y="400" fill="#64f6c8" fontSize="13" fontWeight="bold" textAnchor="middle">5 קופסאות</text>
+        <text x="530" y="420" fill="#22c55e" fontSize="11" textAnchor="middle">✓ טוב יותר!</text>
+
+        {/* ========== FFD ========== */}
+        <rect x="710" y="60" width="340" height="590" fill="rgba(34,197,94,0.05)" stroke="#22c55e" strokeWidth="2" rx="8" />
+        <text x="880" y="90" fill="#22c55e" fontSize="15" fontWeight="bold" textAnchor="middle">First Fit Decreasing (FFD)</text>
+        <text x="880" y="110" fill="#a0aec0" fontSize="11" textAnchor="middle">ממוינים: [0.9, 0.8, 0.7, 0.6, 0.5, 0.3, 0.2]</text>
+        
+        {/* קופסה 1 */}
+        <rect x="750" y="130" width="80" height="120" fill="rgba(100,246,200,0.1)" stroke="#22c55e" strokeWidth="3" rx="4" />
+        <text x="790" y="123" fill="#22c55e" fontSize="12" fontWeight="bold" textAnchor="middle">Bin 1</text>
+        <rect x="757" y="142" width="66" height="108" fill="#fbbf24" />
+        <text x="790" y="200" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">0.9</text>
+
+        {/* קופסה 2 */}
+        <rect x="850" y="130" width="80" height="120" fill="rgba(100,246,200,0.1)" stroke="#22c55e" strokeWidth="3" rx="4" />
+        <text x="890" y="123" fill="#22c55e" fontSize="12" fontWeight="bold" textAnchor="middle">Bin 2</text>
+        <rect x="857" y="154" width="66" height="96" fill="#ef4444" />
+        <text x="890" y="205" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">0.8</text>
+        <rect x="857" y="230" width="66" height="20" fill="#a78bfa" />
+        <text x="890" y="242" fill="#fff" fontSize="11" fontWeight="bold" textAnchor="middle">0.2</text>
+
+        {/* קופסה 3 */}
+        <rect x="950" y="130" width="80" height="120" fill="rgba(100,246,200,0.1)" stroke="#22c55e" strokeWidth="3" rx="4" />
+        <text x="990" y="123" fill="#22c55e" fontSize="12" fontWeight="bold" textAnchor="middle">Bin 3</text>
+        <rect x="957" y="166" width="66" height="84" fill="#ec4899" />
+        <text x="990" y="211" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">0.7</text>
+        <rect x="957" y="134" width="66" height="32" fill="#22c55e" />
+        <text x="990" y="153" fill="#fff" fontSize="12" fontWeight="bold" textAnchor="middle">0.3</text>
+
+        {/* קופסה 4 */}
+        <rect x="800" y="270" width="80" height="120" fill="rgba(100,246,200,0.1)" stroke="#22c55e" strokeWidth="3" rx="4" />
+        <text x="840" y="263" fill="#22c55e" fontSize="12" fontWeight="bold" textAnchor="middle">Bin 4</text>
+        <rect x="807" y="318" width="66" height="72" fill="#64f6c8" />
+        <text x="840" y="357" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">0.6</text>
+        <rect x="807" y="272" width="66" height="46" fill="#8b5cf6" />
+        <text x="840" y="298" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">0.5</text>
+
+        <text x="880" y="430" fill="#22c55e" fontSize="15" fontWeight="bold" textAnchor="middle">4 קופסאות</text>
+        <text x="880" y="455" fill="#22c55e" fontSize="13" textAnchor="middle">✓ אופטימלי! OPT = 4</text>
+        <text x="880" y="480" fill="#fbbf24" fontSize="11" textAnchor="middle">מיון עוזר למצוא פתרונות טובים יותר</text>
+      </svg>
+    </div>
+  </div>
+
+  <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'rgba(100,246,200,0.08)', borderRadius: '8px', borderLeft: '4px solid #64f6c8' }}>
+    <h4 style={{ color: '#64f6c8', marginTop: 0 }}>מסקנות</h4>
+    <ul style={{ color: '#a0aec0', lineHeight: '1.8' }}>
+      <li><strong>Next Fit:</strong> הכי פשוט, O(n), אבל 2-approximation - לא מומלץ</li>
+      <li><strong>First Fit:</strong> טוב יותר, 1.7-approximation, O(n²) - סביר</li>
+      <li><strong>FFD:</strong> הכי טוב! 11/9 ≈ 1.22-approximation, O(n log n) - <strong>מומלץ!</strong></li>
+      <li>בפועל, FFD מוצא פתרון אופטימלי ברוב המקרים</li>
+    </ul>
+  </div>
+</section>
+
+<section id="tsp-approx" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">אלגוריתם 3</p>
+    <h2>אלגוריתם קירוב לבעיית הסוכן הנוסע (TSP)</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>Traveling Salesman Problem (TSP)</strong> היא אחת הבעיות המפורסמות ביותר: 
+        מצא מסלול קצר ביותר שעובר בכל n הערים בדיוק פעם אחת וחוזר למוצא. הבעיה NP-Hard, 
+        אבל עם הנחת <strong>אי-שוויון המשולש</strong> (Triangle Inequality) יש לנו אלגוריתם 
+        2-approximation פשוט ויפה המבוסס על עץ פורש מינימלי!
+      </p>
+    </article>
+  </div>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--explain" style={{ background: 'linear-gradient(135deg, rgba(139,92,246,0.08) 0%, rgba(124,58,237,0.12) 100%)' }}>
+      <p className="conceptCard__label">הבעיה</p>
+      <h3 className="conceptCard__title">TSP - הגדרה</h3>
+      <p className="conceptCard__body">
+        <strong>קלט:</strong> <br/>
+        • גרף שלם G = (V, E) עם n קודקודים<br/>
+        • פונקציית מרחקים c: E → ℝ⁺<br/><br/>
+        
+        <strong>פלט:</strong> מסלול המילטוני (Hamiltonian Cycle) - מעגל שעובר בכל קודקוד בדיוק פעם<br/><br/>
+        
+        <strong>מטרה:</strong> מינימיזציה של סכום המרחקים במסלול<br/><br/>
+        
+        <strong>אי-שוויון המשולש (Triangle Inequality):</strong><br/>
+        לכל שלשה קודקודים u, v, w:<br/>
+        c(u,w) ≤ c(u,v) + c(v,w)<br/>
+        (מסלול ישיר לא יקר יותר מעוקף)<br/><br/>
+        
+        <strong>הערה חשובה:</strong> ללא Triangle Inequality, לא ניתן לקרב TSP (אלא אם P=NP)!
+      </p>
+    </article>
+
+    <article className="conceptCard conceptCard--function" style={{ background: 'linear-gradient(135deg, rgba(139,92,246,0.08) 0%, rgba(124,58,237,0.12) 100%)' }}>
+      <p className="conceptCard__label">אלגוריתם</p>
+      <h3 className="conceptCard__title">MST-based 2-Approximation</h3>
+      <p className="conceptCard__body">
+        <strong>רעיון:</strong> בנה עץ פורש מינימלי, עבור אותו DFS, ו"קצר" את הדרך<br/><br/>
+        
+        <strong>שלבי האלגוריתם:</strong><br/>
+        1. <strong>MST:</strong> מצא עץ פורש מינימלי T של G (Kruskal/Prim)<br/>
+        2. <strong>DFS:</strong> עבור את T ב-DFS והכפל כל קשת (הלוך + חזור)<br/>
+        3. <strong>Eulerian Walk:</strong> מצא מסלול אוילרי בגרף המוכפל<br/>
+        4. <strong>Shortcut:</strong> דלג על קודקודים שכבר ביקרת בהם (Triangle Inequality!)<br/><br/>
+        
+        <strong>זמן ריצה:</strong> O(n²) או O(E log V) עם Prim/Kruskal<br/>
+        <strong>חסם קירוב:</strong> 2-approximation<br/>
+        TSP-ALG(I) ≤ 2·OPT(I)
+      </p>
+    </article>
+
+    <article className="conceptCard conceptCard--operation" style={{ background: 'linear-gradient(135deg, rgba(168,85,247,0.08) 0%, rgba(147,51,234,0.12) 100%)' }}>
+      <p className="conceptCard__label">הוכחה</p>
+      <h3 className="conceptCard__title">למה זה עובד?</h3>
+      <p className="conceptCard__body">
+        <strong>טענה:</strong> האלגוריתם מחזיר מסלול C כך ש-c(C) ≤ 2·OPT<br/><br/>
+        
+        <strong>הוכחה:</strong><br/>
+        1. נסמן OPT = מסלול המילטוני האופטימלי<br/>
+        2. אם נסיר קשת אחת מ-OPT, נקבל עץ פורש של G<br/>
+        3. לכן: c(MST) ≤ c(OPT) (MST הוא הזול ביותר!)<br/>
+        4. המסלול האוילרי במסלול המוכפל עולה 2·c(MST)<br/>
+        5. ה-Shortcuts רק מקצרים (Triangle Inequality!)<br/>
+        6. לכן: c(C) ≤ 2·c(MST) ≤ 2·OPT ✓<br/><br/>
+        
+        <strong>מפתח ההוכחה:</strong><br/>
+        • MST ≤ OPT (כי OPT הוא עץ + קשת)<br/>
+        • Triangle Inequality מאפשר לנו לקצר ללא תוספת עלות
+      </p>
+    </article>
+  </div>
+
+  {/* הדגמה גרפית */}
+  <div style={{ marginTop: '3rem', padding: '2rem', background: 'rgba(139,92,246,0.1)', borderRadius: '12px', border: '2px solid #8b5cf6' }}>
+    <h3 style={{ color: '#8b5cf6', marginBottom: '1.5rem', textAlign: 'center' }}>הדגמה: TSP Approximation Algorithm</h3>
+    
+    <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+      <svg viewBox="0 0 1200 900" style={{ width: '100%' }}>
+        <defs>
+          <marker id="tspArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#8b5cf6" />
+          </marker>
+        </defs>
+
+        <rect width="1200" height="900" fill="rgba(15,20,25,0.5)" rx="12" />
+        
+        <text x="600" y="35" fill="#8b5cf6" fontSize="18" fontWeight="bold" textAnchor="middle">
+          אלגוריתם קירוב ל-TSP - דוגמה עם 5 ערים
+        </text>
+
+        {/* ========== שלב 1: גרף מלא ========== */}
+        <rect x="50" y="60" width="350" height="380" fill="rgba(100,246,200,0.05)" stroke="#64f6c8" strokeWidth="2" rx="8" />
+        <text x="225" y="90" fill="#64f6c8" fontSize="15" fontWeight="bold" textAnchor="middle">שלב 1: גרף מלא עם מרחקים</text>
+
+        {/* קודקודים */}
+        <circle cx="225" cy="140" r="25" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="3" />
+        <text x="225" y="148" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">A</text>
+
+        <circle cx="120" cy="220" r="25" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="3" />
+        <text x="120" y="228" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">B</text>
+
+        <circle cx="330" cy="220" r="25" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="3" />
+        <text x="330" y="228" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">C</text>
+
+        <circle cx="120" cy="360" r="25" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="3" />
+        <text x="120" y="368" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">D</text>
+
+        <circle cx="330" cy="360" r="25" fill="rgba(100,246,200,0.3)" stroke="#64f6c8" strokeWidth="3" />
+        <text x="330" y="368" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">E</text>
+
+        {/* קשתות עם משקלים (גרף מלא) */}
+        <line x1="225" y1="165" x2="140" y2="205" stroke="#4a5568" strokeWidth="2" />
+        <text x="175" y="180" fill="#a0aec0" fontSize="10" textAnchor="middle">10</text>
+
+        <line x1="225" y1="165" x2="310" y2="205" stroke="#4a5568" strokeWidth="2" />
+        <text x="275" y="180" fill="#a0aec0" fontSize="10" textAnchor="middle">15</text>
+
+        <line x1="145" y1="220" x2="305" y2="220" stroke="#4a5568" strokeWidth="2" />
+        <text x="225" y="210" fill="#a0aec0" fontSize="10" textAnchor="middle">20</text>
+
+        <line x1="140" y1="240" x2="140" y2="340" stroke="#4a5568" strokeWidth="2" />
+        <text x="155" y="295" fill="#a0aec0" fontSize="10" textAnchor="middle">12</text>
+
+        <line x1="310" y1="240" x2="310" y2="340" stroke="#4a5568" strokeWidth="2" />
+        <text x="325" y="295" fill="#a0aec0" fontSize="10" textAnchor="middle">8</text>
+
+        <line x1="145" y1="360" x2="305" y2="360" stroke="#4a5568" strokeWidth="2" />
+        <text x="225" y="378" fill="#a0aec0" fontSize="10" textAnchor="middle">18</text>
+
+        <line x1="200" y1="150" x2="135" y2="350" stroke="#4a5568" strokeWidth="1" opacity="0.3" />
+        <line x1="250" y1="150" x2="315" y2="350" stroke="#4a5568" strokeWidth="1" opacity="0.3" />
+        <line x1="140" y1="235" x2="310" y2="345" stroke="#4a5568" strokeWidth="1" opacity="0.3" />
+        <line x1="310" y1="235" x2="140" y2="345" stroke="#4a5568" strokeWidth="1" opacity="0.3" />
+
+        <text x="225" y="425" fill="#a0aec0" fontSize="11" textAnchor="middle">גרף שלם - כל זוג ערים מחובר</text>
+
+        {/* ========== שלב 2: MST ========== */}
+        <rect x="430" y="60" width="350" height="380" fill="rgba(34,197,94,0.05)" stroke="#22c55e" strokeWidth="2" rx="8" />
+        <text x="605" y="90" fill="#22c55e" fontSize="15" fontWeight="bold" textAnchor="middle">שלב 2: עץ פורש מינימלי (MST)</text>
+
+        {/* קודקודים */}
+        <circle cx="605" cy="140" r="25" fill="rgba(34,197,94,0.3)" stroke="#22c55e" strokeWidth="3" />
+        <text x="605" y="148" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">A</text>
+
+        <circle cx="500" cy="220" r="25" fill="rgba(34,197,94,0.3)" stroke="#22c55e" strokeWidth="3" />
+        <text x="500" y="228" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">B</text>
+
+        <circle cx="710" cy="220" r="25" fill="rgba(34,197,94,0.3)" stroke="#22c55e" strokeWidth="3" />
+        <text x="710" y="228" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">C</text>
+
+        <circle cx="500" cy="360" r="25" fill="rgba(34,197,94,0.3)" stroke="#22c55e" strokeWidth="3" />
+        <text x="500" y="368" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">D</text>
+
+        <circle cx="710" cy="360" r="25" fill="rgba(34,197,94,0.3)" stroke="#22c55e" strokeWidth="3" />
+        <text x="710" y="368" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">E</text>
+
+        {/* קשתות ה-MST */}
+        <line x1="605" y1="165" x2="520" y2="205" stroke="#22c55e" strokeWidth="4" />
+        <text x="555" y="180" fill="#22c55e" fontSize="11" fontWeight="bold" textAnchor="middle">10</text>
+
+        <line x1="605" y1="165" x2="690" y2="205" stroke="#22c55e" strokeWidth="4" />
+        <text x="655" y="180" fill="#22c55e" fontSize="11" fontWeight="bold" textAnchor="middle">15</text>
+
+        <line x1="520" y1="240" x2="520" y2="340" stroke="#22c55e" strokeWidth="4" />
+        <text x="535" y="295" fill="#22c55e" fontSize="11" fontWeight="bold" textAnchor="middle">12</text>
+
+        <line x1="690" y1="240" x2="690" y2="340" stroke="#22c55e" strokeWidth="4" />
+        <text x="705" y="295" fill="#22c55e" fontSize="11" fontWeight="bold" textAnchor="middle">8</text>
+
+        <text x="605" y="410" fill="#22c55e" fontSize="11" fontWeight="bold" textAnchor="middle">MST cost = 10+15+12+8 = 45</text>
+        <text x="605" y="430" fill="#a0aec0" fontSize="10" textAnchor="middle">(Kruskal/Prim)</text>
+
+        {/* ========== שלב 3: DFS + הכפלה ========== */}
+        <rect x="810" y="60" width="350" height="380" fill="rgba(251,191,36,0.05)" stroke="#fbbf24" strokeWidth="2" rx="8" />
+        <text x="985" y="90" fill="#fbbf24" fontSize="15" fontWeight="bold" textAnchor="middle">שלב 3 : Pre-order search</text>
+
+        {/* קודקודים */}
+        <circle cx="985" cy="140" r="25" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="3" />
+        <text x="985" y="148" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">A</text>
+
+        <circle cx="880" cy="220" r="25" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="3" />
+        <text x="880" y="228" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">B</text>
+
+        <circle cx="1090" cy="220" r="25" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="3" />
+        <text x="1090" y="228" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">C</text>
+
+        <circle cx="880" cy="360" r="25" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="3" />
+        <text x="880" y="368" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">D</text>
+
+        <circle cx="1090" cy="360" r="25" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" strokeWidth="3" />
+        <text x="1090" y="368" fill="#fff" fontSize="14" fontWeight="bold" textAnchor="middle">E</text>
+
+        {/* מסלול DFS (עם קשתות כפולות) */}
+        <path d="M 985 165 L 900 205 L 900 240 L 900 340 L 900 240 L 900 205 L 985 165 L 1070 205 L 1070 240 L 1070 340 L 1070 240 L 1070 205 L 985 165" 
+              stroke="#fbbf24" strokeWidth="3" fill="none" strokeDasharray="5,3" />
+
+        <text x="985" y="395" fill="#fbbf24" fontSize="11" fontWeight="bold" textAnchor="middle">DFS order: A→B→D→B→A→C→E→C→A</text>
+        <text x="985" y="415" fill="#a0aec0" fontSize="10" textAnchor="middle">Cost = 2·MST = 2·45 = 90</text>
+        <text x="985" y="430" fill="#ef4444" fontSize="10" textAnchor="middle">(עוברים בכל קשת פעמיים!)</text>
+
+        {/* ========== שלב 4: Shortcut - Approximated TSP ========== */}
+        <rect x="50" y="490" width="550" height="380" fill="rgba(139,92,246,0.05)" stroke="#8b5cf6" strokeWidth="3" rx="10" />
+        <text x="325" y="525" fill="#8b5cf6" fontSize="16" fontWeight="bold" textAnchor="middle">שלב 4: Approximated TSP tour (Shortcut)</text>
+
+        {/* קודקודים */}
+        <circle cx="160" cy="590" r="28" fill="rgba(139,92,246,0.4)" stroke="#8b5cf6" strokeWidth="4" />
+        <text x="160" y="598" fill="#fff" fontSize="15" fontWeight="bold" textAnchor="middle">A</text>
+
+        <circle cx="325" cy="680" r="28" fill="rgba(139,92,246,0.4)" stroke="#8b5cf6" strokeWidth="4" />
+        <text x="325" y="688" fill="#fff" fontSize="15" fontWeight="bold" textAnchor="middle">B</text>
+
+        <circle cx="490" cy="590" r="28" fill="rgba(139,92,246,0.4)" stroke="#8b5cf6" strokeWidth="4" />
+        <text x="490" y="598" fill="#fff" fontSize="15" fontWeight="bold" textAnchor="middle">C</text>
+
+        <circle cx="325" cy="800" r="28" fill="rgba(139,92,246,0.4)" stroke="#8b5cf6" strokeWidth="4" />
+        <text x="325" y="808" fill="#fff" fontSize="15" fontWeight="bold" textAnchor="middle">D</text>
+
+        <circle cx="490" cy="720" r="28" fill="rgba(139,92,246,0.4)" stroke="#8b5cf6" strokeWidth="4" />
+        <text x="490" y="728" fill="#fff" fontSize="15" fontWeight="bold" textAnchor="middle">E</text>
+
+        {/* המסלול המקורב */}
+        <path d="M 182 605 L 305 670" stroke="#8b5cf6" strokeWidth="5" markerEnd="url(#tspArrow)" />
+        <text x="243" y="630" fill="#22c55e" fontSize="12" fontWeight="bold" textAnchor="middle">10</text>
+
+        <path d="M 340 705 L 340 775" stroke="#8b5cf6" strokeWidth="5" markerEnd="url(#tspArrow)" />
+        <text x="360" y="745" fill="#22c55e" fontSize="12" fontWeight="bold" textAnchor="middle">12</text>
+
+        <path d="M 350 795 L 475 612" stroke="#8b5cf6" strokeWidth="5" markerEnd="url(#tspArrow)" />
+        <text x="408" y="690" fill="#22c55e" fontSize="12" fontWeight="bold" textAnchor="middle">22</text>
+        <text x="408" y="700" fill="#fbbf24" fontSize="9" textAnchor="middle">(shortcut!)</text>
+
+        <path d="M 504 697 L 182 580" stroke="#8b5cf6" strokeWidth="5" markerEnd="url(#tspArrow)" />
+        <text x="329" y="625" fill="#22c55e" fontSize="12" fontWeight="bold" textAnchor="middle">15</text>
+
+        <path d="M 475 612 L 505 697" stroke="#8b5cf6" strokeWidth="5" markerEnd="url(#tspArrow)" />
+        <text x="510" y="660" fill="#22c55e" fontSize="12" fontWeight="bold" textAnchor="middle">8</text>
+
+        <text x="325" y="850" fill="#8b5cf6" fontSize="13" fontWeight="bold" textAnchor="middle">A → B → D → E → C → A</text>
+        <text x="325" y="870" fill="#22c55e" fontSize="12" fontWeight="bold" textAnchor="middle">Cost = 10+12+22+8+15 = 67</text>
+
+        {/* ========== שלב 5: Optimal TSP ========== */}
+        <rect x="630" y="490" width="550" height="380" fill="rgba(34,197,94,0.05)" stroke="#22c55e" strokeWidth="3" rx="10" />
+        <text x="905" y="525" fill="#22c55e" fontSize="16" fontWeight="bold" textAnchor="middle">שלב 5: Optimal TSP tour</text>
+
+        {/* קודקודים */}
+        <circle cx="740" cy="590" r="28" fill="rgba(34,197,94,0.4)" stroke="#22c55e" strokeWidth="4" />
+        <text x="740" y="598" fill="#fff" fontSize="15" fontWeight="bold" textAnchor="middle">A</text>
+
+        <circle cx="905" cy="680" r="28" fill="rgba(34,197,94,0.4)" stroke="#22c55e" strokeWidth="4" />
+        <text x="905" y="688" fill="#fff" fontSize="15" fontWeight="bold" textAnchor="middle">B</text>
+
+        <circle cx="1070" cy="590" r="28" fill="rgba(34,197,94,0.4)" stroke="#22c55e" strokeWidth="4" />
+        <text x="1070" y="598" fill="#fff" fontSize="15" fontWeight="bold" textAnchor="middle">C</text>
+
+        <circle cx="905" cy="800" r="28" fill="rgba(34,197,94,0.4)" stroke="#22c55e" strokeWidth="4" />
+        <text x="905" y="808" fill="#fff" fontSize="15" fontWeight="bold" textAnchor="middle">D</text>
+
+        <circle cx="1070" cy="720" r="28" fill="rgba(34,197,94,0.4)" stroke="#22c55e" strokeWidth="4" />
+        <text x="1070" y="728" fill="#fff" fontSize="15" fontWeight="bold" textAnchor="middle">E</text>
+
+        {/* המסלול האופטימלי */}
+        <path d="M 762 605 L 885 670" stroke="#22c55e" strokeWidth="5" markerEnd="url(#tspArrow)" />
+        <text x="823" y="630" fill="#22c55e" fontSize="12" fontWeight="bold" textAnchor="middle">10</text>
+
+        <path d="M 920 705 L 920 775" stroke="#22c55e" strokeWidth="5" markerEnd="url(#tspArrow)" />
+        <text x="940" y="745" fill="#22c55e" fontSize="12" fontWeight="bold" textAnchor="middle">12</text>
+
+        <path d="M 927 795 L 1048 730" stroke="#22c55e" strokeWidth="5" markerEnd="url(#tspArrow)" />
+        <text x="987" y="775" fill="#22c55e" fontSize="12" fontWeight="bold" textAnchor="middle">18</text>
+
+        <path d="M 1056 565 L 762 580" stroke="#22c55e" strokeWidth="5" markerEnd="url(#tspArrow)" />
+        <text x="909" y="560" fill="#22c55e" fontSize="12" fontWeight="bold" textAnchor="middle">15</text>
+
+        <path d="M 1085 697 L 1055 612" stroke="#22c55e" strokeWidth="5" markerEnd="url(#tspArrow)" />
+        <text x="1090" y="660" fill="#22c55e" fontSize="12" fontWeight="bold" textAnchor="middle">8</text>
+
+        <text x="905" y="850" fill="#22c55e" fontSize="13" fontWeight="bold" textAnchor="middle">A → B → D → E → C → A</text>
+        <text x="905" y="870" fill="#22c55e" fontSize="12" fontWeight="bold" textAnchor="middle">OPT = 10+12+18+8+15 = 63</text>
+      </svg>
+    </div>
+  </div>
+
+  <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'rgba(139,92,246,0.08)', borderRadius: '8px', borderLeft: '4px solid #8b5cf6' }}>
+    <h4 style={{ color: '#8b5cf6', marginTop: 0 }}>נקודות מפתח</h4>
+    <ul style={{ color: '#a0aec0', lineHeight: '1.8' }}>
+      <li><strong>Triangle Inequality חיונית:</strong> ללא התכונה הזו, אלגוריתם קירוב בלתי אפשרי!</li>
+      <li><strong>MST כחסם תחתון:</strong> MST ≤ OPT כי OPT הוא עץ + קשת אחת</li>
+      <li><strong>Shortcuts:</strong> רק מקצרים - לא מוסיפים עלות (בזכות Triangle Inequality)</li>
+      <li><strong>חסם 2:</strong> הפתרון לכל היותר פי 2 מהאופטימלי</li>
+      <li><strong>בפועל:</strong> בדרך כלל הפתרון הרבה יותר קרוב לאופטימלי (סביב 1.3x)</li>
+      <li><strong>שיפור:</strong> יש אלגוריתם 1.5-approximation מורכב יותר (Christofides, 1976)</li>
+    </ul>
+  </div>
+</section>
+
+<section id="max-cut-approx" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">אלגוריתם 4</p>
+    <h2>אלגוריתם קירוב לבעיית החתך המקסימלי (Max Cut)</h2>
+  </header>
+  
+  <div className="greedyDoc__media">
+    <article>
+      <p>
+        <strong>Max Cut</strong> היא בעיה קלאסית: חלק את קודקודי הגרף לשתי קבוצות כך שמספר 
+        הקשתות בין הקבוצות יהיה מקסימלי. הבעיה NP-Hard, אבל יש לנו אלגוריתם חמדני פשוט 
+        מאוד שמבטיח 2-approximation - כלומר, לפחות מחצית מהחתך האופטימלי!
+      </p>
+    </article>
+  </div>
+
+  <div className="conceptGrid" style={{ marginTop: '2rem' }}>
+    <article className="conceptCard conceptCard--explain" style={{ background: 'linear-gradient(135deg, rgba(251,191,36,0.08) 0%, rgba(245,158,11,0.12) 100%)' }}>
+      <p className="conceptCard__label">הבעיה</p>
+      <h3 className="conceptCard__title">Max Cut - הגדרה</h3>
+      <p className="conceptCard__body">
+        <strong>קלט:</strong> גרף לא מכוון G = (V, E)<br/><br/>
+        
+        <strong>פלט:</strong> חלוקה של V לשתי קבוצות S ו-T = V \ S<br/><br/>
+        
+        <strong>מטרה:</strong> מקסימיזציה של מספר הקשתות בין S ל-T<br/><br/>
+        
+        <strong>הגדרה פורמלית:</strong><br/>
+        Cut(S, T) = |{"{(u,v) ∈ E : u ∈ S, v ∈ T}"}|<br/>
+        מטרה: max Cut(S, T)<br/><br/>
+        
+        <strong>שימושים:</strong><br/>
+        • תכנון מעגלים (VLSI)<br/>
+        • איזון עומסים ברשתות<br/>
+        • אופטימיזציה קומבינטורית
+      </p>
+    </article>
+
+    <article className="conceptCard conceptCard--function" style={{ background: 'linear-gradient(135deg, rgba(251,191,36,0.08) 0%, rgba(245,158,11,0.12) 100%)' }}>
+      <p className="conceptCard__label">אלגוריתם</p>
+      <h3 className="conceptCard__title">Greedy 2-Approximation</h3>
+      <p className="conceptCard__body">
+        <strong>רעיון:</strong> הוסף קודקודים אחד אחד לקבוצה שמגדילה את החתך<br/><br/>
+        
+        <strong>פסאודו-קוד:</strong><br/>
+        <code style={{display: 'block', background: 'linear-gradient(135deg, rgba(161,98,7,0.3) 0%, rgba(202,138,4,0.25) 100%)', padding: '0.5rem', borderRadius: '8px', marginTop: '0.5rem', border: '1px solid rgba(251,191,36,0.4)'}}>
+          S = ∅, T = ∅<br/>
+          for each v ∈ V (בסדר שרירותי):<br/>
+          {"    "}e₁ = מספר שכנים של v ב-S<br/>
+          {"    "}e₂ = מספר שכנים של v ב-T<br/>
+          {"    "}if e₂ {">"} e₁:<br/>
+          {"        "}S = S ∪ {"{v}"} (הוסף ל-S)<br/>
+          {"    "}else:<br/>
+          {"        "}T = T ∪ {"{v}"} (הוסף ל-T)<br/>
+          return (S, T)
+        </code><br/>
+        
+        <strong>זמן ריצה:</strong> O(V + E) - לינארי!<br/>
+        <strong>חסם קירוב:</strong> 2-approximation<br/>
+        ALG(I) ≥ OPT(I) / 2<br/><br/>
+        
+        <strong>פשטות:</strong> אחד האלגוריתמים הפשוטים ביותר!
+      </p>
+    </article>
+    
+    
+
+    <article className="conceptCard conceptCard--operation" style={{ background: 'linear-gradient(135deg, rgba(245,158,11,0.08) 0%, rgba(217,119,6,0.12) 100%)' }}>
+      <p className="conceptCard__label">הוכחה</p>
+      <h3 className="conceptCard__title">למה זה עובד?</h3>
+      <p className="conceptCard__body">
+        <strong>טענה:</strong> האלגוריתם מחזיר חתך C כך ש-C ≥ OPT/2<br/><br/>
+        
+        <strong>הוכחה:</strong><br/>
+        1. נסתכל על כל קודקוד v כשהוא נוסף לאחת הקבוצות<br/>
+        2. האלגוריתם בוחר את הקבוצה שמגדילה את החתך יותר<br/>
+        3. לכן, לפחות מחצית מהקשתות של v חוצות את החתך<br/>
+        4. נסמן: <br/>
+        {"   "}• e(v) = degree של v (מספר שכנים)<br/>
+        {"   "}• cut(v) = קשתות של v שחוצות את החתך<br/>
+        5. לפי האלגוריתם: cut(v) ≥ e(v)/2 לכל v<br/>
+        6. סה"כ קשתות בחתך = Σ cut(v) / 2 (כל קשת נספרת פעמיים)<br/>
+        7. לכן: Cut ≥ (Σ e(v)/2) / 2 = |E| / 2<br/>
+        8. כיוון ש-OPT ≤ |E|, נקבל: Cut ≥ |E|/2 ≥ OPT/2 ✓<br/><br/>
+        
+        <strong>מסקנה:</strong> הפתרון לפחות מחצית מהאופטימלי!
+      </p>
+    </article>
+  </div>
+
+  {/* הדגמה גרפית */}
+  <div style={{ marginTop: '3rem', padding: '2rem', background: 'rgba(251,191,36,0.1)', borderRadius: '12px', border: '2px solid #fbbf24' }}>
+    <h3 style={{ color: '#fbbf24', marginBottom: '1.5rem', textAlign: 'center' }}>הדגמה: Max Cut Greedy Algorithm</h3>
+    
+    <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+      <svg viewBox="0 0 1400 900" style={{ width: '100%' }}>
+        <defs>
+          <marker id="cutArrow" markerWidth="10" markerHeight="10" refX="7" refY="4" orient="auto">
+            <polygon points="0 0, 10 4, 0 8" fill="#fbbf24" />
+          </marker>
+        </defs>
+
+        <rect width="1400" height="900" fill="rgba(15,20,25,0.5)" rx="12" />
+        
+        <text x="700" y="40" fill="#fbbf24" fontSize="22" fontWeight="bold" textAnchor="middle">אלגוריתם חמדני ל-Max Cut - דוגמה עם 6 קודקודים</text>
+
+        {/* ========== גרף מקורי ========== */}
+        <rect x="50" y="70" width="400" height="380" fill="rgba(100,246,200,0.05)" stroke="#64f6c8" strokeWidth="3" rx="8" />
+        <text x="250" y="105" fill="#64f6c8" fontSize="18" fontWeight="bold" textAnchor="middle">גרף מקורי</text>
+
+        {/* קודקודים */}
+        <circle cx="150" cy="160" r="30" fill="rgba(100,246,200,0.2)" stroke="#64f6c8" strokeWidth="3" />
+        <text x="150" y="170" fill="#fff" fontSize="16" fontWeight="bold" textAnchor="middle">v₁</text>
+
+        <circle cx="350" cy="160" r="30" fill="rgba(100,246,200,0.2)" stroke="#64f6c8" strokeWidth="3" />
+        <text x="350" y="170" fill="#fff" fontSize="16" fontWeight="bold" textAnchor="middle">v₂</text>
+
+        <circle cx="150" cy="280" r="30" fill="rgba(100,246,200,0.2)" stroke="#64f6c8" strokeWidth="3" />
+        <text x="150" y="290" fill="#fff" fontSize="16" fontWeight="bold" textAnchor="middle">v₃</text>
+
+        <circle cx="250" cy="280" r="30" fill="rgba(100,246,200,0.2)" stroke="#64f6c8" strokeWidth="3" />
+        <text x="250" y="290" fill="#fff" fontSize="16" fontWeight="bold" textAnchor="middle">v₄</text>
+
+        <circle cx="350" cy="280" r="30" fill="rgba(100,246,200,0.2)" stroke="#64f6c8" strokeWidth="3" />
+        <text x="350" y="290" fill="#fff" fontSize="16" fontWeight="bold" textAnchor="middle">v₅</text>
+
+        <circle cx="250" cy="390" r="30" fill="rgba(100,246,200,0.2)" stroke="#64f6c8" strokeWidth="3" />
+        <text x="250" y="400" fill="#fff" fontSize="16" fontWeight="bold" textAnchor="middle">v₆</text>
+
+        {/* קשתות */}
+        <line x1="180" y1="170" x2="320" y2="170" stroke="#a0aec0" strokeWidth="3" />
+        <line x1="165" y1="188" x2="165" y2="252" stroke="#a0aec0" strokeWidth="3" />
+        <line x1="180" y1="293" x2="220" y2="293" stroke="#a0aec0" strokeWidth="3" />
+        <line x1="280" y1="293" x2="320" y2="293" stroke="#a0aec0" strokeWidth="3" />
+        <line x1="165" y1="305" x2="228" y2="370" stroke="#a0aec0" strokeWidth="3" />
+        <line x1="240" y1="370" x2="250" y2="300" stroke="#a0aec0" strokeWidth="3" />
+        <line x1="272" y1="370" x2="335" y2="305" stroke="#a0aec0" strokeWidth="3" />
+
+        <text x="250" y="440" fill="#a0aec0" fontSize="14" textAnchor="middle">8 קשתות</text>
+
+        {/* ========== תהליך האלגוריתם ========== */}
+        <rect x="500" y="70" width="850" height="380" fill="rgba(251,191,36,0.05)" stroke="#fbbf24" strokeWidth="3" rx="8" />
+        <text x="925" y="105" fill="#fbbf24" fontSize="18" fontWeight="bold" textAnchor="middle">תהליך האלגוריתם (שלב אחרי שלב)</text>
+
+        {/* צעדים */}
+        <text x="1025" y="145" fill="#a0aec0" fontSize="25" textAnchor="start">1. v₁: S=∅, T=∅ → בחר T (שרירותי)</text>
+        <rect x="1060" y="128" width="50" height="26" fill="rgba(59,130,246,0.3)" stroke="#3b82f6" strokeWidth="2" rx="4" />
+        <text x="1085" y="145" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">T</text>
+
+        <text x="1025" y="180" fill="#a0aec0" fontSize="25" textAnchor="start">2. v₂: 1 שכן ב-T → שים ב-S</text>
+        <rect x="1060" y="163" width="50" height="26" fill="rgba(236,72,153,0.3)" stroke="#ec4899" strokeWidth="2" rx="4" />
+        <text x="1085" y="180" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">S</text>
+
+        <text x="1025" y="215" fill="#a0aec0" fontSize="25" textAnchor="start">3. v₃: 1 שכן ב-T → שים ב-S</text>
+        <rect x="1060" y="198" width="50" height="26" fill="rgba(236,72,153,0.3)" stroke="#ec4899" strokeWidth="2" rx="4" />
+        <text x="1085" y="215" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">S</text>
+
+        <text x="1025" y="250" fill="#a0aec0" fontSize="25" textAnchor="start">4. v₄: 1 ב-S, 0 ב-T → שים ב-T</text>
+        <rect x="1060" y="233" width="50" height="26" fill="rgba(59,130,246,0.3)" stroke="#3b82f6" strokeWidth="2" rx="4" />
+        <text x="1085" y="250" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">T</text>
+
+        <text x="1025" y="285" fill="#a0aec0" fontSize="25" textAnchor="start">5. v₅: 1 ב-S, 1 ב-T → שים ב-T (שווה)</text>
+        <rect x="1060" y="268" width="50" height="26" fill="rgba(59,130,246,0.3)" stroke="#3b82f6" strokeWidth="2" rx="4" />
+        <text x="1085" y="285" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">T</text>
+
+        <text x="1025" y="320" fill="#a0aec0" fontSize="25" textAnchor="start">6. v₆: 1 ב-S, 2 ב-T → שים ב-S</text>
+        <rect x="1060" y="303" width="50" height="26" fill="rgba(236,72,153,0.3)" stroke="#ec4899" strokeWidth="2" rx="4" />
+        <text x="1085" y="320" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">S</text>
+
+        <rect x="530" y="350" width="790" height="85" fill="rgba(34,197,94,0.05)" stroke="#22c55e" strokeWidth="2" rx="6" />
+        <text x="925" y="380" fill="#22c55e" fontSize="25" fontWeight="bold" textAnchor="middle">תוצאה סופית:</text>
+        <text x="925" y="408" fill="#ec4899" fontSize="25" fontWeight="bold" textAnchor="middle">S = {"{v₂, v₃, v₆}"}</text>
+        <text x="925" y="428" fill="#3b82f6" fontSize="25" fontWeight="bold" textAnchor="middle">T = {"{v₁, v₄, v₅}"}</text>
+
+        {/* ========== פתרון סופי ========== */}
+        <rect x="80" y="480" width="1240" height="390" fill="rgba(34,197,94,0.05)" stroke="#22c55e" strokeWidth="4" rx="10" />
+        <text x="700" y="525" fill="#22c55e" fontSize="20" fontWeight="bold" textAnchor="middle">החתך המקסימלי - S vs T</text>
+
+        {/* קבוצה S */}
+        <rect x="120" y="560" width="540" height="280" fill="rgba(236,72,153,0.1)" stroke="#ec4899" strokeWidth="4" rx="8" />
+        <text x="390" y="595" fill="#ec4899" fontSize="18" fontWeight="bold" textAnchor="middle">קבוצה S</text>
+
+        <circle cx="220" cy="680" r="42" fill="rgba(236,72,153,0.5)" stroke="#ec4899" strokeWidth="5" />
+        <text x="220" y="692" fill="#fff" fontSize="18" fontWeight="bold" textAnchor="middle">v₂</text>
+
+        <circle cx="390" cy="720" r="42" fill="rgba(236,72,153,0.5)" stroke="#ec4899" strokeWidth="5" />
+        <text x="390" y="732" fill="#fff" fontSize="18" fontWeight="bold" textAnchor="middle">v₃</text>
+
+        <circle cx="560" cy="760" r="42" fill="rgba(236,72,153,0.5)" stroke="#ec4899" strokeWidth="5" />
+        <text x="560" y="772" fill="#fff" fontSize="18" fontWeight="bold" textAnchor="middle">v₆</text>
+
+        {/* קבוצה T */}
+        <rect x="740" y="560" width="540" height="280" fill="rgba(59,130,246,0.1)" stroke="#3b82f6" strokeWidth="4" rx="8" />
+        <text x="1010" y="595" fill="#3b82f6" fontSize="18" fontWeight="bold" textAnchor="middle">קבוצה T</text>
+
+        <circle cx="840" cy="650" r="42" fill="rgba(59,130,246,0.5)" stroke="#3b82f6" strokeWidth="5" />
+        <text x="840" y="662" fill="#fff" fontSize="18" fontWeight="bold" textAnchor="middle">v₁</text>
+
+        <circle cx="1010" cy="720" r="42" fill="rgba(59,130,246,0.5)" stroke="#3b82f6" strokeWidth="5" />
+        <text x="1010" y="732" fill="#fff" fontSize="18" fontWeight="bold" textAnchor="middle">v₄</text>
+
+        <circle cx="1180" cy="760" r="42" fill="rgba(59,130,246,0.5)" stroke="#3b82f6" strokeWidth="5" />
+        <text x="1180" y="772" fill="#fff" fontSize="18" fontWeight="bold" textAnchor="middle">v₅</text>
+
+        {/* קשתות חוצות - בצהוב עבה */}
+        {/* v₂ → v₁ */}
+        <line x1="262" y1="680" x2="798" y2="650" stroke="#fbbf24" strokeWidth="7" />
+        <text x="530" y="658" fill="#fbbf24" fontSize="17" fontWeight="bold" textAnchor="middle">✓</text>
+
+        {/* v₃ → v₁ */}
+        <line x1="432" y1="714" x2="798" y2="656" stroke="#fbbf24" strokeWidth="7" />
+        <text x="615" y="678" fill="#fbbf24" fontSize="17" fontWeight="bold" textAnchor="middle">✓</text>
+
+        {/* v₃ → v₄ */}
+        <line x1="432" y1="726" x2="968" y2="726" stroke="#fbbf24" strokeWidth="7" />
+        <text x="700" y="718" fill="#fbbf24" fontSize="17" fontWeight="bold" textAnchor="middle">✓</text>
+
+        {/* v₆ → v₄ */}
+        <line x1="602" y1="754" x2="968" y2="726" stroke="#fbbf24" strokeWidth="7" />
+        <text x="785" y="733" fill="#fbbf24" fontSize="17" fontWeight="bold" textAnchor="middle">✓</text>
+
+        {/* v₆ → v₅ */}
+        <line x1="602" y1="766" x2="1138" y2="766" stroke="#fbbf24" strokeWidth="7" />
+        <text x="870" y="758" fill="#fbbf24" fontSize="17" fontWeight="bold" textAnchor="middle">✓</text>
+
+        {/* קשתות פנימיות - אפור דהוי */}
+        {/* v₂ → v₃ (בתוך S) */}
+        <line x1="258" y1="698" x2="355" y2="708" stroke="#4a5568" strokeWidth="3" opacity="0.3" strokeDasharray="5,5" />
+        
+        {/* v₃ → v₆ (בתוך S) */}
+        <line x1="426" y1="738" x2="524" y2="748" stroke="#4a5568" strokeWidth="3" opacity="0.3" strokeDasharray="5,5" />
+        
+        {/* v₄ → v₅ (בתוך T) */}
+        <line x1="1050" y1="733" x2="1142" y2="748" stroke="#4a5568" strokeWidth="3" opacity="0.3" strokeDasharray="5,5" />
+
+        <text x="700" y="865" fill="#22c55e" fontSize="18" fontWeight="bold" textAnchor="middle">חתך = 5 קשתות (מתוך 8 סה"כ)</text>
+        <text x="700" y="890" fill="#fbbf24" fontSize="15" textAnchor="middle">אם OPT = 6, אז 5 ≥ 6/2 = 3 ✓ (החסם מתקיים!)</text>
+      </svg>
+    </div>
+  </div>
+  <section style={{ marginTop: '2rem' }} className="conceptGrid">
+  <article className="conceptCard conceptCard--example" style={{ background: 'linear-gradient(135deg, rgba(251,191,36,0.08) 0%, rgba(245,158,11,0.12) 100%)', gridColumn: '1 / -1' }}>
+      <p className="conceptCard__label">איך האלגוריתם עובד?</p>
+      <h3 className="conceptCard__title">תהליך האלגוריתם שלב אחר שלב</h3>
+      <div className="conceptCard__body">
+        <p style={{ marginBottom: '1.5rem' }}>
+          <strong>הרעיון המרכזי:</strong> עבור על הקודקודים בסדר שרירותי, ובכל שלב החלט לאיזו קבוצה להוסיף את הקודקוד הנוכחי - 
+          ל-S או ל-T. ההחלטה נעשית באופן חמדני: בוחרים את הקבוצה שתגדיל את מספר הקשתות החוצות את החתך.
+        </p>
+      </div>
+    </article>
+  </section>
+
+  <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'rgba(251,191,36,0.08)', borderRadius: '8px', borderLeft: '4px solid #fbbf24' }}>
+    <h4 style={{ color: '#fbbf24', marginTop: 0 }}>מסקנות והרחבות</h4>
+    <ul style={{ color: '#a0aec0', lineHeight: '1.8' }}>
+      <li><strong>פשטות:</strong> אחד האלגוריתמים הפשוטים והיפים ביותר בתחום</li>
+      <li><strong>חסם 2:</strong> ערבות מתמטית שנקבל לפחות מחצית מהאופטימלי</li>
+      <li><strong>זמן לינארי:</strong> O(V + E) - מהיר מאוד גם לגרפים גדולים</li>
+      <li><strong>בפועל:</strong> בדרך כלל הפתרון קרוב מאוד לאופטימלי (70-90%)</li>
+      <li><strong>אקראיות:</strong> אפשר לזרוק כל קודקוד לקבוצה אקראית - גם זה 2-approximation!</li>
+    </ul>
+  </div>
+
+</section>
+
+
+<section id="summary" className="greedyDoc__section container">
+  <header>
+    <p className="greedyDoc__eyebrow">סיכום</p>
+    <h2>לסיכום: אלגוריתמים קירוביים</h2>
+  </header>
+
+  <div style={{ marginTop: '2rem' }}>
+    <div style={{ padding: '2rem', background: 'rgba(34,197,94,0.1)', borderRadius: '12px', border: '2px solid #22c55e' }}>
+      <h3 style={{ color: '#22c55e', marginTop: 0 }}>טבלת סיכום - כל האלגוריתמים</h3>
+      
+      <table style={{ width: '100%', marginTop: '1rem', borderCollapse: 'collapse' }}>
+        <thead>
+          <tr style={{ background: 'rgba(34,197,94,0.2)', borderBottom: '2px solid #22c55e' }}>
+            <th style={{ padding: '0.8rem', textAlign: 'right', color: '#22c55e' }}>בעיה</th>
+            <th style={{ padding: '0.8rem', textAlign: 'center', color: '#22c55e' }}>חסם קירוב</th>
+            <th style={{ padding: '0.8rem', textAlign: 'center', color: '#22c55e' }}>זמן ריצה</th>
+            <th style={{ padding: '0.8rem', textAlign: 'right', color: '#22c55e' }}>רעיון מרכזי</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style={{ borderBottom: '1px solid rgba(34,197,94,0.3)' }}>
+            <td style={{ padding: '0.8rem', color: '#fff', fontWeight: 'bold' }}>Vertex Cover</td>
+            <td style={{ padding: '0.8rem', textAlign: 'center', color: '#fbbf24', fontSize: '1.1em', fontWeight: 'bold' }}>2</td>
+            <td style={{ padding: '0.8rem', textAlign: 'center', color: '#a0aec0' }}>O(E)</td>
+            <td style={{ padding: '0.8rem', color: '#a0aec0' }}>בחר קשתות והוסף שני קצוות</td>
+          </tr>
+          <tr style={{ borderBottom: '1px solid rgba(34,197,94,0.3)', background: 'rgba(0,0,0,0.2)' }}>
+            <td style={{ padding: '0.8rem', color: '#fff', fontWeight: 'bold' }}>Bin Packing (NF)</td>
+            <td style={{ padding: '0.8rem', textAlign: 'center', color: '#ef4444', fontSize: '1.1em', fontWeight: 'bold' }}>2</td>
+            <td style={{ padding: '0.8rem', textAlign: 'center', color: '#a0aec0' }}>O(n)</td>
+            <td style={{ padding: '0.8rem', color: '#a0aec0' }}>נסה קופסה נוכחית, אחרת חדשה</td>
+          </tr>
+          <tr style={{ borderBottom: '1px solid rgba(34,197,94,0.3)' }}>
+            <td style={{ padding: '0.8rem', color: '#fff', fontWeight: 'bold' }}>Bin Packing (FF)</td>
+            <td style={{ padding: '0.8rem', textAlign: 'center', color: '#fbbf24', fontSize: '1.1em', fontWeight: 'bold' }}>1.7</td>
+            <td style={{ padding: '0.8rem', textAlign: 'center', color: '#a0aec0' }}>O(n²)</td>
+            <td style={{ padding: '0.8rem', color: '#a0aec0' }}>נסה כל קופסה פתוחה</td>
+          </tr>
+          <tr style={{ borderBottom: '1px solid rgba(34,197,94,0.3)', background: 'rgba(0,0,0,0.2)' }}>
+            <td style={{ padding: '0.8rem', color: '#fff', fontWeight: 'bold' }}>Bin Packing (FFD)</td>
+            <td style={{ padding: '0.8rem', textAlign: 'center', color: '#22c55e', fontSize: '1.1em', fontWeight: 'bold' }}>11/9 ≈ 1.22</td>
+            <td style={{ padding: '0.8rem', textAlign: 'center', color: '#a0aec0' }}>O(n log n)</td>
+            <td style={{ padding: '0.8rem', color: '#a0aec0' }}>מיין יורד, ואז First Fit</td>
+          </tr>
+          <tr style={{ borderBottom: '1px solid rgba(34,197,94,0.3)' }}>
+            <td style={{ padding: '0.8rem', color: '#fff', fontWeight: 'bold' }}>TSP (Triangle Ineq.)</td>
+            <td style={{ padding: '0.8rem', textAlign: 'center', color: '#fbbf24', fontSize: '1.1em', fontWeight: 'bold' }}>2</td>
+            <td style={{ padding: '0.8rem', textAlign: 'center', color: '#a0aec0' }}>O(n²)</td>
+            <td style={{ padding: '0.8rem', color: '#a0aec0' }}>MST + DFS + Shortcuts</td>
+          </tr>
+          <tr style={{ background: 'rgba(0,0,0,0.2)' }}>
+            <td style={{ padding: '0.8rem', color: '#fff', fontWeight: 'bold' }}>Max Cut</td>
+            <td style={{ padding: '0.8rem', textAlign: 'center', color: '#fbbf24', fontSize: '1.1em', fontWeight: 'bold' }}>2</td>
+            <td style={{ padding: '0.8rem', textAlign: 'center', color: '#a0aec0' }}>O(V + E)</td>
+            <td style={{ padding: '0.8rem', color: '#a0aec0' }}>חמדני - הוסף לקבוצה טובה יותר</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  
+    <div style={{ marginTop: '2rem', padding: '2rem', background: 'rgba(251,191,36,0.1)', borderRadius: '12px', border: '2px solid #fbbf24', textAlign: 'center' }}>
+      <h3 style={{ color: '#fbbf24', marginTop: 0 }}>💡 המסר המרכזי</h3>
+      <p style={{ color: '#a0aec0', fontSize: '1.1em', lineHeight: '1.8', margin: '1rem 0' }}>
+        <strong style={{ color: '#fff' }}>אלגוריתמים קירוביים מוכיחים שלא תמיד צריך להיות מושלם.</strong><br/>
+        לפעמים, פתרון טוב וערבוי מתמטית עדיף על חיפוש אחר המושלם הבלתי ניתן להשגה.<br/>
+        <span style={{ color: '#22c55e' }}>
+          זהו אחד העקרונות החשובים ביותר במדעי המחשב המעשיים!
+        </span>
+      </p>
+    </div>
+  </div>
+</section>

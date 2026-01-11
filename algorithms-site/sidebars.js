@@ -390,6 +390,47 @@ const sidebars = {
         },
       ],
     },
+    {
+      type: 'category',
+      label: '📊 אלגוריתמים קירוביים',
+      collapsed: true,
+      link: {
+        type: 'doc',
+        id: 'approximation-algorithms',
+      },
+      items: [
+        {
+          type: 'link',
+          label: '• הגדרות ומושגים',
+          href: '/docs/approximation-algorithms#definitions'
+        },
+        {
+          type: 'link',
+          label: '• Vertex Cover',
+          href: '/docs/approximation-algorithms#vertex-cover-approx'
+        },
+        {
+          type: 'link',
+          label: '• Bin Packing',
+          href: '/docs/approximation-algorithms#bin-packing-approx'
+        },
+        {
+          type: 'link',
+          label: '• TSP',
+          href: '/docs/approximation-algorithms#tsp-approx'
+        },
+        {
+          type: 'link',
+          label: '• Max Cut',
+          href: '/docs/approximation-algorithms#max-cut-approx'
+        },
+        {
+          type: 'link',
+          label: '• סיכום',
+          href: '/docs/approximation-algorithms#summary'
+        },
+      ],
+    },
     
   ],
 };
