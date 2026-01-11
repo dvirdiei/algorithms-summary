@@ -66,6 +66,20 @@ const FeatureList = [
     icon: '🎯',
     accent: '#22c55e',
   },
+  {
+    title: 'אלגוריתמי קירוב',
+    summary: 'פתרונות קרובים לאופטימלי לבעיות NP-Hard - Vertex Cover, Bin Packing, TSP ו-Max Cut עם חסמי קירוב.',
+    to: '/docs/approximation-algorithms',
+    icon: '🎲',
+    accent: '#a855f7',
+  },
+  {
+    title: 'מימס ',
+    summary: 'להפיג את הכאב ',
+    to: '/memes',
+    icon: '',
+    accent: '#ff6b9d',
+  },
 ];
 
 function Feature({title, summary, to, icon, accent}) {

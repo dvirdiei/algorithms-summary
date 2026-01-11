@@ -11,7 +11,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'סיכומי אלגוריתמים וסיבוכיות',
-  tagline: 'כרגע עדיין בבניה... ',
+  tagline: 'האתר נכתב כדי לשמש לחזרה והוא בוודאות מכיל טעיות מדברים שאני לא הבנתי אז שימו לב בבקשה',
   url: 'https://dvirdiei.github.io', // הכתובת העתידית בגיטהאב
   baseUrl: '/algorithms-summary/', // שם ה-Repository שתפתח
   projectName: 'algorithms-summary',
@@ -57,6 +57,8 @@ const config = {
           remarkPlugins: [require('remark-math')],
           rehypePlugins: [require('rehype-katex')],
           editUrl: 'https://github.com/dvirdiei/algorithms-summary/tree/main/algorithms-site/',
+          sidebarCollapsible: true,
+          sidebarCollapsed: true,
         },
         blog: {
           showReadingTime: true,
@@ -81,25 +83,20 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       // Replace with your project's social card
-      image: 'img/docusaurus-social-card.jpg',
+      image: 'img/docusaurus-social-card.png',
       colorMode: {
-        respectPrefersColorScheme: true,
+        defaultMode: 'dark',
+        disableSwitch: true,
+        respectPrefersColorScheme: false,
       },
       navbar: {
         title: 'סיכומי אלגוריתמים',
         logo: {
           alt: 'סיכומי אלגוריתמים',
-          src: 'img/logo.svg',
+          src: 'img/log.png',
+
         },
         items: [
-          {
-            type: 'docSidebar',
-            sidebarId: 'tutorialSidebar',
-            docId: 'greedy-algorithms',
-            position: 'left',
-            label: 'הסילבוס',
-          },
-          {to: '/blog', label: 'בלוג', position: 'left'},
           {
             href: 'https://github.com/dvirdiei/algorithms-summary',
             label: 'GitHub',
@@ -109,51 +106,7 @@ const config = {
       },
       footer: {
         style: 'dark',
-        links: [
-          {
-            title: 'החומר',
-            items: [
-              {
-                label: 'אלגוריתמים חמדניים',
-                to: '/docs/greedy-algorithms',
-              },
-              {
-                label: 'תכנות דינמי',
-                to: '/docs/dynamic-programming',
-              },
-            ],
-          },
-          {
-            title: 'קהילה ולמידה',
-            items: [
-              {
-                label: 'Stack Overflow',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-              },
-              {
-                label: 'Discord',
-                href: 'https://discordapp.com/invite/docusaurus',
-              },
-              {
-                label: 'X',
-                href: 'https://x.com/docusaurus',
-              },
-            ],
-          },
-          {
-            title: 'עוד',
-            items: [
-              {
-                label: 'בלוג',
-                to: '/blog',
-              },
-              {
-                label: 'GitHub',
-                href: 'https://github.com/dvirdiei/algorithms-summary',
-              },
-            ],
-          },
-        ],
+       
         copyright: `נבנה באהבה © ${new Date().getFullYear()} דביר דיעי`,
       },
       prism: {
