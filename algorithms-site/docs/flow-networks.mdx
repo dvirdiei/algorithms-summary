@@ -434,8 +434,26 @@ sidebar_label: רשתות זרימה (Flow Networks)
     </article>
   </div>
 
-  <div style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}>
-    <pre className="greedyDoc__code">
+  <div style={{ 
+    direction: 'ltr', 
+    textAlign: 'left',
+    background: 'rgba(0, 0, 0, 0.4)',
+    padding: '1.5rem',
+    borderRadius: '12px',
+    marginTop: '1rem',
+    display: 'flex',
+    flexDirection: 'column',
+
+  }}>
+    <pre className="greedyDoc__code" style={{
+      fontFamily: 'Consolas, Monaco, "Courier New", monospace',
+      fontSize: '0.9rem',
+      lineHeight: '1.6',
+      margin: 0,
+      direction: 'ltr',
+      textAlign: 'left',
+      whiteSpace: 'pre'
+    }}>
 {`Ford-Fulkerson(G, s, t):
   1.  for each edge (u, v) in E:
   2.      f[u,v] = 0             // initialize flow
@@ -456,7 +474,7 @@ sidebar_label: רשתות זרימה (Flow Networks)
 Time: O(E · |f*|) where |f*| is max flow value
       (can be very slow with bad path choices!)`}
     </pre>
-  </div>
+</div>
 
   <figure style={{ margin: '2rem 0', padding: '1.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '16px' }}>
     <h4 style={{ textAlign: 'center', color: '#64f6c8', marginBottom: '1rem' }}>דוגמה: מציאת מסלול משפר</h4>
@@ -604,8 +622,26 @@ Time: O(E · |f*|) where |f*| is max flow value
     </article>
   </div>
 
-  <div style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}>
-    <pre className="greedyDoc__code">
+  <div style={{ 
+    direction: 'ltr', 
+    textAlign: 'left',
+    background: 'rgba(0, 0, 0, 0.4)',
+    padding: '1.5rem',
+    borderRadius: '12px',
+    marginTop: '1rem',
+    display: 'flex',
+    flexDirection: 'column',
+
+  }}>
+    <pre className="greedyDoc__code" style={{
+      fontFamily: 'Consolas, Monaco, "Courier New", monospace',
+      fontSize: '0.9rem',
+      lineHeight: '1.6',
+      margin: 0,
+      direction: 'ltr',
+      textAlign: 'left',
+      whiteSpace: 'pre'
+    }}>
 {`Edmonds-Karp(G, s, t):
   1.  for each edge (u, v) in E:
   2.      f[u,v] = 0
@@ -631,7 +667,7 @@ Time: O(E · |f*|) where |f*| is max flow value
 Time: O(V · E²)
       (at most O(VE) augmentations, each O(E) for BFS)`}
     </pre>
-  </div>
+</div>
 
   <div className="conceptGrid" style={{ marginTop: '2rem' }}>
     <article className="conceptCard conceptCard--algorithm">

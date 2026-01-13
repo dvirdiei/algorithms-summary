@@ -397,8 +397,26 @@ sidebar_label: אלגוריתמים חמדניים (Greedy)
       <small>כל פעילות מיוצגת כקטע; הבחירה נעשית לפי זמני סיום מוקדמים.</small>
     </div>
   </div>
-  <div style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}>
-    <pre className="greedyDoc__code">
+  <div style={{ 
+    direction: 'ltr', 
+    textAlign: 'left',
+    background: 'rgba(0, 0, 0, 0.4)',
+    padding: '1.5rem',
+    borderRadius: '12px',
+    marginTop: '1rem',
+    display: 'flex',
+    flexDirection: 'column',
+
+  }}>
+    <pre className="greedyDoc__code" style={{
+      fontFamily: 'Consolas, Monaco, "Courier New", monospace',
+      fontSize: '0.9rem',
+      lineHeight: '1.6',
+      margin: 0,
+      direction: 'ltr',
+      textAlign: 'left',
+      whiteSpace: 'pre'
+    }}>
 {`Greedy-Iterative-Activity-Selector(
     S={a[1]...a[n]}, s={s[1]..s[n]}, f={f[1]..f[n]}):
 
@@ -414,7 +432,7 @@ sidebar_label: אלגוריתמים חמדניים (Greedy)
 
 Θ(nlogn) + Θ(n) = Θ(nlogn)  ← זמן ריצה / נימוק`}
     </pre>
-  </div>
+</div>
   
   <details>
     <summary>הוכחת אופטימליות</summary>

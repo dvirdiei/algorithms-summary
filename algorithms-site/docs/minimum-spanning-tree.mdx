@@ -304,22 +304,42 @@ sidebar_label: עץ פורש מינימלי (MST)
     </article>
   </div>
 
-  <div style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}>
-    <pre className="greedyDoc__code">
+  <div style={{ 
+    direction: 'ltr', 
+    textAlign: 'left',
+    background: 'rgba(0, 0, 0, 0.4)',
+    padding: '1.5rem',
+    borderRadius: '12px',
+    marginTop: '1rem',
+    // הוספת Flexbox כדי להצמיד את כל הבלוק לשמאל
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    width: '100%' 
+  }}>
+    <pre className="greedyDoc__code" style={{
+      fontFamily: 'Consolas, Monaco, "Courier New", monospace',
+      fontSize: '0.9rem',
+      lineHeight: '1.6',
+      margin: 0,
+      direction: 'ltr',
+      textAlign: 'left', // יישור מפורש של הטקסט בתוך ה-pre
+      whiteSpace: 'pre'   // שומר על מבנה ההזחות המקורי
+    }}>
 {`Kruskal(G = (V, E), w):
-  1.  A = ∅
-  2.  for each v ∈ V:
-  3.      Make-Set(v)
-  4.  Sort E by w in ascending order
-  5.  for each (u, v) ∈ E (in sorted order):
-  6.      if Find-Set(u) ≠ Find-Set(v):
-  7.          A = A ∪ {(u, v)}
-  8.          Union(u, v)
-  9.  return A
+    1.  A = ∅
+    2.  for each v ∈ V:
+    3.      Make-Set(v)
+    4.  Sort E by w in ascending order
+    5.  for each (u, v) ∈ E (in sorted order):
+    6.      if Find-Set(u) ≠ Find-Set(v):
+    7.          A = A ∪ {(u, v)}
+    8.          Union(u, v)
+    9.  return A
 
-Time: O(E log E) = O(E log V)  ← מיון שולט`}
+Time: O(E log E) = O(E log V)  `}
     </pre>
-  </div>
+</div>
 
   <div className="conceptGrid" style={{ marginTop: '2rem' }}>
     <article className="conceptCard conceptCard--algorithm">
@@ -461,8 +481,24 @@ Time: O(E log E) = O(E log V)  ← מיון שולט`}
     </article>
   </div>
 
-  <div style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}>
-    <pre className="greedyDoc__code">
+  <div style={{ 
+    direction: 'ltr', 
+    textAlign: 'left',
+    background: 'rgba(0, 0, 0, 0.4)',
+    padding: '1.5rem',
+    borderRadius: '12px',
+    marginTop: '1rem',
+   
+  }}>
+    <pre className="greedyDoc__code" style={{
+      fontFamily: 'Consolas, Monaco, "Courier New", monospace',
+      fontSize: '0.9rem',
+      lineHeight: '1.6',
+      margin: 0,
+      direction: 'ltr',
+      textAlign: 'left',
+      whiteSpace: 'pre' // שומר על ההזחות המדויקות של האלגוריתם
+    }}>
 {`Prim(G = (V, E), w, r):
   1.  for each u ∈ V:
   2.      key[u] = ∞
@@ -481,7 +517,7 @@ Time: O(E log E) = O(E log V)  ← מיון שולט`}
 Time: O(E log V) with binary heap
       O(E + V log V) with Fibonacci heap`}
     </pre>
-  </div>
+</div>
 
   <div className="conceptGrid" style={{ marginTop: '2rem' }}>
     <article className="conceptCard conceptCard--algorithm">

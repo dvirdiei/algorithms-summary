@@ -184,8 +184,25 @@ sidebar_label: מסלולים קצרים (Shortest Paths)
     </article>
   </div>
 
-  <div style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}>
-    <pre className="greedyDoc__code">
+  <div style={{ 
+    direction: 'ltr', 
+    textAlign: 'left',
+    background: 'rgba(0, 0, 0, 0.4)',
+    padding: '1.5rem',
+    borderRadius: '12px',
+    marginTop: '1rem',
+    // הגדרות Flexbox ליישור מוחלט לשמאל
+   
+  }}>
+    <pre className="greedyDoc__code" style={{
+      fontFamily: 'Consolas, Monaco, "Courier New", monospace',
+      fontSize: '0.9rem',
+      lineHeight: '1.6',
+      margin: 0,
+      direction: 'ltr',
+      textAlign: 'left',
+      whiteSpace: 'pre'
+    }}>
 {`Dijkstra(G, w, s):
   1.  for each v ∈ V:
   2.      d[v] = ∞
@@ -205,7 +222,7 @@ sidebar_label: מסלולים קצרים (Shortest Paths)
 Time: O((V + E) log V) with binary heap
       O(E + V log V) with Fibonacci heap`}
     </pre>
-  </div>
+</div>
 
   <div className="conceptGrid" style={{ marginTop: '2rem' }}>
     <article className="conceptCard conceptCard--algorithm">
@@ -338,8 +355,26 @@ Time: O((V + E) log V) with binary heap
     </article>
   </div>
 
-  <div style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}>
-    <pre className="greedyDoc__code">
+  <div style={{ 
+    direction: 'ltr', 
+    textAlign: 'left',
+    background: 'rgba(0, 0, 0, 0.4)',
+    padding: '1.5rem',
+    borderRadius: '12px',
+    marginTop: '1rem',
+    display: 'flex',
+    flexDirection: 'column',
+
+  }}>
+    <pre className="greedyDoc__code" style={{
+      fontFamily: 'Consolas, Monaco, "Courier New", monospace',
+      fontSize: '0.9rem',
+      lineHeight: '1.6',
+      margin: 0,
+      direction: 'ltr',
+      textAlign: 'left',
+      whiteSpace: 'pre'
+    }}>
 {`Bellman-Ford(G, w, s):
   1.  for each v ∈ V:
   2.      d[v] = ∞
@@ -360,7 +395,7 @@ Time: O((V + E) log V) with binary heap
 
 Time: O(V · E)`}
     </pre>
-  </div>
+</div>
 
   <div className="conceptGrid" style={{ marginTop: '2rem' }}>
     <article className="conceptCard conceptCard--algorithm">
@@ -469,8 +504,26 @@ Time: O(V · E)`}
     </article>
   </div>
 
-  <div style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}>
-    <pre className="greedyDoc__code">
+  <div style={{ 
+    direction: 'ltr', 
+    textAlign: 'left',
+    background: 'rgba(0, 0, 0, 0.4)',
+    padding: '1.5rem',
+    borderRadius: '12px',
+    marginTop: '1rem',
+    display: 'flex',
+    flexDirection: 'column',
+
+  }}>
+    <pre className="greedyDoc__code" style={{
+      fontFamily: 'Consolas, Monaco, "Courier New", monospace',
+      fontSize: '0.9rem',
+      lineHeight: '1.6',
+      margin: 0,
+      direction: 'ltr',
+      textAlign: 'left',
+      whiteSpace: 'pre'
+    }}>
 {`DAG-Shortest-Paths(G, w, s):
   1.  L = Topological-Sort(G)   // O(V + E)
   2.  
@@ -481,11 +534,13 @@ Time: O(V · E)`}
   7.  
   8.  for each u in L (topological order):
   9.      for each v ∈ Adj[u]:
- 10.          Relax(u, v, w)     // same as Dijkstra!
+ 10.          if d[v] > d[u] + w(u,v):   // Relax(u, v, w)
+ 11.              d[v] = d[u] + w(u,v)
+ 12.              π[v] = u
 
 Total Time: O(V + E)`}
     </pre>
-  </div>
+</div>
 
   <figure style={{ margin: '2rem 0', padding: '1.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '16px' }}>
     <h4 style={{ textAlign: 'center', color: '#64f6c8', marginBottom: '1rem' }}>דוגמה: מיון טופולוגי → הרפיה</h4>
@@ -673,8 +728,26 @@ Total Time: O(V + E)`}
     </p>
   </figure>
 
-  <div style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}>
-    <pre className="greedyDoc__code">
+  <div style={{ 
+    direction: 'ltr', 
+    textAlign: 'left',
+    background: 'rgba(0, 0, 0, 0.4)',
+    padding: '1.5rem',
+    borderRadius: '12px',
+    marginTop: '1rem',
+    display: 'flex',
+    flexDirection: 'column',
+
+  }}>
+    <pre className="greedyDoc__code" style={{
+      fontFamily: 'Consolas, Monaco, "Courier New", monospace',
+      fontSize: '0.9rem',
+      lineHeight: '1.6',
+      margin: 0,
+      direction: 'ltr',
+      textAlign: 'left',
+      whiteSpace: 'pre'
+    }}>
 {`Floyd-Warshall(W):
   // W = weight matrix, W[i][j] = w(i,j)
   1.  n = |V|
@@ -691,7 +764,7 @@ Total Time: O(V + E)`}
 
 Time: O(V³)  |  Space: O(V²)`}
     </pre>
-  </div>
+</div>
 
   <div className="conceptGrid" style={{ marginTop: '2rem' }}>
     <article className="conceptCard conceptCard--algorithm">
